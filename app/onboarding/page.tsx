@@ -12,6 +12,7 @@ import StepThree from "@/components/onboarding/step-three"
 import StepFour from "@/components/onboarding/step-four"
 import { motion, AnimatePresence } from "framer-motion"
 import LoadingScreen from "@/components/loading-screen"
+import OnboardingNavbar from "@/components/onboarding-navbar"
 
 // Define the types for our steps
 export type Step = {
@@ -242,41 +243,13 @@ export default function OnboardingPage() {
     return (
       <LoadingScreen
         message={isChangingStep ? "Loading next step..." : "Loading onboarding..."}
-        showProgressBar={!isChangingStep}
       />
     )
   }
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="border-b py-4 px-6">
-        <div className="container mx-auto flex justify-between items-center">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 relative">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="absolute inset-0">
-                <path
-                  d="M5 5C5 3.89543 5.89543 3 7 3H17C18.1046 3 19 3.89543 19 5V19C19 20.1046 18.1046 21 17 21H7C5.89543 21 5 20.1046 5 19V5Z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                />
-                <path d="M9 7H15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                <path d="M9 11H15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                <path d="M9 15H13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              </svg>
-            </div>
-            <span className="text-xl font-bold">Klarify</span>
-          </Link>
-          <div className="flex items-center gap-4">
-            <Button variant="outline" size="sm">
-              Get Help
-            </Button>
-            <Button variant="outline" size="sm">
-              <LogOut className="h-4 w-4 mr-2" />
-              Logout
-            </Button>
-          </div>
-        </div>
-      </header>
+      <OnboardingNavbar />
 
       <div className="flex flex-col lg:flex-row flex-1">
         {/* Mobile Steps Dropdown */}

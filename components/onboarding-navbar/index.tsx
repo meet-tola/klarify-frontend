@@ -7,11 +7,11 @@ import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import Logo from "../logo";
 
-interface NavbarProps {
+interface OnboardingNavbarProps {
   isLoggedIn?: boolean;
 }
 
-export default function Navbar({ isLoggedIn = false }: NavbarProps) {
+export default function OnboardingNavbar({ isLoggedIn = false }: OnboardingNavbarProps) {
   const pathname = usePathname();
 
   // Determine if we should show the help button based on the current path

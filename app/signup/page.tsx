@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label"
 import { EyeIcon, EyeOffIcon } from "lucide-react"
 import { motion } from "framer-motion"
 import LoadingScreen from "@/components/loading-screen"
-import Navbar from "@/components/onboarding-navbar"
+import OnboardingNavbar from "@/components/onboarding-navbar"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { signupSchema, type SignupFormData } from "@/validation/auth.validation"
@@ -48,13 +48,13 @@ export default function SignUpPage() {
 
   if (isLoading) {
     return (
-      <LoadingScreen message="Creating your account..." onComplete={() => router.push("/verify-email")} />
+      <LoadingScreen message="Creating your account..." />
     )
   }
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FDFDFF]">
-      <Navbar />
+      <OnboardingNavbar />
 
       <main className="flex-1 flex items-center justify-center p-6">
         <motion.div

@@ -6,13 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-import Navbar from "@/components/onboarding-navbar";
+import OnboardingNavbar from "@/components/onboarding-navbar";
 import LoadingScreen from "@/components/loading-screen";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginFormData } from "@/validation/auth.validation";
 import { login as loginAPI } from "@/lib/api";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -46,27 +47,39 @@ export default function LoginPage() {
   };
 
   if (isLoading) {
-    return (
-      <LoadingScreen
-        message="Logging in..."
-        onComplete={() => router.push("/dashboard")}
-      />
-    );
+    return <LoadingScreen message="Logging in..." />;
   }
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FDFDFF]">
-      <Navbar />
+      <OnboardingNavbar />
 
       <main className="flex-1 flex items-center justify-center p-6">
-        <div className="w-full max-w-sm space-y-8 bg-white p-6 rounded-lg">
+        <motion.div
+          className="w-full max-w-sm space-y-8 bg-white p-6 rounded-lg"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          {" "}
           <div className="text-center">
-            <h1 className="text-3xl font-bold roca-bold">Welcome Back</h1>
-            <p className="mt-2 text-muted-foreground">
+            <motion.h1
+              className="text-3xl font-bold roca-bold"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              Welcome Back
+            </motion.h1>
+            <motion.p
+              className="mt-2 text-muted-foreground"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+            >
               Sign in to continue your career journey.
-            </p>
+            </motion.p>
           </div>
-
           <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
             <div className="space-y-2">
               <Label htmlFor="email">Email*</Label>
@@ -132,19 +145,18 @@ export default function LoginPage() {
               Sign in
             </Button>
           </form>
-
           <div className="text-center">
             <p className="text-sm">
               Don't have an account?{" "}
               <Link
-                href="/"
+                href="/signup"
                 className="font-medium text-primary hover:underline"
               >
                 Sign up
               </Link>
             </p>
           </div>
-        </div>
+        </motion.div>
       </main>
     </div>
   );

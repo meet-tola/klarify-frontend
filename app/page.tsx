@@ -1,15 +1,36 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Badge } from "@/components/ui/badge"
-import { ArrowRight, CheckCircle, BriefcaseBusiness, Zap, Award, Users, Star } from "lucide-react"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
+import {
+  ArrowRight,
+  CheckCircle,
+  BriefcaseBusiness,
+  Zap,
+  Award,
+  Users,
+  Star,
+} from "lucide-react";
+import Link from "next/link";
 
 export default function Home() {
-  const [email, setEmail] = useState("")
+  const [email, setEmail] = useState("");
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -21,24 +42,40 @@ export default function Home() {
             <span>AI Career Builder</span>
           </div>
           <nav className="hidden md:flex items-center gap-6">
-            <a href="#features" className="text-sm font-medium hover:text-primary">
+            <a
+              href="#features"
+              className="text-sm font-medium hover:text-primary"
+            >
               Features
             </a>
-            <a href="#how-it-works" className="text-sm font-medium hover:text-primary">
+            <a
+              href="#how-it-works"
+              className="text-sm font-medium hover:text-primary"
+            >
               How It Works
             </a>
-            <a href="#pricing" className="text-sm font-medium hover:text-primary">
+            <a
+              href="#pricing"
+              className="text-sm font-medium hover:text-primary"
+            >
               Pricing
             </a>
-            <a href="#testimonials" className="text-sm font-medium hover:text-primary">
+            <a
+              href="#testimonials"
+              className="text-sm font-medium hover:text-primary"
+            >
               Testimonials
             </a>
           </nav>
           <div className="flex items-center gap-4">
-            <Button variant="outline" size="sm" className="hidden md:flex">
+            <Link href="/login" target="_blank">
+              <Button variant="outline" size="sm" className="hidden md:flex">
               Log in
-            </Button>
-            <Button size="sm">Get Started</Button>
+              </Button>
+            </Link>
+            <Link href="/signup" target="_blank">
+              <Button size="sm">Get Started</Button>
+            </Link>
           </div>
         </div>
       </header>
@@ -49,15 +86,20 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-background z-0"></div>
           <div className="container relative z-10">
             <div className="flex flex-col items-center text-center max-w-3xl mx-auto space-y-8">
-              <Badge variant="outline" className="px-4 py-1 border-primary/20 bg-primary/5 text-primary">
+              <Badge
+                variant="outline"
+                className="px-4 py-1 border-primary/20 bg-primary/5 text-primary"
+              >
                 AI-Powered Career Advancement
               </Badge>
               <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
-                Build Your Dream Career With <span className="text-primary">AI Assistance</span>
+                Build Your Dream Career With{" "}
+                <span className="text-primary">AI Assistance</span>
               </h1>
               <p className="text-lg md:text-xl text-muted-foreground max-w-2xl">
-                Leverage cutting-edge AI to optimize your resume, prepare for interviews, and discover personalized
-                career opportunities tailored to your skills and goals.
+                Leverage cutting-edge AI to optimize your resume, prepare for
+                interviews, and discover personalized career opportunities
+                tailored to your skills and goals.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md">
                 <div className="relative flex-1">
@@ -88,9 +130,12 @@ export default function Home() {
         <section id="features" className="py-20 bg-muted/50">
           <div className="container">
             <div className="text-center max-w-2xl mx-auto mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">Supercharge Your Career Journey</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Supercharge Your Career Journey
+              </h2>
               <p className="text-muted-foreground">
-                Our AI-powered platform provides all the tools you need to advance your career with confidence.
+                Our AI-powered platform provides all the tools you need to
+                advance your career with confidence.
               </p>
             </div>
 
@@ -105,12 +150,16 @@ export default function Home() {
                 {
                   icon: <Users className="h-10 w-10 text-primary" />,
                   title: "Interview Preparation",
-                  description: "Practice with our AI interviewer that simulates real interviews and provides feedback.",
+                  description:
+                    "Practice with our AI interviewer that simulates real interviews and provides feedback.",
                 },
                 {
-                  icon: <BriefcaseBusiness className="h-10 w-10 text-primary" />,
+                  icon: (
+                    <BriefcaseBusiness className="h-10 w-10 text-primary" />
+                  ),
                   title: "Personalized Job Matching",
-                  description: "Discover opportunities that align with your skills, experience, and career goals.",
+                  description:
+                    "Discover opportunities that align with your skills, experience, and career goals.",
                 },
                 {
                   icon: <Award className="h-10 w-10 text-primary" />,
@@ -131,13 +180,18 @@ export default function Home() {
                     "Map out your long-term career trajectory with AI-generated recommendations and milestones.",
                 },
               ].map((feature, index) => (
-                <Card key={index} className="border-0 shadow-sm hover:shadow-md transition-shadow">
+                <Card
+                  key={index}
+                  className="border-0 shadow-sm hover:shadow-md transition-shadow"
+                >
                   <CardHeader>
                     <div className="mb-4">{feature.icon}</div>
                     <CardTitle>{feature.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-muted-foreground">{feature.description}</p>
+                    <p className="text-muted-foreground">
+                      {feature.description}
+                    </p>
                   </CardContent>
                 </Card>
               ))}
@@ -149,9 +203,12 @@ export default function Home() {
         <section id="how-it-works" className="py-20">
           <div className="container">
             <div className="text-center max-w-2xl mx-auto mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">How AI Career Builder Works</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                How AI Career Builder Works
+              </h2>
               <p className="text-muted-foreground">
-                Our simple three-step process helps you transform your career prospects with AI assistance.
+                Our simple three-step process helps you transform your career
+                prospects with AI assistance.
               </p>
             </div>
 
@@ -168,15 +225,20 @@ export default function Home() {
                 {
                   step: "02",
                   title: "Get AI Recommendations",
-                  description: "Receive personalized career insights, job matches, and skill development suggestions.",
+                  description:
+                    "Receive personalized career insights, job matches, and skill development suggestions.",
                 },
                 {
                   step: "03",
                   title: "Apply & Advance",
-                  description: "Apply to jobs with your optimized resume and ace interviews with AI preparation.",
+                  description:
+                    "Apply to jobs with your optimized resume and ace interviews with AI preparation.",
                 },
               ].map((step, index) => (
-                <div key={index} className="relative z-10 flex flex-col items-center text-center">
+                <div
+                  key={index}
+                  className="relative z-10 flex flex-col items-center text-center"
+                >
                   <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold mb-6">
                     {step.step}
                   </div>
@@ -192,9 +254,12 @@ export default function Home() {
         <section id="testimonials" className="py-20 bg-muted/50">
           <div className="container">
             <div className="text-center max-w-2xl mx-auto mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">Success Stories</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Success Stories
+              </h2>
               <p className="text-muted-foreground">
-                Hear from professionals who transformed their careers with our AI-powered platform.
+                Hear from professionals who transformed their careers with our
+                AI-powered platform.
               </p>
             </div>
 
@@ -261,8 +326,12 @@ export default function Home() {
         <section id="pricing" className="py-20">
           <div className="container">
             <div className="text-center max-w-2xl mx-auto mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">Simple, Transparent Pricing</h2>
-              <p className="text-muted-foreground">Choose the plan that fits your career advancement needs.</p>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Simple, Transparent Pricing
+              </h2>
+              <p className="text-muted-foreground">
+                Choose the plan that fits your career advancement needs.
+              </p>
             </div>
 
             <Tabs defaultValue="monthly" className="w-full max-w-4xl mx-auto">
@@ -279,7 +348,8 @@ export default function Home() {
                     {
                       name: "Starter",
                       price: "$9",
-                      description: "Perfect for job seekers looking for basic career assistance.",
+                      description:
+                        "Perfect for job seekers looking for basic career assistance.",
                       features: [
                         "AI Resume Review",
                         "5 Job Matches per Month",
@@ -290,7 +360,8 @@ export default function Home() {
                     {
                       name: "Professional",
                       price: "$19",
-                      description: "Ideal for professionals actively advancing their careers.",
+                      description:
+                        "Ideal for professionals actively advancing their careers.",
                       features: [
                         "AI Resume Optimization",
                         "Unlimited Job Matches",
@@ -303,7 +374,8 @@ export default function Home() {
                     {
                       name: "Executive",
                       price: "$39",
-                      description: "For senior professionals and executives seeking career growth.",
+                      description:
+                        "For senior professionals and executives seeking career growth.",
                       features: [
                         "Everything in Professional",
                         "Executive Resume Writing",
@@ -315,18 +387,24 @@ export default function Home() {
                   ].map((plan, index) => (
                     <Card
                       key={index}
-                      className={`border ${plan.popular ? "border-primary shadow-md" : "shadow-sm"} relative`}
+                      className={`border ${
+                        plan.popular ? "border-primary shadow-md" : "shadow-sm"
+                      } relative`}
                     >
                       {plan.popular && (
                         <div className="absolute top-0 right-0 transform translate-x-2 -translate-y-2">
-                          <Badge className="bg-primary text-primary-foreground">Most Popular</Badge>
+                          <Badge className="bg-primary text-primary-foreground">
+                            Most Popular
+                          </Badge>
                         </div>
                       )}
                       <CardHeader>
                         <CardTitle>{plan.name}</CardTitle>
                         <CardDescription>{plan.description}</CardDescription>
                         <div className="mt-4">
-                          <span className="text-4xl font-bold">{plan.price}</span>
+                          <span className="text-4xl font-bold">
+                            {plan.price}
+                          </span>
                           <span className="text-muted-foreground">/month</span>
                         </div>
                       </CardHeader>
@@ -342,7 +420,9 @@ export default function Home() {
                       </CardContent>
                       <CardFooter>
                         <Button
-                          className={`w-full ${plan.popular ? "" : "variant-outline"}`}
+                          className={`w-full ${
+                            plan.popular ? "" : "variant-outline"
+                          }`}
                           variant={plan.popular ? "default" : "outline"}
                         >
                           Get Started
@@ -359,7 +439,8 @@ export default function Home() {
                     {
                       name: "Starter",
                       price: "$7",
-                      description: "Perfect for job seekers looking for basic career assistance.",
+                      description:
+                        "Perfect for job seekers looking for basic career assistance.",
                       features: [
                         "AI Resume Review",
                         "5 Job Matches per Month",
@@ -370,7 +451,8 @@ export default function Home() {
                     {
                       name: "Professional",
                       price: "$15",
-                      description: "Ideal for professionals actively advancing their careers.",
+                      description:
+                        "Ideal for professionals actively advancing their careers.",
                       features: [
                         "AI Resume Optimization",
                         "Unlimited Job Matches",
@@ -383,7 +465,8 @@ export default function Home() {
                     {
                       name: "Executive",
                       price: "$31",
-                      description: "For senior professionals and executives seeking career growth.",
+                      description:
+                        "For senior professionals and executives seeking career growth.",
                       features: [
                         "Everything in Professional",
                         "Executive Resume Writing",
@@ -395,18 +478,24 @@ export default function Home() {
                   ].map((plan, index) => (
                     <Card
                       key={index}
-                      className={`border ${plan.popular ? "border-primary shadow-md" : "shadow-sm"} relative`}
+                      className={`border ${
+                        plan.popular ? "border-primary shadow-md" : "shadow-sm"
+                      } relative`}
                     >
                       {plan.popular && (
                         <div className="absolute top-0 right-0 transform translate-x-2 -translate-y-2">
-                          <Badge className="bg-primary text-primary-foreground">Most Popular</Badge>
+                          <Badge className="bg-primary text-primary-foreground">
+                            Most Popular
+                          </Badge>
                         </div>
                       )}
                       <CardHeader>
                         <CardTitle>{plan.name}</CardTitle>
                         <CardDescription>{plan.description}</CardDescription>
                         <div className="mt-4">
-                          <span className="text-4xl font-bold">{plan.price}</span>
+                          <span className="text-4xl font-bold">
+                            {plan.price}
+                          </span>
                           <span className="text-muted-foreground">/month</span>
                         </div>
                       </CardHeader>
@@ -422,7 +511,9 @@ export default function Home() {
                       </CardContent>
                       <CardFooter>
                         <Button
-                          className={`w-full ${plan.popular ? "" : "variant-outline"}`}
+                          className={`w-full ${
+                            plan.popular ? "" : "variant-outline"
+                          }`}
                           variant={plan.popular ? "default" : "outline"}
                         >
                           Get Started
@@ -440,9 +531,12 @@ export default function Home() {
         <section className="py-20 bg-muted/50">
           <div className="container">
             <div className="text-center max-w-2xl mx-auto mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">Frequently Asked Questions</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Frequently Asked Questions
+              </h2>
               <p className="text-muted-foreground">
-                Find answers to common questions about our AI Career Builder platform.
+                Find answers to common questions about our AI Career Builder
+                platform.
               </p>
             </div>
 
@@ -475,13 +569,16 @@ export default function Home() {
                       "We offer a 14-day money-back guarantee if you're not satisfied with our service. Simply contact our support team within 14 days of your purchase.",
                   },
                   {
-                    question: "Can I use AI Career Builder if I'm changing industries?",
+                    question:
+                      "Can I use AI Career Builder if I'm changing industries?",
                     answer:
                       "Our AI is especially helpful for career changers. It identifies transferable skills and helps you position your experience effectively for roles in new industries.",
                   },
                 ].map((faq, index) => (
                   <AccordionItem key={index} value={`item-${index}`}>
-                    <AccordionTrigger className="text-left">{faq.question}</AccordionTrigger>
+                    <AccordionTrigger className="text-left">
+                      {faq.question}
+                    </AccordionTrigger>
                     <AccordionContent>{faq.answer}</AccordionContent>
                   </AccordionItem>
                 ))}
@@ -494,9 +591,12 @@ export default function Home() {
         <section className="py-20 bg-primary text-primary-foreground">
           <div className="container">
             <div className="flex flex-col items-center text-center max-w-3xl mx-auto space-y-8">
-              <h2 className="text-3xl md:text-4xl font-bold">Ready to Transform Your Career?</h2>
+              <h2 className="text-3xl md:text-4xl font-bold">
+                Ready to Transform Your Career?
+              </h2>
               <p className="text-xl opacity-90 max-w-2xl">
-                Join thousands of professionals who are advancing their careers with AI assistance.
+                Join thousands of professionals who are advancing their careers
+                with AI assistance.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md">
                 <div className="relative flex-1">
@@ -534,17 +634,26 @@ export default function Home() {
                 <span>AI Career Builder</span>
               </div>
               <p className="text-muted-foreground mb-4">
-                Empowering professionals to advance their careers with AI assistance.
+                Empowering professionals to advance their careers with AI
+                assistance.
               </p>
               <div className="flex gap-4">
-                {["twitter", "facebook", "instagram", "linkedin"].map((social) => (
-                  <a key={social} href={`#${social}`} className="text-muted-foreground hover:text-primary">
-                    <span className="sr-only">{social}</span>
-                    <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-                      <span className="capitalize text-xs">{social.charAt(0)}</span>
-                    </div>
-                  </a>
-                ))}
+                {["twitter", "facebook", "instagram", "linkedin"].map(
+                  (social) => (
+                    <a
+                      key={social}
+                      href={`#${social}`}
+                      className="text-muted-foreground hover:text-primary"
+                    >
+                      <span className="sr-only">{social}</span>
+                      <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+                        <span className="capitalize text-xs">
+                          {social.charAt(0)}
+                        </span>
+                      </div>
+                    </a>
+                  )
+                )}
               </div>
             </div>
 
@@ -555,7 +664,12 @@ export default function Home() {
               },
               {
                 title: "Resources",
-                links: ["Blog", "Career Tips", "Resume Templates", "Interview Guide"],
+                links: [
+                  "Blog",
+                  "Career Tips",
+                  "Resume Templates",
+                  "Interview Guide",
+                ],
               },
               {
                 title: "Company",
@@ -581,11 +695,13 @@ export default function Home() {
           </div>
 
           <div className="border-t mt-12 pt-8 text-center text-sm text-muted-foreground">
-            <p>© {new Date().getFullYear()} AI Career Builder. All rights reserved.</p>
+            <p>
+              © {new Date().getFullYear()} AI Career Builder. All rights
+              reserved.
+            </p>
           </div>
         </div>
       </footer>
     </div>
-  )
+  );
 }
-
