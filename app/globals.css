@@ -119,3 +119,24 @@
     @apply bg-background text-foreground;
   }
 }
+
+.roca-text {
+  font-family: var(--font-roca), sans-serif;
+  font-weight: 400;
+}
+
+.roca-bold {
+  font-family: var(--font-roca), sans-serif;
+  font-weight: 700;
+}
+
+.roca-italic {
+  font-family: var(--font-roca), sans-serif;
+  font-style: italic;
+}
+
+.roca-bold-italic {
+  font-family: var(--font-roca), sans-serif;
+  font-weight: 700;
+  font-style: italic;
+}

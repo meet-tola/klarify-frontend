@@ -15,13 +15,15 @@ API.interceptors.response.use(
     return response;
   },
   async (error) => {
-    const { data, status } = error.response;
-    if (data === "Unauthorized" && status === 401) {
-      window.location.href = "/";
+    if (error.response) {
+      const { data, status } = error.response;
+      if (data === "Unauthorized" && status === 401) {
+        window.location.href = "/";
+      }
+    } else {
+      console.error("Error response is undefined", error);
     }
-    return Promise.reject({
-      ...data,
-    });
+    return Promise.reject(error);
   }
 );
 

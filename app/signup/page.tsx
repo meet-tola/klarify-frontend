@@ -11,16 +11,17 @@ import Navbar from "@/components/onboarding-navbar"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { signupSchema, type SignupFormData } from "@/validation/auth.validation"
-import { useAuthStore } from "@/lib/auth"
+import { register } from "@/lib/api"
+import { useRouter } from "next/navigation"
 
 export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const login = useAuthStore((state) => state.login)
+  const router = useRouter()
 
   const {
-    register,
+    register: formRegister,
     handleSubmit,
     formState: { errors },
   } = useForm<SignupFormData>({
@@ -33,39 +34,38 @@ export default function SignUpPage() {
     },
   })
 
-  const onSubmit = (data: SignupFormData) => {
+  const onSubmit = async (data: SignupFormData) => {
     setIsLoading(true)
 
-    // Simulate signup process
-    setTimeout(() => {
-      // Store user data in auth store
-      login({ name: data.name, email: data.email })
-
-      // Redirect to verification page
-      window.location.href = "/verify-email"
-    }, 1500)
+    try {
+      await register(data) 
+      router.push("/verify-email")
+    } catch (error) {
+      console.error("Registration failed:", error)
+      setIsLoading(false)
+    }
   }
 
   if (isLoading) {
     return (
-      <LoadingScreen message="Creating your account..." onComplete={() => (window.location.href = "/verify-email")} />
+      <LoadingScreen message="Creating your account..." onComplete={() => router.push("/verify-email")} />
     )
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-[#FDFDFF]">
       <Navbar />
 
       <main className="flex-1 flex items-center justify-center p-6">
         <motion.div
-          className="w-full max-w-md space-y-8"
+          className="w-full max-w-sm space-y-8 bg-white p-6 rounded-lg"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
           <div className="text-center">
             <motion.h1
-              className="text-3xl font-bold"
+              className="text-3xl font-bold roca-bold"
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
@@ -83,58 +83,43 @@ export default function SignUpPage() {
           </div>
 
           <motion.form
-            className="space-y-6"
+            className="space-y-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
             onSubmit={handleSubmit(onSubmit)}
           >
-            <motion.div
-              className="space-y-2"
-              initial={{ x: -20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.5 }}
-            >
+            <div className="space-y-2">
               <Label htmlFor="name">Name*</Label>
               <Input
                 id="name"
-                placeholder="Iola from klarify"
-                {...register("name")}
+                placeholder="Tola from Klarify"
+                {...formRegister("name")}
                 className={errors.name ? "border-destructive" : ""}
               />
               {errors.name && <p className="text-sm text-destructive mt-1">{errors.name.message}</p>}
-            </motion.div>
+            </div>
 
-            <motion.div
-              className="space-y-2"
-              initial={{ x: -20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.6 }}
-            >
+            <div className="space-y-2">
               <Label htmlFor="email">Email*</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="iola@klarify.com"
-                {...register("email")}
+                placeholder="Tola@klarify.com"
+                {...formRegister("email")}
                 className={errors.email ? "border-destructive" : ""}
               />
               {errors.email && <p className="text-sm text-destructive mt-1">{errors.email.message}</p>}
-            </motion.div>
+            </div>
 
-            <motion.div
-              className="space-y-2"
-              initial={{ x: -20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.7 }}
-            >
+            <div className="space-y-2">
               <Label htmlFor="password">Password*</Label>
               <div className="relative">
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
-                  {...register("password")}
+                  {...formRegister("password")}
                   className={errors.password ? "border-destructive" : ""}
                 />
                 <button
@@ -146,21 +131,16 @@ export default function SignUpPage() {
                 </button>
               </div>
               {errors.password && <p className="text-sm text-destructive mt-1">{errors.password.message}</p>}
-            </motion.div>
+            </div>
 
-            <motion.div
-              className="space-y-2"
-              initial={{ x: -20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.8 }}
-            >
+            <div className="space-y-2">
               <Label htmlFor="confirmPassword">Confirm Password*</Label>
               <div className="relative">
                 <Input
                   id="confirmPassword"
                   type={showConfirmPassword ? "text" : "password"}
                   placeholder="••••••••"
-                  {...register("confirmPassword")}
+                  {...formRegister("confirmPassword")}
                   className={errors.confirmPassword ? "border-destructive" : ""}
                 />
                 <button
@@ -174,7 +154,7 @@ export default function SignUpPage() {
               {errors.confirmPassword && (
                 <p className="text-sm text-destructive mt-1">{errors.confirmPassword.message}</p>
               )}
-            </motion.div>
+            </div>
 
             <motion.p
               className="text-sm text-muted-foreground"
@@ -210,4 +190,3 @@ export default function SignUpPage() {
     </div>
   )
 }
-

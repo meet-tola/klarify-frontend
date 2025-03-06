@@ -1,16 +1,41 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Urbanist } from "next/font/google";
+import localFont from "next/font/local"; 
 import "./globals.css";
 import { AuthProvider } from "@/context/auth-provider";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Google Font (Urbanist)
+const urbanist = Urbanist({
+  variable: "--font-urbanist",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+// Local Font (Roca) using .ttf files
+const roca = localFont({
+  src: [
+    {
+      path: "../public/fonts/Roca Regular.ttf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/Roca Bold.ttf",
+      weight: "700",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/Roca Two Italic.ttf",
+      weight: "400",
+      style: "italic",
+    },
+    {
+      path: "../public/fonts/Roca Bold Italic.ttf",
+      weight: "700",
+      style: "italic",
+    },
+  ],
+  variable: "--font-roca",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -27,7 +52,7 @@ export default function RootLayout({
     <html lang="en">
       <AuthProvider>
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${urbanist.variable} ${roca.variable} antialiased`}
         >
           {children}
         </body>
