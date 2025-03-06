@@ -1,26 +1,24 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { EyeIcon, EyeOffIcon } from "lucide-react"
-import Navbar from "@/components/onboarding-navbar"
-import LoadingScreen from "@/components/loading-screen"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { loginSchema, type LoginFormData } from "@/validation/auth.validation"
-import { login as loginAPI } from "@/lib/api"
-import { useAuthStore } from "@/lib/auth"
-import { useRouter } from "next/navigation"
+import { useState } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
+import Navbar from "@/components/onboarding-navbar";
+import LoadingScreen from "@/components/loading-screen";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema, type LoginFormData } from "@/validation/auth.validation";
+import { login as loginAPI } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
-  const [showPassword, setShowPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState("")
-  const login = useAuthStore((state) => state.login)
-  const router = useRouter()
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const router = useRouter();
 
   const {
     register,
@@ -32,24 +30,28 @@ export default function LoginPage() {
       email: "",
       password: "",
     },
-  })
+  });
 
   const onSubmit = async (data: LoginFormData) => {
-    setIsLoading(true)
-    setErrorMessage("")
+    setIsLoading(true);
+    setErrorMessage("");
 
     try {
-      const user = await loginAPI(data)
-      login(user)
-      router.push("/dashboard")
+      const user = await loginAPI(data);
+      router.push("/onboarding");
     } catch (error) {
-      setErrorMessage("Invalid email or password.")
-      setIsLoading(false)
+      setErrorMessage("Invalid email or password.");
+      setIsLoading(false);
     }
-  }
+  };
 
   if (isLoading) {
-    return <LoadingScreen message="Logging in..." onComplete={() => router.push("/dashboard")} />
+    return (
+      <LoadingScreen
+        message="Logging in..."
+        onComplete={() => router.push("/dashboard")}
+      />
+    );
   }
 
   return (
@@ -76,7 +78,9 @@ export default function LoginPage() {
                 className={errors.email ? "border-destructive" : ""}
               />
               {errors.email && (
-                <p className="text-sm text-destructive mt-1">{errors.email.message}</p>
+                <p className="text-sm text-destructive mt-1">
+                  {errors.email.message}
+                </p>
               )}
             </div>
 
@@ -95,20 +99,31 @@ export default function LoginPage() {
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <EyeOffIcon size={18} /> : <EyeIcon size={18} />}
+                  {showPassword ? (
+                    <EyeOffIcon size={18} />
+                  ) : (
+                    <EyeIcon size={18} />
+                  )}
                 </button>
               </div>
               {errors.password && (
-                <p className="text-sm text-destructive mt-1">{errors.password.message}</p>
+                <p className="text-sm text-destructive mt-1">
+                  {errors.password.message}
+                </p>
               )}
             </div>
 
             {errorMessage && (
-              <p className="text-sm text-destructive text-center">{errorMessage}</p>
+              <p className="text-sm text-destructive text-center">
+                {errorMessage}
+              </p>
             )}
 
             <div className="text-sm text-right">
-              <Link href="/forgot-password" className="text-primary hover:underline">
+              <Link
+                href="/forgot-password"
+                className="text-primary hover:underline"
+              >
                 Forgot your password?
               </Link>
             </div>
@@ -121,7 +136,10 @@ export default function LoginPage() {
           <div className="text-center">
             <p className="text-sm">
               Don't have an account?{" "}
-              <Link href="/" className="font-medium text-primary hover:underline">
+              <Link
+                href="/"
+                className="font-medium text-primary hover:underline"
+              >
                 Sign up
               </Link>
             </p>
@@ -129,5 +147,5 @@ export default function LoginPage() {
         </div>
       </main>
     </div>
-  )
+  );
 }

@@ -1,6 +1,27 @@
 import API from "./axios-client";
 import { CurrentUserResponseType } from "@/types/api.type";
 
+export const register = async (data: { name: string; email: string; password: string }) => {
+  try {
+    const response = await API.post("/auth/register", data); 
+    return response.data; 
+  } catch (error) {
+    console.error("Registration failed:", error);
+    throw error; 
+  }
+};
+
+export const verifyEmail = async (data: { code: string }) => {
+  try {
+    const response = await API.post("/auth/verify-email", data);
+    return response.data;
+  } catch (error) {
+    console.error("Verification failed:", error);
+    throw error;
+  }
+};
+
+
 export const login = async (data: { email: string; password: string }) => {
   try {
     const response = await API.post("/auth/login", data);
@@ -12,15 +33,6 @@ export const login = async (data: { email: string; password: string }) => {
 };
 
 
-export const register = async (data: { name: string; email: string; password: string }) => {
-  try {
-    const response = await API.post("/auth/register", data); 
-    return response.data; 
-  } catch (error) {
-    console.error("Registration failed:", error);
-    throw error; 
-  }
-};
 export const logout = async () => {};
 
 export const getCurrentUser =
