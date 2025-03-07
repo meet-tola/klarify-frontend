@@ -47,26 +47,29 @@ export default function SearchDialog({ isOpen, onClose, onSelect }: SearchDialog
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
-          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
           <motion.div
-            className="fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
+            className="fixed inset-0 bg-background/80 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+          />
+          <motion.div
+            className="z-50 w-full max-w-lg bg-background p-6 shadow-lg border rounded-lg"
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+            transition={{ duration: 0.2 }}
           >
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold">Search for Skill</h2>
               <Button variant="ghost" size="icon" className="rounded-full" onClick={onClose}>
                 <X className="h-4 w-4" />
               </Button>
             </div>
 
-            <div className="relative">
+            <div className="relative mb-4">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
                 className="pl-9"
@@ -95,7 +98,7 @@ export default function SearchDialog({ isOpen, onClose, onSelect }: SearchDialog
 
               <div>
                 <h3 className="text-sm font-medium mb-2">Search Results</h3>
-                <div className="space-y-2">
+                <div className="space-y-2 max-h-60 overflow-y-auto">
                   {searchResults.map((result) => (
                     <motion.div
                       key={result.title}
@@ -112,14 +115,14 @@ export default function SearchDialog({ isOpen, onClose, onSelect }: SearchDialog
               </div>
             </div>
 
-            <div className="flex justify-end gap-3">
+            <div className="flex justify-end gap-3 mt-4">
               <Button variant="outline" onClick={onClose}>
-                Learn More
+                Cancel
               </Button>
-              <Button onClick={onClose}>Next</Button>
+              <Button onClick={onClose}>Search</Button>
             </div>
           </motion.div>
-        </motion.div>
+        </div>
       )}
     </AnimatePresence>
   )

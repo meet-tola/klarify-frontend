@@ -69,20 +69,6 @@ export default function AnalyzingScreen({ onComplete }: AnalyzingScreenProps) {
             </motion.div>
           </AnimatePresence>
         </div>
-
-        <motion.div
-          animate={{
-            rotate: 360,
-          }}
-          transition={{
-            duration: 1.5,
-            repeat: Number.POSITIVE_INFINITY,
-            ease: "linear",
-          }}
-          className="mx-auto"
-        >
-          <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full" />
-        </motion.div>
       </div>
     </div>
   )

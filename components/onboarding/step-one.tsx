@@ -1,9 +1,21 @@
 "use client"
+import { useState } from "react"
 import { Checkbox } from "@/components/ui/checkbox"
-import type { Question } from "@/types/app.type"
+import { Button } from "@/components/ui/button"
 import { motion, AnimatePresence } from "framer-motion"
+import { Progress } from "@/components/ui/progress"
 
-// Define the questions for step 1
+export type Option = {
+  id: string
+  text: string
+}
+
+export type Question = {
+  id: string
+  text: string
+  options: Option[]
+}
+
 const questions: Question[] = [
   {
     id: "skill-level",
@@ -57,7 +69,6 @@ const questions: Question[] = [
   },
 ]
 
-// Define the question flow based on previous answers
 const questionFlow: Record<string, string> = {
   beginner: "beginner-interests",
   novice: "novice-skills",
@@ -68,10 +79,12 @@ const questionFlow: Record<string, string> = {
 interface StepOneProps {
   selectedOptions: Record<string, string>
   onOptionSelect: (questionId: string, optionId: string) => void
-  activeQuestionIndex: number
+  onNextStep: () => void
 }
 
-export default function StepOne({ selectedOptions, onOptionSelect, activeQuestionIndex }: StepOneProps) {
+export default function StepOne({ selectedOptions, onOptionSelect, onNextStep }: StepOneProps) {
+  const [activeQuestionIndex, setActiveQuestionIndex] = useState(0)
+
   // Determine which questions to show based on previous answers
   const getVisibleQuestionIds = () => {
     const visibleQuestions = ["skill-level"]
@@ -95,14 +108,49 @@ export default function StepOne({ selectedOptions, onOptionSelect, activeQuestio
   // Only show the active question
   const activeQuestion = visibleQuestions[activeQuestionIndex] || visibleQuestions[0]
 
-  // Make the component's questions accessible to the parent
-  // @ts-ignore - This is a workaround to expose the questions array
-  StepOne.questions = visibleQuestions
+  // Check if we're on the last question
+  const isLastQuestion = activeQuestionIndex >= visibleQuestions.length - 1
+
+  // Handle next question
+  const handleNextQuestion = () => {
+    if (!isLastQuestion) {
+      setActiveQuestionIndex(activeQuestionIndex + 1)
+    } else {
+      onNextStep()
+    }
+  }
+
+  // Handle back button
+  const handleBack = () => {
+    if (activeQuestionIndex > 0) {
+      setActiveQuestionIndex(activeQuestionIndex - 1)
+    }
+  }
 
   if (!activeQuestion) return null
 
   return (
     <div className="space-y-8">
+      <motion.div
+        className="mb-8"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <h2 className="text-2xl font-bold r">Discover your interests.</h2>
+        <p className="text-muted-foreground mt-1">
+          Let's find out what you're naturally good at and what interests you!
+        </p>
+        <motion.div
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          style={{ originX: 0 }}
+        >
+          <Progress value={25} className="h-2 mt-4" />
+        </motion.div>
+      </motion.div>
+
       <AnimatePresence mode="wait">
         <motion.div
           key={activeQuestion.id}
@@ -145,6 +193,33 @@ export default function StepOne({ selectedOptions, onOptionSelect, activeQuestio
           </div>
         </motion.div>
       </AnimatePresence>
+
+      <motion.div
+        className="flex justify-between mt-12"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5 }}
+      >
+        <div>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Button variant="outline" onClick={() => (window.location.href = "/dashboard")}>
+              Skip this step
+            </Button>
+          </motion.div>
+        </div>
+        <div className="flex gap-3">
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Button variant="outline" onClick={handleBack} disabled={activeQuestionIndex === 0}>
+              Back
+            </Button>
+          </motion.div>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Button onClick={handleNextQuestion} disabled={!selectedOptions[activeQuestion.id]}>
+              {isLastQuestion ? "Next Step" : "Next Question"}
+            </Button>
+          </motion.div>
+        </div>
+      </motion.div>
     </div>
   )
 }
