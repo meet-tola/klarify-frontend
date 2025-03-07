@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/onboarding-navbar";
 import LoadingScreen from "@/components/loading-screen";
@@ -10,6 +10,8 @@ import { Input } from "@/components/ui/input";
 import { verifyEmail as verifyEmailAPI } from "@/lib/api";
 import JourneyDialog from "@/components/journey-dialog";
 import Image from "next/image";
+import { toast } from "sonner";
+import { useAuthContext } from "@/context/auth-provider";
 
 export default function VerifyEmailPage() {
   const [verificationCode, setVerificationCode] = useState<string[]>(
@@ -20,6 +22,18 @@ export default function VerifyEmailPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const router = useRouter();
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const { user } = useAuthContext();
+
+  useEffect(() => {
+    if (user) {
+      if (!user.pickedSkill) {
+        setIsDialogOpen(true);
+        return;
+      }
+
+      router.push("/dashboard");
+    }
+  }, [user, router]);
 
   const handleChange = (index: number, value: string) => {
     if (!/^\d*$/.test(value)) return;
@@ -42,29 +56,38 @@ export default function VerifyEmailPage() {
 
   const handleVerify = async () => {
     const code = verificationCode.join("");
+    const email = localStorage.getItem("userEmail");
+
+    if (!email) {
+      toast.error("Something went wrong", {
+        description: "No email found. Please try signing in again.",
+      });
+      return;
+    }
     try {
       verificationSchema.parse({ code });
       setIsLoading(true);
       setErrorMessage("");
 
-      await verifyEmailAPI({ code });
+      await verifyEmailAPI({ email, code });
+
+      toast.success("Email verified successfully!", {
+        description: "Redirecting to onboarding...",
+      });
 
       setIsLoading(false);
       setIsDialogOpen(true);
     } catch (error: any) {
-      if (error.errors?.[0]?.message) {
-        setErrorMessage(error.errors[0].message);
-      } else {
-        setErrorMessage("Invalid verification code.");
-      }
       setIsLoading(false);
+      setErrorMessage("Invalid verification code.");
+      toast.error("Verification failed", {
+        description: "Please check your code and try again.",
+      });
     }
   };
 
   if (isLoading) {
-    return (
-      <LoadingScreen message="Verifying your email..." />
-    );
+    return <LoadingScreen message="Verifying your email..." />;
   }
 
   return (
@@ -101,6 +124,7 @@ export default function VerifyEmailPage() {
               </p>
             </div>
 
+            {/* Verification Code Inputs */}
             <div className="flex justify-center gap-2">
               {verificationCode.map((digit, index) => (
                 <Input

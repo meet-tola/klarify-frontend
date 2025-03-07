@@ -3,6 +3,7 @@ import { Urbanist } from "next/font/google";
 import localFont from "next/font/local"; 
 import "./globals.css";
 import { AuthProvider } from "@/context/auth-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 // Google Font (Urbanist)
 const urbanist = Urbanist({
@@ -55,6 +56,7 @@ export default function RootLayout({
           className={`${urbanist.variable} ${roca.variable} antialiased`}
         >
           {children}
+          <Toaster />
         </body>
       </AuthProvider>
     </html>

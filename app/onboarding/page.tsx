@@ -253,7 +253,7 @@ export default function OnboardingPage() {
 
       <div className="flex flex-col lg:flex-row flex-1">
         {/* Mobile Steps Dropdown */}
-        <div className="lg:hidden bg-slate-50 p-4">
+        <div className="lg:hidden bg-slate-50 p-4 sticky top-[64px] z-40">
           <motion.div
             className="flex justify-between items-center cursor-pointer p-2"
             onClick={() => setShowSteps(!showSteps)}

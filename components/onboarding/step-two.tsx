@@ -1,70 +1,44 @@
 "use client"
 
-import { Checkbox } from "@/components/ui/checkbox"
-import type { Question } from "@/app/onboarding/page"
-import { motion, AnimatePresence } from "framer-motion"
+import { useState, useEffect } from "react"
+import { motion } from "framer-motion"
+import { Badge } from "@/components/ui/badge"
+import SearchDialog from "@/components/search-dialog"
 
-// Define the questions for step 2
-const questions: Question[] = [
+const careers = [
   {
-    id: "industry-preference",
-    text: "Which industry would you prefer to work in?",
-    options: [
-      { id: "tech", text: "Technology" },
-      { id: "healthcare", text: "Healthcare" },
-      { id: "finance", text: "Finance" },
-      { id: "creative", text: "Creative Industries" },
-    ],
+    id: "data-analytics",
+    title: "Data Analytics",
+    description:
+      "Data analysts collect and interpret data to help businesses make decisions. This field requires analytical thinking and problem-solving!",
+    skills: ["Excel", "Python", "Data Visualization"],
+    roles: ["Data Analyst", "Business Intelligence Analyst"],
   },
   {
-    id: "tech-sector",
-    text: "Which technology sector interests you most?",
-    options: [
-      { id: "ai-ml", text: "AI & Machine Learning" },
-      { id: "cloud", text: "Cloud Computing" },
-      { id: "cybersecurity", text: "Cybersecurity" },
-      { id: "blockchain", text: "Blockchain" },
-    ],
+    id: "ux-ui-design",
+    title: "UX/UI Design",
+    description:
+      "UX/UI designers create user-friendly digital experiences for apps and websites. You'll learn tools like Figma & Adobe XD and work on creative projects!",
+    skills: ["Wireframing", "Visual Design", "User Research"],
+    roles: ["UX Designer", "UI Designer", "Product Designer"],
   },
   {
-    id: "healthcare-tech",
-    text: "Which healthcare technology area interests you?",
-    options: [
-      { id: "health-informatics", text: "Health Informatics" },
-      { id: "telemedicine", text: "Telemedicine" },
-      { id: "medical-devices", text: "Medical Devices" },
-      { id: "biotech", text: "Biotechnology" },
-    ],
+    id: "digital-marketing",
+    title: "Digital Marketing",
+    description:
+      "Digital marketers develop and implement online marketing strategies to promote products and services. This role requires creativity and strategic thinking!",
+    skills: ["Social Media Management", "Content Marketing"],
+    roles: ["Digital Marketer", "SEO Specialist"],
   },
   {
-    id: "finance-tech",
-    text: "Which financial technology interests you?",
-    options: [
-      { id: "fintech", text: "Fintech" },
-      { id: "blockchain-finance", text: "Blockchain & Cryptocurrency" },
-      { id: "algorithmic-trading", text: "Algorithmic Trading" },
-      { id: "financial-analysis", text: "Financial Analysis" },
-    ],
-  },
-  {
-    id: "creative-tech",
-    text: "Which creative technology field interests you?",
-    options: [
-      { id: "digital-media", text: "Digital Media" },
-      { id: "game-dev", text: "Game Development" },
-      { id: "animation", text: "3D Animation" },
-      { id: "ar-vr", text: "AR/VR" },
-    ],
+    id: "web-development",
+    title: "Web Development",
+    description:
+      "Web developers build and maintain websites, ensuring functionality, performance, and responsiveness across devices and browsers.",
+    skills: ["HTML/CSS", "JavaScript", "React"],
+    roles: ["Frontend Developer", "Full Stack Developer", "Web Designer"],
   },
 ]
-
-// Define the question flow based on previous answers
-const questionFlow: Record<string, string> = {
-  tech: "tech-sector",
-  healthcare: "healthcare-tech",
-  finance: "finance-tech",
-  creative: "creative-tech",
-}
 
 interface StepTwoProps {
   selectedOptions: Record<string, string>
@@ -72,80 +46,145 @@ interface StepTwoProps {
   activeQuestionIndex: number
 }
 
-export default function StepTwo({ selectedOptions, onOptionSelect, activeQuestionIndex }: StepTwoProps) {
-  // Determine which questions to show based on previous answers
-  const getVisibleQuestionIds = () => {
-    const visibleQuestions = ["industry-preference"]
+export default function StepTwo({ selectedOptions, onOptionSelect }: StepTwoProps) {
+  const [notInterestedCount, setNotInterestedCount] = useState(0)
+  const [showSearchDialog, setShowSearchDialog] = useState(false)
+  const [selectedCareer, setSelectedCareer] = useState<string | null>(null)
 
-    // If the user has selected an industry, add the corresponding follow-up question
-    if (selectedOptions["industry-preference"]) {
-      const nextQuestionId = questionFlow[selectedOptions["industry-preference"]]
-      if (nextQuestionId) {
-        visibleQuestions.push(nextQuestionId)
-      }
+  useEffect(() => {
+    if (notInterestedCount >= 3) {
+      setShowSearchDialog(true)
+      setNotInterestedCount(0)
     }
+  }, [notInterestedCount])
 
-    return visibleQuestions
+  const handleNotInterested = () => {
+    setNotInterestedCount((prev) => prev + 1)
   }
 
-  const visibleQuestionIds = getVisibleQuestionIds()
+  const handleCareerSelect = (career: string) => {
+    onOptionSelect("selected-career", career)
+    setShowSearchDialog(false)
+  }
 
-  // Get the visible questions
-  const visibleQuestions = questions.filter((q) => visibleQuestionIds.includes(q.id))
+  const handleCardSelect = (careerId: string) => {
+    setSelectedCareer(careerId)
+    onOptionSelect("selected-career", careerId)
+  }
 
-  // Only show the active question
-  const activeQuestion = visibleQuestions[activeQuestionIndex] || visibleQuestions[0]
-
-  // Make the component's questions accessible to the parent
-  // @ts-ignore - This is a workaround to expose the questions array
-  StepTwo.questions = visibleQuestions
-
-  if (!activeQuestion) return null
+  const handleChoosePath = () => {
+    if (selectedCareer) {
+      // Navigate to next step
+    }
+  }
 
   return (
-    <div className="space-y-8">
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={activeQuestion.id}
-          className="space-y-4"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.3 }}
-        >
-          <h3 className="text-lg font-semibold">{activeQuestion.text}</h3>
-          <div className="space-y-3">
-            {activeQuestion.options.map((option, optionIndex) => (
-              <motion.div
-                key={option.id}
-                className={`border rounded-lg p-4 cursor-pointer transition-colors ${
-                  selectedOptions[activeQuestion.id] === option.id
-                    ? "border-primary bg-primary/5"
-                    : "hover:border-muted-foreground"
-                }`}
-                onClick={() => onOptionSelect(activeQuestion.id, option.id)}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: optionIndex * 0.1 }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <div className="flex items-center">
-                  <Checkbox
-                    id={`${activeQuestion.id}-${option.id}`}
-                    checked={selectedOptions[activeQuestion.id] === option.id}
-                    onCheckedChange={() => onOptionSelect(activeQuestion.id, option.id)}
-                    className="mr-2"
-                  />
-                  <label htmlFor={`${activeQuestion.id}-${option.id}`} className="cursor-pointer flex-1">
-                    {option.text}
-                  </label>
+    <div className="space-y-6">
+      <div className="text-center mb-8">
+        <h2 className="text-2xl font-bold mb-2">Matching you to Careers</h2>
+        <p className="text-muted-foreground">
+          Based on your answers, we've identified digital careers that might be a great fit for you!
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {careers.map((career) => (
+          <motion.div
+            key={career.id}
+            className={`rounded-lg border p-6 cursor-pointer ${
+              selectedCareer === career.id ? "border-primary bg-primary/5" : "hover:border-muted-foreground"
+            }`}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            onClick={() => handleCardSelect(career.id)}
+          >
+            <h3 className="text-xl font-semibold mb-2">{career.title}</h3>
+            <p className="text-muted-foreground mb-4">{career.description}</p>
+
+            <div className="space-y-4">
+              <div>
+                <h4 className="text-sm font-medium mb-2">Key Skills:</h4>
+                <div className="flex flex-wrap gap-2">
+                  {career.skills.map((skill) => (
+                    <Badge key={skill} variant="secondary">
+                      {skill}
+                    </Badge>
+                  ))}
                 </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-      </AnimatePresence>
+              </div>
+
+              <div>
+                <h4 className="text-sm font-medium mb-2">Job Roles:</h4>
+                <div className="flex flex-wrap gap-2">
+                  {career.roles.map((role) => (
+                    <Badge key={role} variant="outline">
+                      {role}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      <motion.div
+        className="flex justify-between mt-12"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5 }}
+      >
+        <div>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <button
+              className="px-4 py-2 rounded-md border border-gray-300 hover:bg-gray-50"
+              onClick={handleNotInterested}
+            >
+              Not Interested
+            </button>
+          </motion.div>
+        </div>
+        <div className="flex gap-3">
+          <motion.div
+            whileHover={selectedCareer ? { scale: 1.05 } : {}}
+            whileTap={selectedCareer ? { scale: 0.95 } : {}}
+          >
+            <button
+              className={`px-4 py-2 rounded-md border ${
+                selectedCareer
+                  ? "border-gray-300 hover:bg-gray-50"
+                  : "border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed"
+              }`}
+              disabled={!selectedCareer}
+            >
+              Learn More
+            </button>
+          </motion.div>
+          <motion.div
+            whileHover={selectedCareer ? { scale: 1.05 } : {}}
+            whileTap={selectedCareer ? { scale: 0.95 } : {}}
+          >
+            <button
+              className={`px-4 py-2 rounded-md ${
+                selectedCareer
+                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                  : "bg-primary/50 text-primary-foreground/50 cursor-not-allowed"
+              }`}
+              disabled={!selectedCareer}
+              onClick={handleChoosePath}
+            >
+              Choose This Path
+            </button>
+          </motion.div>
+        </div>
+      </motion.div>
+
+      <SearchDialog
+        isOpen={showSearchDialog}
+        onClose={() => setShowSearchDialog(false)}
+        onSelect={handleCareerSelect}
+      />
     </div>
   )
 }
