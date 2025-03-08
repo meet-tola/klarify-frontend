@@ -49,7 +49,7 @@ export default function OnboardingNavbar() {
 
   
   return (
-    <header className="border-b py-4 px-6 bg-white border-b-gray-200 z-50 sticky top-0">
+    <header className="border-b py-4 px-6 md:px-12 bg-white border-b-gray-200 z-50 sticky top-0">
       <div className="container mx-auto flex justify-between items-center">
         <div className="w-8 h-8 relative">
           <Logo />
