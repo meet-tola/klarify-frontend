@@ -10,7 +10,7 @@ export default function LoadingScreen({
   message = "Loading...",
 }: LoadingScreenProps) {
   return (
-    <div className="fixed inset-0 bg-background/60 backdrop-blur-md flex flex-col items-center justify-center z-50">
+    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex flex-col items-center justify-center z-50">
       <motion.div
         animate={{
           rotate: 360,

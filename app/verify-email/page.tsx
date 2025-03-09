@@ -7,33 +7,21 @@ import LoadingScreen from "@/components/loading-screen";
 import { verificationSchema } from "@/validation/auth.validation";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
-import { verifyEmail as verifyEmailAPI } from "@/lib/api";
+import { verifyEmail as verifyEmailAPI, resendVerificationCode } from "@/lib/api";
 import JourneyDialog from "@/components/journey-dialog";
 import Image from "next/image";
 import { toast } from "sonner";
 import { useAuthContext } from "@/context/auth-provider";
 
 export default function VerifyEmailPage() {
-  const [verificationCode, setVerificationCode] = useState<string[]>(
-    Array(6).fill("")
-  );
+  const [verificationCode, setVerificationCode] = useState<string[]>(Array(6).fill(""));
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const router = useRouter();
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const { user } = useAuthContext();
-
-  useEffect(() => {
-    if (user) {
-      if (!user.pickedSkill) {
-        setIsDialogOpen(true);
-        return;
-      }
-
-      router.push("/dashboard");
-    }
-  }, [user, router]);
+  const [isResending, setIsResending] = useState(false);
 
   const handleChange = (index: number, value: string) => {
     if (!/^\d*$/.test(value)) return;
@@ -56,20 +44,13 @@ export default function VerifyEmailPage() {
 
   const handleVerify = async () => {
     const code = verificationCode.join("");
-    const email = localStorage.getItem("userEmail");
 
-    if (!email) {
-      toast.error("Something went wrong", {
-        description: "No email found. Please try signing in again.",
-      });
-      return;
-    }
     try {
       verificationSchema.parse({ code });
       setIsLoading(true);
       setErrorMessage("");
 
-      await verifyEmailAPI({ email, code });
+      await verifyEmailAPI({ code });
 
       toast.success("Email verified successfully!", {
         description: "Redirecting to onboarding...",
@@ -83,6 +64,22 @@ export default function VerifyEmailPage() {
       toast.error("Verification failed", {
         description: "Please check your code and try again.",
       });
+    }
+  };
+
+  const handleResendCode = async () => {
+    setIsResending(true);
+    try {
+      await resendVerificationCode();
+      toast.success("Verification code resent!", {
+        description: "Check your email for the new code.",
+      });
+    } catch (error: any) {
+      toast.error("Failed to resend code", {
+        description: "Please try again later.",
+      });
+    } finally {
+      setIsResending(false);
     }
   };
 
@@ -158,10 +155,11 @@ export default function VerifyEmailPage() {
               <p className="text-sm">
                 Didn't get the code?{" "}
                 <button
-                  onClick={() => setVerificationCode(Array(6).fill(""))}
+                  onClick={handleResendCode}
                   className="text-primary hover:underline"
+                  disabled={isResending}
                 >
-                  Resend
+                  {isResending ? "Resending..." : "Resend"}
                 </button>
               </p>
             </div>

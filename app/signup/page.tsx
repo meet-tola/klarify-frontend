@@ -18,7 +18,7 @@ import { register } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useAuthContext } from "@/context/auth-provider";
-import JourneyDialog from "@/components/journey-dialog"; // Import the Dialog Component
+import JourneyDialog from "@/components/journey-dialog"; 
 
 export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -30,11 +30,6 @@ export default function SignUpPage() {
 
   useEffect(() => {
     if (user) {
-      if (!user.verificationCode) {
-        router.push("/verify-email");
-        return;
-      }
-
       if (!user.pickedSkill) {
         setIsDialogOpen(true);
         return;
@@ -64,8 +59,6 @@ export default function SignUpPage() {
     try {
       await register(data);
 
-      localStorage.setItem("userEmail", data.email);
-
       toast.success("Account created", {
         description: "We've sent you a verification email.",
       });
@@ -94,7 +87,7 @@ export default function SignUpPage() {
           router.push("/onboarding?step=one");
         }}
       />
-      
+
       <div className="min-h-screen flex flex-col bg-[#FDFDFF]">
         <OnboardingNavbar />
 
@@ -192,6 +185,37 @@ export default function SignUpPage() {
                 )}
               </div>
 
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword">Confirm Password*</Label>
+                <div className="relative">
+                  <Input
+                    id="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    {...formRegister("confirmPassword")}
+                    className={
+                      errors.confirmPassword ? "border-destructive" : ""
+                    }
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOffIcon size={18} />
+                    ) : (
+                      <EyeIcon size={18} />
+                    )}
+                  </button>
+                </div>
+                {errors.confirmPassword && (
+                  <p className="text-sm text-destructive mt-1">
+                    {errors.confirmPassword.message}
+                  </p>
+                )}
+              </div>
+              {/* 
               <motion.p
                 className="text-sm text-muted-foreground"
                 initial={{ opacity: 0 }}
@@ -199,9 +223,12 @@ export default function SignUpPage() {
                 transition={{ delay: 0.9 }}
               >
                 Must be at least 8 characters.
-              </motion.p>
+              </motion.p> */}
 
-              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
                 <Button type="submit" className="w-full">
                   Create an account
                 </Button>

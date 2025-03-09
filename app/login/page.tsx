@@ -28,11 +28,6 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (user) {
-      if (!user.verificationCode) {
-        router.push("/verify-email");
-        return;
-      }
-
       if (!user.pickedSkill) {
         setIsDialogOpen(true);
         return;
@@ -66,7 +61,7 @@ export default function LoginPage() {
         description: "You will be redirected now.",
       });
 
-      if (!loggedInUser.verificationCode) {
+      if (loggedInUser.verificationCode !== undefined) {
         router.push("/verify-email");
         return;
       }
@@ -79,6 +74,8 @@ export default function LoginPage() {
     } catch (error) {
       setErrorMessage("Invalid email or password.");
       setIsLoading(false);
+    } finally {
+      setIsLoading(false);  
     }
   };
 
