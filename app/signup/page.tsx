@@ -30,7 +30,7 @@ export default function SignUpPage() {
 
   useEffect(() => {
     if (user) {
-      if (!user.pickedSkill) {
+      if (!user.user?.pickedSkill) {
         setIsDialogOpen(true);
         return;
       }

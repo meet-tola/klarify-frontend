@@ -14,6 +14,8 @@ const postRequest = async (url: string, data?: any) => {
   }
 };
 
+// AUTH AND CURRENT USERS
+
 export const register = async (data: { name: string; email: string; password: string }) => 
   postRequest("/auth/register", data);
 
@@ -39,5 +41,61 @@ export const getCurrentUser = async (): Promise<CurrentUserResponseType | undefi
   } catch (error: any) {
     handleError(error);
     return undefined;
+  }
+};
+
+// SKILL ASSESSMENT
+export const getSkillQuestions = async (userId: string) => {
+  try {
+    const response = await API.get(`skills/${userId}/skill-questions`);
+    return response.data;
+  } catch (error: any) {
+    handleError(error);
+  }
+};
+
+export const saveSkillsAssessment = async (userId: string, answers: { questionId: string; answer: string }[]) => {
+  try {
+    const response = await API.post(`/skills/${userId}/save-skills-assessment`, { answers });
+    return response.data;
+  } catch (error: any) {
+    handleError(error);
+  }
+};
+
+export const getSuggestedSkills = async (userId: string) => {
+  try {
+    const response = await API.get(`skills/${userId}/suggested-skills`);
+    return response.data;
+  } catch (error: any) {
+    handleError(error);
+  }
+};
+
+export const selectSkill = async (userId: string, pickedSkill: string) => {
+  try {
+    const response = await API.post(`skills/${userId}/select-skill`, { pickedSkill });
+    return response.data;
+  } catch (error: any) {
+    handleError(error);
+  }
+};
+
+// CAREER QUESTIONS AND EVALUATION
+export const getCareerQuestions = async (userId: string) => {
+  try {
+    const response = await API.get(`/career/${userId}/career-questions`);
+    return response.data;
+  } catch (error: any) {
+    handleError(error);
+  }
+};
+
+export const evaluateCareerAnswers = async (userId: string, answers: { questionId: string; answer: string }[]) => {
+  try {
+    const response = await API.post(`/career/${userId}/evaluate-career`, { answers });
+    return response.data;
+  } catch (error: any) {
+    handleError(error);
   }
 };

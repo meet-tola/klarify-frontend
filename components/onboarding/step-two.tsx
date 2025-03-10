@@ -5,123 +5,18 @@ import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import SearchDialog from "@/components/search-dialog";
 import { Button } from "../ui/button";
+import { useAuthContext } from "@/context/auth-provider";
+import { getSuggestedSkills, selectSkill } from "@/lib/api";
+import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
 
-// Define multiple sets of careers to rotate through when "Not Interested" is clicked
-const careerSets = [
-  // First set of careers
-  [
-    {
-      id: "data-analytics",
-      title: "Data Analytics",
-      description:
-        "Data analysts collect and interpret data to help businesses make decisions. This field requires analytical thinking and problem-solving!",
-      skills: ["Excel", "Python", "Data Visualization"],
-      roles: ["Data Analyst", "Business Intelligence Analyst"],
-    },
-    {
-      id: "ux-ui-design",
-      title: "UX/UI Design",
-      description:
-        "UX/UI designers create user-friendly digital experiences for apps and websites. You'll learn tools like Figma & Adobe XD and work on creative projects!",
-      skills: ["Wireframing", "Visual Design", "User Research"],
-      roles: ["UX Designer", "UI Designer", "Product Designer"],
-    },
-    {
-      id: "digital-marketing",
-      title: "Digital Marketing",
-      description:
-        "Digital marketers develop and implement online marketing strategies to promote products and services. This role requires creativity and strategic thinking!",
-      skills: ["Social Media Management", "Content Marketing"],
-      roles: ["Digital Marketer", "SEO Specialist"],
-    },
-    {
-      id: "web-development",
-      title: "Web Development",
-      description:
-        "Web developers build and maintain websites, ensuring functionality, performance, and responsiveness across devices and browsers.",
-      skills: ["HTML/CSS", "JavaScript", "React"],
-      roles: ["Frontend Developer", "Full Stack Developer", "Web Designer"],
-    },
-  ],
-  // Second set of careers
-  [
-    {
-      id: "cybersecurity",
-      title: "Cybersecurity",
-      description:
-        "Cybersecurity professionals protect systems and data from digital attacks. This growing field offers diverse roles and excellent job security!",
-      skills: ["Network Security", "Ethical Hacking", "Security Analysis"],
-      roles: ["Security Analyst", "Penetration Tester", "Security Engineer"],
-    },
-    {
-      id: "cloud-computing",
-      title: "Cloud Computing",
-      description:
-        "Cloud specialists help organizations migrate to and manage cloud infrastructure. Learn to work with AWS, Azure, or Google Cloud platforms!",
-      skills: ["AWS/Azure", "DevOps", "Infrastructure as Code"],
-      roles: ["Cloud Architect", "DevOps Engineer", "Cloud Administrator"],
-    },
-    {
-      id: "product-management",
-      title: "Product Management",
-      description:
-        "Product managers guide the development of products from conception to launch. This role combines business strategy with technical understanding!",
-      skills: ["User Stories", "Roadmapping", "Agile Methodologies"],
-      roles: ["Product Manager", "Product Owner", "Technical Product Manager"],
-    },
-    {
-      id: "data-science",
-      title: "Data Science",
-      description:
-        "Data scientists extract insights from complex data using statistics, programming, and machine learning techniques.",
-      skills: ["Python", "Machine Learning", "Statistical Analysis"],
-      roles: ["Data Scientist", "ML Engineer", "AI Researcher"],
-    },
-  ],
-  // Third set of careers
-  [
-    {
-      id: "blockchain",
-      title: "Blockchain Development",
-      description:
-        "Blockchain developers create decentralized applications and smart contracts. This cutting-edge field is revolutionizing finance and beyond!",
-      skills: ["Solidity", "Smart Contracts", "Web3"],
-      roles: [
-        "Blockchain Developer",
-        "Smart Contract Engineer",
-        "DApp Developer",
-      ],
-    },
-    {
-      id: "game-development",
-      title: "Game Development",
-      description:
-        "Game developers create interactive experiences for various platforms. Combine creativity with technical skills in this exciting field!",
-      skills: ["Unity/Unreal", "3D Modeling", "Game Design"],
-      roles: ["Game Developer", "Game Designer", "Unity Developer"],
-    },
-    {
-      id: "technical-writing",
-      title: "Technical Writing",
-      description:
-        "Technical writers create clear documentation for complex products and services. Perfect for those who enjoy explaining technical concepts!",
-      skills: ["Documentation", "API Reference", "Content Strategy"],
-      roles: [
-        "Technical Writer",
-        "Documentation Specialist",
-        "Content Developer",
-      ],
-    },
-    {
-      id: "mobile-development",
-      title: "Mobile Development",
-      description:
-        "Mobile developers create apps for iOS and Android devices. Learn to build applications that millions of people can use daily!",
-      skills: ["React Native", "Swift", "Kotlin"],
-      roles: ["Mobile Developer", "iOS Developer", "Android Developer"],
-    },
-  ],
-];
+interface Career {
+  id: string;
+  title: string;
+  description: string;
+  skills: string[];
+  roles: string[];
+}
 
 interface StepTwoProps {
   selectedOptions: Record<string, string>;
@@ -134,49 +29,175 @@ export default function StepTwo({
   onOptionSelect,
   onNextStep,
 }: StepTwoProps) {
+  const { user } = useAuthContext();
   const [notInterestedCount, setNotInterestedCount] = useState(0);
   const [showSearchDialog, setShowSearchDialog] = useState(false);
   const [selectedCareer, setSelectedCareer] = useState<string | null>(null);
-  const [currentCareerSetIndex, setCurrentCareerSetIndex] = useState(0);
-  const [careers, setCareers] = useState(careerSets[0]);
+  const [suggestedSkills, setSuggestedSkills] = useState<Career[]>([]);
+  const [displayedSkills, setDisplayedSkills] = useState<Career[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isChangingCareers, setIsChangingCareers] = useState(false);
 
+  // Fetch suggested skills when the component mounts
   useEffect(() => {
-    if (notInterestedCount >= 3) {
-      setShowSearchDialog(true);
-      setNotInterestedCount(0);
-    }
-  }, [notInterestedCount]);
+    const fetchSuggestedSkills = async () => {
+      if (user?.user?._id) {
+        try {
+          const data = await getSuggestedSkills(user.user._id);
+          if (data) {
+            setSuggestedSkills(data);
+            setDisplayedSkills(data.slice(0, 4));
+          }
+        } catch (error) {
+          console.error("Failed to fetch suggested skills:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
 
+    fetchSuggestedSkills();
+  }, [user]);
+
+  // Handle "Not Interested" button click
   const handleNotInterested = () => {
     setNotInterestedCount((prev) => prev + 1);
 
-    // Show next set of careers
-    setIsChangingCareers(true);
-    setTimeout(() => {
-      const nextIndex = (currentCareerSetIndex + 1) % careerSets.length;
-      setCurrentCareerSetIndex(nextIndex);
-      setCareers(careerSets[nextIndex]);
-      setSelectedCareer(null); // Reset selection when changing careers
-      setIsChangingCareers(false);
-    }, 300);
+    if (notInterestedCount >= 2) {
+      // Show all skills after 3 "Not Interested" clicks
+      setDisplayedSkills(suggestedSkills);
+      setShowSearchDialog(true);
+      setNotInterestedCount(0);
+    } else {
+      // Hide the current skills before showing the next set
+      setIsChangingCareers(true);
+      setDisplayedSkills([]); // Clear the displayed skills
+
+      setTimeout(() => {
+        const nextIndex = notInterestedCount + 1;
+        const start = nextIndex * 4;
+        const end = start + 4;
+        setDisplayedSkills(suggestedSkills.slice(start, end)); // Show the next set of skills
+        setIsChangingCareers(false);
+      }, 300); // Adjust the delay to match your animation duration
+    }
   };
 
-  const handleCareerSelect = (career: string) => {
+  // Handle career selection from the search dialog
+  const handleCareerSelect = async (career: string) => {
     onOptionSelect("selected-career", career);
     setShowSearchDialog(false);
+
+    // Send the selected skill to the API
+    if (user?.user?._id) {
+      try {
+        await selectSkill(user.user._id, career);
+        toast.success("Success", {
+          description: `You have selected ${career}.`,
+        });
+      } catch (error) {
+        toast.error("Error", {
+          description: "Failed to select the skill. Please try again.",
+        });
+      }
+    }
   };
 
-  const handleCardSelect = (careerId: string) => {
+  // Handle card selection (clicking on a career card)
+  const handleCardSelect = async (careerId: string) => {
     setSelectedCareer(careerId);
     onOptionSelect("selected-career", careerId);
+
+    // Send the selected skill to the API
+    if (user?.user?._id) {
+      const selectedCareerData = suggestedSkills.find(
+        (career) => career.id === careerId
+      );
+      if (selectedCareerData) {
+        try {
+          await selectSkill(user.user._id, selectedCareerData.title);
+        } catch (error) {
+          toast.error("Error", {
+            description: "Failed to select the skill. Please try again.",
+          });
+        }
+      }
+    }
   };
 
+  // Handle "Choose This Path" button click
   const handleChoosePath = () => {
     if (selectedCareer) {
       onNextStep();
     }
   };
+
+  // Skeleton Loader
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <motion.div
+          className="mb-8"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Skeleton className="h-8 w-[200px] mb-2" />
+          <Skeleton className="h-4 w-[300px]" />
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {[1, 2, 3, 4].map((index) => (
+            <motion.div
+              key={index}
+              className="rounded-lg border p-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Skeleton className="h-6 w-[150px] mb-4" />
+              <Skeleton className="h-4 w-[200px] mb-4" />
+
+              <div className="space-y-4">
+                <div>
+                  <Skeleton className="h-4 w-[100px] mb-2" />
+                  <div className="flex flex-wrap gap-2">
+                    {[1, 2, 3].map((skillIndex) => (
+                      <Skeleton key={skillIndex} className="h-6 w-[80px]" />
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <Skeleton className="h-4 w-[100px] mb-2" />
+                  <div className="flex flex-wrap gap-2">
+                    {[1, 2].map((roleIndex) => (
+                      <Skeleton key={roleIndex} className="h-6 w-[100px]" />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        <motion.div
+          className="flex justify-between mt-12"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+        >
+          <div>
+            <Skeleton className="h-10 w-24" />
+          </div>
+          <div className="flex gap-3">
+            <Skeleton className="h-10 w-24" />
+            <Skeleton className="h-10 w-24" />
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -186,7 +207,7 @@ export default function StepTwo({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h2 className="text-2xl font-bold r">Matching you to Careers</h2>
+        <h2 className="text-2xl font-bold">Matching you to Careers</h2>
         <p className="text-muted-foreground mt-1">
           Based on your answers, we've identified digital careers that might be
           a great fit for you!
@@ -199,7 +220,7 @@ export default function StepTwo({
         animate={{ opacity: isChangingCareers ? 0 : 1 }}
         transition={{ duration: 0.3 }}
       >
-        {careers.map((career) => (
+        {displayedSkills.map((career) => (
           <motion.div
             key={career.id}
             className={`rounded-lg border p-6 cursor-pointer ${

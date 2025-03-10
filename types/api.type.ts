@@ -50,17 +50,56 @@ export type UserType = {
       description: string;
       features: string[];
     }[];
-    roadmap?: string; // Assuming roadmap is an ObjectId string
+    roadmap?: string; 
   }[];
   createdAt: Date;
   updatedAt: Date;
 };
 
 export type CurrentUserResponseType = {
-  pickedSkill: any;
-  verificationCode: any;
-  message: string;
-  user: UserType;
+  message: string; 
+  user: {
+    _id: string;
+    name: string;
+    email: string;
+    isActive: boolean;
+    lastLogin: Date | null;
+    verificationCode?: string;
+    skillsAssessment: {
+      questionId: string;
+      answer: string;
+    }[];
+    selectedSkills: string[];
+    pickedSkill?: string | null; 
+    careerAssessment: {
+      questionId: string;
+      answer: string;
+    }[];
+    learningPath: {
+      skill?: string;
+      level?: string;
+      steps?: string[];
+      youtubeVideos?: {
+        title: string;
+        url: string;
+        thumbnail: string;
+      }[];
+      articles?: {
+        title: string;
+        url: string;
+        author: string;
+      }[];
+      projects?: {
+        name: string;
+        description: string;
+        features: string[];
+      }[];
+      roadmap?: string;
+    }[];
+    createdAt: Date;
+    updatedAt: Date;
+    __v?: number; 
+  };
 };
 
 // ROADMAP TYPE

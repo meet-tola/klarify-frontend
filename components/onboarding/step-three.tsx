@@ -1,137 +1,143 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Button } from "@/components/ui/button"
-import { motion, AnimatePresence } from "framer-motion"
-import { Progress } from "@/components/ui/progress"
+import { useState, useEffect } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { motion, AnimatePresence } from "framer-motion";
+import { Progress } from "@/components/ui/progress";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useAuthContext } from "@/context/auth-provider";
+import { getCareerQuestions, evaluateCareerAnswers } from "@/lib/api";
 
-// Define the types for our questions and options
 export type Option = {
-  id: string
-  text: string
-}
+  id: string;
+  text: string;
+};
 
 export type Question = {
-  id: string
-  text: string
-  options: Option[]
-}
-
-// Define the questions for step 3
-const questions: Question[] = [
-  {
-    id: "work-environment",
-    text: "What type of work environment do you prefer?",
-    options: [
-      { id: "remote", text: "Fully remote" },
-      { id: "hybrid", text: "Hybrid (mix of remote and office)" },
-      { id: "office", text: "In-office" },
-      { id: "freelance", text: "Freelance/Independent" },
-    ],
-  },
-  {
-    id: "remote-challenges",
-    text: "What challenges do you anticipate with remote work?",
-    options: [
-      { id: "communication", text: "Communication barriers" },
-      { id: "work-life", text: "Work-life balance" },
-      { id: "collaboration", text: "Team collaboration" },
-      { id: "time-management", text: "Time management" },
-    ],
-  },
-  {
-    id: "hybrid-frequency",
-    text: "How often would you prefer to be in the office?",
-    options: [
-      { id: "once-week", text: "Once a week" },
-      { id: "twice-week", text: "Twice a week" },
-      { id: "three-times", text: "Three times a week" },
-      { id: "flexible", text: "Flexible schedule" },
-    ],
-  },
-  {
-    id: "office-size",
-    text: "What size company would you prefer to work for?",
-    options: [
-      { id: "startup", text: "Startup (< 50 employees)" },
-      { id: "small", text: "Small (50-200 employees)" },
-      { id: "medium", text: "Medium (200-1000 employees)" },
-      { id: "large", text: "Large (1000+ employees)" },
-    ],
-  },
-  {
-    id: "freelance-goals",
-    text: "What are your primary goals as a freelancer?",
-    options: [
-      { id: "flexibility", text: "Work flexibility" },
-      { id: "diverse-projects", text: "Diverse projects" },
-      { id: "higher-income", text: "Higher income potential" },
-      { id: "independence", text: "Independence" },
-    ],
-  },
-]
-
-// Define the question flow based on previous answers
-const questionFlow: Record<string, string> = {
-  remote: "remote-challenges",
-  hybrid: "hybrid-frequency",
-  office: "office-size",
-  freelance: "freelance-goals",
-}
+  id: string;
+  text: string;
+  options: Option[];
+};
 
 interface StepThreeProps {
-  selectedOptions: Record<string, string>
-  onOptionSelect: (questionId: string, optionId: string) => void
-  onNextStep: () => void
+  selectedOptions: Record<string, string>;
+  onOptionSelect: (questionId: string, optionId: string) => void;
+  onNextStep: () => void;
 }
 
 export default function StepThree({ selectedOptions, onOptionSelect, onNextStep }: StepThreeProps) {
-  const [activeQuestionIndex, setActiveQuestionIndex] = useState(0)
+  const { user } = useAuthContext();
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Determine which questions to show based on previous answers
-  const getVisibleQuestionIds = () => {
-    const visibleQuestions = ["work-environment"]
+  const progress = ((activeQuestionIndex + 1) / questions.length) * 100;
 
-    // If the user has selected a work environment, add the corresponding follow-up question
-    if (selectedOptions["work-environment"]) {
-      const nextQuestionId = questionFlow[selectedOptions["work-environment"]]
-      if (nextQuestionId) {
-        visibleQuestions.push(nextQuestionId)
+  // Fetch career questions 
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      if (user?.user?._id) {
+        try {
+          const data = await getCareerQuestions(user.user._id);
+          console.log("Fetched Career Questions:", data); // Debugging
+
+          // Check if the response is an array and has at least one element
+          if (Array.isArray(data) && data.length > 0 && data[0].questions) {
+            // Transform the backend data to match the frontend's expected structure
+            const transformedQuestions = data[0].questions.map((question: any, index: number) => ({
+              id: question._id || `question-${index}`,
+              text: question.question,
+              options: question.answers.map((answer: string, answerIndex: number) => ({
+                id: `answer-${index}-${answerIndex}`, 
+                text: answer,
+              })),
+            }));
+
+            setQuestions(transformedQuestions);
+          } else {
+            console.error("No questions found in the response:", data);
+          }
+        } catch (error) {
+          console.error("Failed to fetch career questions:", error);
+        } finally {
+          setIsLoading(false);
+        }
       }
-    }
+    };
 
-    return visibleQuestions
-  }
+    fetchQuestions();
+  }, [user]);
 
-  const visibleQuestionIds = getVisibleQuestionIds()
+  const handleNextQuestion = async () => {
+    if (isLastQuestion) {
+      // Prepare the answers for evaluation
+      const answers = Object.entries(selectedOptions).map(([questionId, answer]) => ({
+        questionId,
+        answer,
+      }));
 
-  // Get the visible questions
-  const visibleQuestions = questions.filter((q) => visibleQuestionIds.includes(q.id))
+      console.log("Answers being sent to the backend:", answers);
 
-  // Only show the active question
-  const activeQuestion = visibleQuestions[activeQuestionIndex] || visibleQuestions[0]
+      if (user?.user?._id) {
+        try {
+          const result = await evaluateCareerAnswers(user.user._id, answers);
+          console.log("Evaluation Result:", result); 
+        } catch (error) {
+          console.error("Failed to evaluate answers:", error);
+        }
+      }
 
-  // Check if we're on the last question
-  const isLastQuestion = activeQuestionIndex >= visibleQuestions.length - 1
-
-  // Handle next question
-  const handleNextQuestion = () => {
-    if (!isLastQuestion) {
-      setActiveQuestionIndex(activeQuestionIndex + 1)
+      onNextStep();
     } else {
-      onNextStep()
+      setActiveQuestionIndex(activeQuestionIndex + 1);
     }
-  }
+  };
 
-  // Handle back button
   const handleBack = () => {
     if (activeQuestionIndex > 0) {
-      setActiveQuestionIndex(activeQuestionIndex - 1)
+      setActiveQuestionIndex(activeQuestionIndex - 1);
     }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-8">
+        {/* Skeleton for the header */}
+        <div className="mb-8">
+          <Skeleton className="h-8 w-[200px] mb-2" /> 
+          <Skeleton className="h-4 w-[300px]" /> 
+          <Skeleton className="h-2 w-full mt-4" /> 
+        </div>
+
+        {/* Skeleton for the question */}
+        <div className="space-y-4">
+          <Skeleton className="h-6 w-[250px]" /> 
+          <div className="space-y-3">
+            {[1, 2, 3, 4].map((index) => (
+              <Skeleton key={index} className="h-12 w-full" /> 
+            ))}
+          </div>
+        </div>
+
+        {/* Skeleton for the buttons */}
+        <div className="flex justify-between mt-12">
+          <Skeleton className="h-10 w-24" /> 
+          <div className="flex gap-3">
+            <Skeleton className="h-10 w-24" />
+            <Skeleton className="h-10 w-24" /> 
+          </div>
+        </div>
+      </div>
+    );
   }
 
-  if (!activeQuestion) return null
+  if (!questions.length) {
+    return <div>No questions found.</div>;
+  }
+
+  const activeQuestion = questions[activeQuestionIndex];
+  const isLastQuestion = activeQuestionIndex >= questions.length - 1;
 
   return (
     <div className="space-y-8">
@@ -143,7 +149,7 @@ export default function StepThree({ selectedOptions, onOptionSelect, onNextStep 
       >
         <h2 className="text-2xl font-bold">Career Assessment</h2>
         <p className="text-muted-foreground mt-1">
-        Let's understand your preferred work environment and career goals.
+          Let's understand your preferred work environment and career goals.
         </p>
         <motion.div
           initial={{ scaleX: 0 }}
@@ -151,7 +157,7 @@ export default function StepThree({ selectedOptions, onOptionSelect, onNextStep 
           transition={{ duration: 0.5, delay: 0.3 }}
           style={{ originX: 0 }}
         >
-          <Progress value={75} className="h-2 mt-4" />
+          <Progress value={progress} className="h-2 mt-4" />
         </motion.div>
       </motion.div>
 
@@ -225,6 +231,5 @@ export default function StepThree({ selectedOptions, onOptionSelect, onNextStep 
         </div>
       </motion.div>
     </div>
-  )
+  );
 }
-

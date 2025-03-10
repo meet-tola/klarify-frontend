@@ -1,133 +1,136 @@
-"use client"
-import { useState } from "react"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Button } from "@/components/ui/button"
-import { motion, AnimatePresence } from "framer-motion"
-import { Progress } from "@/components/ui/progress"
+"use client";
+import { useState, useEffect } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { motion, AnimatePresence } from "framer-motion";
+import { Progress } from "@/components/ui/progress";
+import { useAuthContext } from "@/context/auth-provider";
+import { getSkillQuestions, saveSkillsAssessment } from "@/lib/api";
+import { Skeleton } from "@/components/ui/skeleton";
 
-export type Option = {
-  id: string
-  text: string
-}
+export type Option = string;
 
 export type Question = {
-  id: string
-  text: string
-  options: Option[]
-}
-
-const questions: Question[] = [
-  {
-    id: "skill-level",
-    text: "What best describes your current skill level in digital careers?",
-    options: [
-      { id: "beginner", text: "I have no experience but want to start learning." },
-      { id: "novice", text: "I know a little but need structured guidance." },
-      { id: "intermediate", text: "I have some experience and want to improve." },
-      { id: "experienced", text: "I am experienced but looking to switch careers." },
-    ],
-  },
-  {
-    id: "beginner-interests",
-    text: "Which areas are you most interested in exploring?",
-    options: [
-      { id: "web-dev", text: "Web Development" },
-      { id: "data-science", text: "Data Science" },
-      { id: "design", text: "Design" },
-      { id: "marketing", text: "Digital Marketing" },
-    ],
-  },
-  {
-    id: "novice-skills",
-    text: "What skills do you already have some knowledge in?",
-    options: [
-      { id: "html-css", text: "HTML & CSS" },
-      { id: "javascript", text: "JavaScript" },
-      { id: "python", text: "Python" },
-      { id: "design-tools", text: "Design Tools" },
-    ],
-  },
-  {
-    id: "intermediate-goals",
-    text: "What are your improvement goals?",
-    options: [
-      { id: "advanced-tech", text: "Learn advanced technologies" },
-      { id: "portfolio", text: "Build a professional portfolio" },
-      { id: "certification", text: "Get certified" },
-      { id: "freelance", text: "Start freelancing" },
-    ],
-  },
-  {
-    id: "experienced-switch",
-    text: "Which career path are you interested in switching to?",
-    options: [
-      { id: "software-eng", text: "Software Engineering" },
-      { id: "data-eng", text: "Data Engineering" },
-      { id: "ux-design", text: "UX/UI Design" },
-      { id: "product-mgmt", text: "Product Management" },
-    ],
-  },
-]
-
-const questionFlow: Record<string, string> = {
-  beginner: "beginner-interests",
-  novice: "novice-skills",
-  intermediate: "intermediate-goals",
-  experienced: "experienced-switch",
-}
+  id: string;
+  questionText: string;
+  options: Option[];
+  skillMapping: {
+    [key: string]: string[];
+  };
+};
 
 interface StepOneProps {
-  selectedOptions: Record<string, string>
-  onOptionSelect: (questionId: string, optionId: string) => void
-  onNextStep: () => void
+  selectedOptions: Record<string, string>;
+  onOptionSelect: (questionId: string, optionId: string) => void;
+  onNextStep: () => void;
 }
 
-export default function StepOne({ selectedOptions, onOptionSelect, onNextStep }: StepOneProps) {
-  const [activeQuestionIndex, setActiveQuestionIndex] = useState(0)
+export default function StepOne({
+  selectedOptions,
+  onOptionSelect,
+  onNextStep,
+}: StepOneProps) {
+  const { user } = useAuthContext();
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Determine which questions to show based on previous answers
-  const getVisibleQuestionIds = () => {
-    const visibleQuestions = ["skill-level"]
+  const progress = ((activeQuestionIndex + 1) / questions.length) * 100;
 
-    // If the user has selected a skill level, add the corresponding follow-up question
-    if (selectedOptions["skill-level"]) {
-      const nextQuestionId = questionFlow[selectedOptions["skill-level"]]
-      if (nextQuestionId) {
-        visibleQuestions.push(nextQuestionId)
+  // Fetch skill questions from the backend
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      if (user?.user?._id) {
+        const data = await getSkillQuestions(user.user._id);
+
+        if (data) {
+          // Transform the data to match the Question type
+          const transformedData = data.map((question: any) => ({
+            id: question._id, // Map _id to id
+            questionText: question.questionText,
+            options: question.options,
+            skillMapping: question.skillMapping,
+          }));
+          setQuestions(transformedData);
+        }
       }
-    }
+      setIsLoading(false);
+    };
 
-    return visibleQuestions
-  }
+    fetchQuestions();
+  }, [user]);
 
-  const visibleQuestionIds = getVisibleQuestionIds()
+  const handleNextQuestion = async () => {
+    if (isLastQuestion) {
 
-  // Get the visible questions
-  const visibleQuestions = questions.filter((q) => visibleQuestionIds.includes(q.id))
+      // Validate answers before sending
+      const answers = Object.entries(selectedOptions).map(
+        ([questionId, answer]) => {
+          if (!questionId) {
+            throw new Error(`Missing questionId for answer: ${answer}`);
+          }
+          return {
+            questionId,
+            answer,
+          };
+        }
+      );
 
-  // Only show the active question
-  const activeQuestion = visibleQuestions[activeQuestionIndex] || visibleQuestions[0]
+      if (user?.user?._id) {
+        await saveSkillsAssessment(user.user._id, answers);
+      }
 
-  // Check if we're on the last question
-  const isLastQuestion = activeQuestionIndex >= visibleQuestions.length - 1
-
-  // Handle next question
-  const handleNextQuestion = () => {
-    if (!isLastQuestion) {
-      setActiveQuestionIndex(activeQuestionIndex + 1)
+      // Move to the next step
+      onNextStep();
     } else {
-      onNextStep()
+      setActiveQuestionIndex(activeQuestionIndex + 1);
     }
-  }
+  };
 
   // Handle back button
   const handleBack = () => {
     if (activeQuestionIndex > 0) {
-      setActiveQuestionIndex(activeQuestionIndex - 1)
+      setActiveQuestionIndex(activeQuestionIndex - 1);
     }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-8">
+        <div className="mb-8">
+          <Skeleton className="h-8 w-[200px] mb-2" />
+          <Skeleton className="h-4 w-[300px]" />
+          <Skeleton className="h-2 w-full mt-4" />
+        </div>
+
+        {/* Skeleton for the question */}
+        <div className="space-y-4">
+          <Skeleton className="h-6 w-[250px]" /> 
+          <div className="space-y-3">
+            {[1, 2, 3, 4].map((index) => (
+              <Skeleton key={index} className="h-12 w-full" /> 
+            ))}
+          </div>
+        </div>
+
+        {/* Skeleton for the buttons */}
+        <div className="flex justify-between mt-12">
+          <Skeleton className="h-10 w-24" /> 
+          <div className="flex gap-3">
+            <Skeleton className="h-10 w-24" />
+            <Skeleton className="h-10 w-24" />
+          </div>
+        </div>
+      </div>
+    );
   }
 
-  if (!activeQuestion) return null
+  if (!questions.length) {
+    return <div>No questions found.</div>;
+  }
+
+  const activeQuestion = questions[activeQuestionIndex];
+  const isLastQuestion = activeQuestionIndex >= questions.length - 1;
 
   return (
     <div className="space-y-8">
@@ -137,7 +140,7 @@ export default function StepOne({ selectedOptions, onOptionSelect, onNextStep }:
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h2 className="text-2xl font-bold r">Discover your interests.</h2>
+        <h2 className="text-2xl font-bold">Discover your interests.</h2>
         <p className="text-muted-foreground mt-1">
           Let's find out what you're naturally good at and what interests you!
         </p>
@@ -147,7 +150,7 @@ export default function StepOne({ selectedOptions, onOptionSelect, onNextStep }:
           transition={{ duration: 0.5, delay: 0.3 }}
           style={{ originX: 0 }}
         >
-          <Progress value={25} className="h-2 mt-4" />
+          <Progress value={progress} className="h-2 mt-4" />
         </motion.div>
       </motion.div>
 
@@ -160,17 +163,17 @@ export default function StepOne({ selectedOptions, onOptionSelect, onNextStep }:
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.3 }}
         >
-          <h3 className="text-lg font-semibold">{activeQuestion.text}</h3>
+          <h3 className="text-lg font-semibold">{activeQuestion.questionText}</h3>
           <div className="space-y-3">
             {activeQuestion.options.map((option, optionIndex) => (
               <motion.div
-                key={option.id}
+                key={`${activeQuestion.id}-${optionIndex}`}
                 className={`border rounded-lg p-4 cursor-pointer transition-colors ${
-                  selectedOptions[activeQuestion.id] === option.id
+                  selectedOptions[activeQuestion.id] === option
                     ? "border-primary bg-primary/5"
                     : "hover:border-muted-foreground"
                 }`}
-                onClick={() => onOptionSelect(activeQuestion.id, option.id)}
+                onClick={() => onOptionSelect(activeQuestion.id, option)}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: optionIndex * 0.1 }}
@@ -179,13 +182,18 @@ export default function StepOne({ selectedOptions, onOptionSelect, onNextStep }:
               >
                 <div className="flex items-center">
                   <Checkbox
-                    id={`${activeQuestion.id}-${option.id}`}
-                    checked={selectedOptions[activeQuestion.id] === option.id}
-                    onCheckedChange={() => onOptionSelect(activeQuestion.id, option.id)}
+                    id={`${activeQuestion.id}-${optionIndex}`}
+                    checked={selectedOptions[activeQuestion.id] === option}
+                    onCheckedChange={() =>
+                      onOptionSelect(activeQuestion.id, option)
+                    }
                     className="mr-2"
                   />
-                  <label htmlFor={`${activeQuestion.id}-${option.id}`} className="cursor-pointer flex-1">
-                    {option.text}
+                  <label
+                    htmlFor={`${activeQuestion.id}-${optionIndex}`}
+                    className="cursor-pointer flex-1"
+                  >
+                    {option}
                   </label>
                 </div>
               </motion.div>
@@ -202,25 +210,34 @@ export default function StepOne({ selectedOptions, onOptionSelect, onNextStep }:
       >
         <div>
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button variant="outline" onClick={() => (window.location.href = "/dashboard")}>
+            <Button
+              variant="outline"
+              onClick={() => (window.location.href = "/dashboard")}
+            >
               Skip this step
             </Button>
           </motion.div>
         </div>
         <div className="flex gap-3">
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button variant="outline" onClick={handleBack} disabled={activeQuestionIndex === 0}>
+            <Button
+              variant="outline"
+              onClick={handleBack}
+              disabled={activeQuestionIndex === 0}
+            >
               Back
             </Button>
           </motion.div>
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button onClick={handleNextQuestion} disabled={!selectedOptions[activeQuestion.id]}>
+            <Button
+              onClick={handleNextQuestion}
+              disabled={!selectedOptions[activeQuestion.id]}
+            >
               {isLastQuestion ? "Next Step" : "Next Question"}
             </Button>
           </motion.div>
         </div>
       </motion.div>
     </div>
-  )
+  );
 }
-

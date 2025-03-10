@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import LoadingScreen from "@/components/loading-screen";
 import OnboardingLayout, { type Step } from "@/components/onboarding-layout";
@@ -13,54 +13,55 @@ import { useAuthContext } from "@/context/auth-provider";
 export default function OnboardingPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user } = useAuthContext();
+  const { user, loading } = useAuthContext();
 
+  // Redirect to login if user is not authenticated and loading is done
   useEffect(() => {
-    if (!user) {
+    if (!loading && !user) {
       router.push("/login");
     }
-  }, [user, router]);
+  }, [user, loading, router]);
 
-  // State for tracking current step, selected options, and progress
+  // State for tracking current step, selected options, and loading states
   const [currentStep, setCurrentStep] = useState(0);
-  const [selectedOptions, setSelectedOptions] = useState<
-    Record<string, string>
-  >({});
-  const [progress, setProgress] = useState(25);
+  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [isChangingStep, setIsChangingStep] = useState(false);
 
-  // Define the 4 steps of the onboarding process
-  const steps: Step[] = [
-    {
-      id: 1,
-      title: "Skill Assessment",
-      description:
-        "Answer a series of questions to help us understand your passions, skills, and goals. This step is designed to personalize your journey.",
-      slug: "one",
-    },
-    {
-      id: 2,
-      title: "Skill Finder",
-      description:
-        "Explore in-demand skills and match them with your interests. Find out what's trending and what aligns with your career goals.",
-      slug: "two",
-    },
-    {
-      id: 3,
-      title: "Career Assessment",
-      description:
-        "See how your chosen skills connect to real-world roles. Discover potential job opportunities, industries, and career growth paths.",
-      slug: "three",
-    },
-    {
-      id: 4,
-      title: "Learning Flow Setup",
-      description:
-        "Customize your journey by choosing your learning style, pace, and preferred tools.",
-      slug: "four",
-    },
-  ];
+  // Memoize the steps array to avoid redefining it on every render
+  const steps: Step[] = useMemo(
+    () => [
+      {
+        id: 1,
+        title: "Skill Assessment",
+        description:
+          "Answer a series of questions to help us understand your passions, skills, and goals. This step is designed to personalize your journey.",
+        slug: "one",
+      },
+      {
+        id: 2,
+        title: "Skill Finder",
+        description:
+          "Explore in-demand skills and match them with your interests. Find out what's trending and what aligns with your career goals.",
+        slug: "two",
+      },
+      {
+        id: 3,
+        title: "Career Assessment",
+        description:
+          "See how your chosen skills connect to real-world roles. Discover potential job opportunities, industries, and career growth paths.",
+        slug: "three",
+      },
+      {
+        id: 4,
+        title: "Learning Flow Setup",
+        description:
+          "Customize your journey by choosing your learning style, pace, and preferred tools.",
+        slug: "four",
+      },
+    ],
+    []
+  );
 
   // Initialize step from URL on component mount
   useEffect(() => {
@@ -69,7 +70,6 @@ export default function OnboardingPage() {
       const stepIndex = steps.findIndex((step) => step.slug === stepParam);
       if (stepIndex !== -1) {
         setCurrentStep(stepIndex);
-        setProgress((stepIndex + 1) * 25);
       }
     }
 
@@ -83,11 +83,10 @@ export default function OnboardingPage() {
 
   // Handle option selection
   const handleOptionSelect = (questionId: string, optionId: string) => {
-    // Update selected options
-    setSelectedOptions({
-      ...selectedOptions,
+    setSelectedOptions((prev) => ({
+      ...prev,
       [questionId]: optionId,
-    });
+    }));
   };
 
   // Handle next step button click
@@ -99,8 +98,7 @@ export default function OnboardingPage() {
       const nextStep = steps[currentStep + 1].slug;
       setTimeout(() => {
         router.push(`/onboarding?step=${nextStep}`);
-        setCurrentStep(currentStep + 1);
-        setProgress((currentStep + 2) * 25); // Update progress (25% per step)
+        setCurrentStep((prev) => prev + 1);
         setIsChangingStep(false);
       }, 800);
     } else {
@@ -120,6 +118,10 @@ export default function OnboardingPage() {
         }
       />
     );
+  }
+
+  if (!user) {
+    return null; // Redirecting to login, so no need to render anything
   }
 
   // Render the current step component

@@ -28,7 +28,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (user) {
-      if (!user.pickedSkill) {
+      if (!user.user?.pickedSkill) {
         setIsDialogOpen(true);
         return;
       }
