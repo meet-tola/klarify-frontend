@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { EyeIcon, EyeOffIcon, Loader2 } from "lucide-react"; // Import Loader2
 import OnboardingNavbar from "@/components/onboarding-navbar";
 import LoadingScreen from "@/components/loading-screen";
 import { useForm } from "react-hook-form";
@@ -21,18 +21,32 @@ import JourneyDialog from "@/components/journey-dialog";
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
   const { user, setUser } = useAuthContext();
   const router = useRouter();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
     if (user) {
-      if (!user.user?.pickedSkill) {
+      // If the user hasn't selected any skills, show the dialog
+      if (!user.user?.selectedSkills || user.user.selectedSkills.length === 0) {
         setIsDialogOpen(true);
         return;
       }
 
+      // If the user has selected skills but hasn't picked a specific skill, redirect to step two
+      if (user.user.selectedSkills.length > 0 && !user.user?.pickedSkill) {
+        router.push("/onboarding?step=two");
+        return;
+      }
+
+      // If the user has picked a skill but hasn't completed the career assessment, redirect to step three
+      if (
+        !user.user?.careerAssessment ||
+        user.user.careerAssessment.length === 0
+      ) {
+        router.push("/onboarding?step=three");
+        return;
+      }
       router.push("/dashboard");
     }
   }, [user, router]);
@@ -51,7 +65,6 @@ export default function LoginPage() {
 
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
-    setErrorMessage("");
 
     try {
       const loggedInUser = await loginAPI(data);
@@ -66,22 +79,17 @@ export default function LoginPage() {
         return;
       }
 
-      if (!loggedInUser.pickedSkill) {
+      if (!loggedInUser.user?.pickedSkill) {
         setIsDialogOpen(true);
       } else {
         router.push("/onboarding");
       }
     } catch (error) {
-      setErrorMessage("Invalid email or password.");
-      setIsLoading(false);
+      toast.error("Invalid email or password."); // Use toast for error message
     } finally {
-      setIsLoading(false);  
+      setIsLoading(false);
     }
   };
-
-  if (isLoading) {
-    return <LoadingScreen message="Logging in..." />;
-  }
 
   return (
     <>
@@ -167,12 +175,6 @@ export default function LoginPage() {
                 )}
               </div>
 
-              {errorMessage && (
-                <p className="text-sm text-destructive text-center">
-                  {errorMessage}
-                </p>
-              )}
-
               <div className="text-sm text-right">
                 <Link
                   href="/forgot-password"
@@ -182,8 +184,12 @@ export default function LoginPage() {
                 </Link>
               </div>
 
-              <Button type="submit" className="w-full">
-                Sign in
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? (
+                  <Loader2 className="animate-spin" /> 
+                ) : (
+                  "Sign in"
+                )}
               </Button>
             </form>
             <div className="text-center">

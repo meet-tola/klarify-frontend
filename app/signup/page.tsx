@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { EyeIcon, EyeOffIcon, Loader2 } from "lucide-react"; // Import Loader2
 import { motion } from "framer-motion";
 import LoadingScreen from "@/components/loading-screen";
 import OnboardingNavbar from "@/components/onboarding-navbar";
@@ -18,7 +18,7 @@ import { register } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useAuthContext } from "@/context/auth-provider";
-import JourneyDialog from "@/components/journey-dialog"; 
+import JourneyDialog from "@/components/journey-dialog";
 
 export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -30,11 +30,26 @@ export default function SignUpPage() {
 
   useEffect(() => {
     if (user) {
-      if (!user.user?.pickedSkill) {
+      // If the user hasn't selected any skills, show the dialog
+      if (!user.user?.selectedSkills || user.user.selectedSkills.length === 0) {
         setIsDialogOpen(true);
         return;
       }
 
+      // If the user has selected skills but hasn't picked a specific skill, redirect to step two
+      if (user.user.selectedSkills.length > 0 && !user.user?.pickedSkill) {
+        router.push("/onboarding?step=two");
+        return;
+      }
+
+      // If the user has picked a skill but hasn't completed the career assessment, redirect to step three
+      if (
+        !user.user?.careerAssessment ||
+        user.user.careerAssessment.length === 0
+      ) {
+        router.push("/onboarding?step=three");
+        return;
+      }
       router.push("/dashboard");
     }
   }, [user, router]);
@@ -72,10 +87,6 @@ export default function SignUpPage() {
       setIsLoading(false);
     }
   };
-
-  if (isLoading) {
-    return <LoadingScreen message="Creating Account..." />;
-  }
 
   return (
     <>
@@ -215,22 +226,17 @@ export default function SignUpPage() {
                   </p>
                 )}
               </div>
-              {/* 
-              <motion.p
-                className="text-sm text-muted-foreground"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.9 }}
-              >
-                Must be at least 8 characters.
-              </motion.p> */}
 
               <motion.div
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <Button type="submit" className="w-full">
-                  Create an account
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? (
+                    <Loader2 className="animate-spin" /> // Show spinner when loading
+                  ) : (
+                    "Create an account"
+                  )}
                 </Button>
               </motion.div>
             </motion.form>
