@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
+import { HelpCircle, LogOut } from "lucide-react";
 import { motion } from "framer-motion";
 import Logo from "../logo";
 import { useAuthContext } from "@/context/auth-provider";
@@ -31,7 +31,7 @@ export default function OnboardingNavbar() {
 
     try {
       await logoutAPI();
-      setUser(null); 
+      setUser(null);
 
       toast.success("Logged out successfully", {
         description: "Redirecting to login page...",
@@ -47,7 +47,6 @@ export default function OnboardingNavbar() {
     }
   };
 
-  
   return (
     <header className="border-b py-4 px-6 md:px-12 bg-white border-b-gray-200 z-50 sticky top-0">
       <div className="container mx-auto flex justify-between items-center">
@@ -57,9 +56,10 @@ export default function OnboardingNavbar() {
 
         <div className="flex items-center gap-4">
           <Button variant="outline" size="sm">
+            <HelpCircle className="h-4 w-4 mr-2" />
             Get Help
           </Button>
-          {user && ( 
+          {user && (
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}

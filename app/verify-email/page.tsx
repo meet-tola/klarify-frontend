@@ -135,7 +135,7 @@ export default function VerifyEmailPage() {
                   value={digit}
                   onChange={(e) => handleChange(index, e.target.value)}
                   onPaste={index === 0 ? handlePaste : undefined}
-                  className="w-12 h-12 text-center text-lg font-bold"
+                  className="w-10 h-10 sm:w-12 sm:h-12 text-center text-lg font-bold" // Responsive sizing
                   autoFocus={index === 0}
                 />
               ))}
