@@ -3,7 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, CheckCircle } from "lucide-react";
 
-export default function HeroSection({ email, setEmail }) {
+interface HeroSectionProps {
+  email: string;
+  setEmail: (email: string) => void;
+}
+
+export default function HeroSection({ email, setEmail }: HeroSectionProps) {
   return (
     <section className="relative py-20 md:py-32 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-background z-0"></div>
