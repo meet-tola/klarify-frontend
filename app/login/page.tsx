@@ -74,7 +74,11 @@ export default function LoginPage() {
         description: "You will be redirected now.",
       });
 
-      if (loggedInUser.verificationCode !== undefined) {
+      // Redirect to verify-email if verificationCode contains digits
+      if (
+        loggedInUser.verificationCode &&
+        /\d/.test(loggedInUser.verificationCode)
+      ) {
         router.push("/verify-email");
         return;
       }
@@ -185,11 +189,7 @@ export default function LoginPage() {
               </div>
 
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? (
-                  <Loader2 className="animate-spin" /> 
-                ) : (
-                  "Sign in"
-                )}
+                {isLoading ? <Loader2 className="animate-spin" /> : "Sign in"}
               </Button>
             </form>
             <div className="text-center">
