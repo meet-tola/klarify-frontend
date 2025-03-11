@@ -7,14 +7,19 @@ import LoadingScreen from "@/components/loading-screen";
 import { verificationSchema } from "@/validation/auth.validation";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
-import { verifyEmail as verifyEmailAPI, resendVerificationCode } from "@/lib/api";
+import {
+  verifyEmail as verifyEmailAPI,
+  resendVerificationCode,
+} from "@/lib/api";
 import JourneyDialog from "@/components/journey-dialog";
 import Image from "next/image";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react"; 
+import { Loader2 } from "lucide-react";
 
 export default function VerifyEmailPage() {
-  const [verificationCode, setVerificationCode] = useState<string[]>(Array(6).fill(""));
+  const [verificationCode, setVerificationCode] = useState<string[]>(
+    Array(6).fill("")
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const router = useRouter();
@@ -26,10 +31,6 @@ export default function VerifyEmailPage() {
     const updatedCode = [...verificationCode];
     updatedCode[index] = value.slice(-1);
     setVerificationCode(updatedCode);
-
-    if (value && index === 5) {
-      handleVerify();
-    }
 
     if (value && index < 5) {
       inputRefs.current[index + 1]?.focus();
@@ -43,10 +44,6 @@ export default function VerifyEmailPage() {
     const updatedCode = pastedData.split("");
     setVerificationCode(updatedCode);
     inputRefs.current[Math.min(updatedCode.length, 5)]?.focus();
-
-    if (updatedCode.length === 6) {
-      handleVerify();
-    }
   };
 
   const handleVerify = async () => {
@@ -55,7 +52,6 @@ export default function VerifyEmailPage() {
     try {
       verificationSchema.parse({ code });
       setIsLoading(true);
-
       await verifyEmailAPI({ code });
 
       toast.success("Email verified successfully!", {
@@ -64,6 +60,7 @@ export default function VerifyEmailPage() {
 
       setIsDialogOpen(true);
     } catch (error: any) {
+      console.log("error", error);
       toast.error("Verification failed", {
         description: error?.message || "Please check your code and try again.",
       });
@@ -87,7 +84,6 @@ export default function VerifyEmailPage() {
       setIsResending(false);
     }
   };
-
 
   return (
     <>
@@ -143,7 +139,11 @@ export default function VerifyEmailPage() {
               ))}
             </div>
 
-            <Button onClick={handleVerify} className="w-full" disabled={isLoading}>
+            <Button
+              onClick={handleVerify}
+              className="w-full"
+              disabled={isLoading}
+            >
               {isLoading ? (
                 <Loader2 className="animate-spin" />
               ) : (
