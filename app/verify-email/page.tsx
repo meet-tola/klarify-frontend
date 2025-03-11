@@ -88,9 +88,6 @@ export default function VerifyEmailPage() {
     }
   };
 
-  if (isLoading) {
-    return <LoadingScreen message="Verifying your email..." />;
-  }
 
   return (
     <>

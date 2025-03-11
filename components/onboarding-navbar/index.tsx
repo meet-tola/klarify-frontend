@@ -48,14 +48,14 @@ export default function OnboardingNavbar() {
   };
 
   return (
-    <header className="border-b py-4 px-6 md:px-12 bg-white border-b-gray-200 z-50 sticky top-0">
+    <header className="border-b h-[80px] py-5 px-6 md:px-12 bg-white border-b-gray-200 z-50 sticky top-0">
       <div className="container mx-auto flex justify-between items-center">
         <div className="w-8 h-8 relative">
           <Logo />
         </div>
 
         <div className="flex items-center gap-4">
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" className="w-[141px] h-[40px] ">
             <HelpCircle className="h-4 w-4 mr-2" />
             Get Help
           </Button>
