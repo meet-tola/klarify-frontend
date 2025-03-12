@@ -1,16 +1,19 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Search, X } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Search, X, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { useRouter } from "next/navigation";
+import { searchSkills, selectSkillFromSearch } from "@/lib/api"; 
 
 interface SearchDialogProps {
-  isOpen: boolean
-  onClose: () => void
-  onSelect: (career: string) => void
+  isOpen: boolean;
+  onClose: () => void;
+  onSelect: (skill: string) => void;
+  userId?: string;
 }
 
 const suggestions = [
@@ -18,31 +21,64 @@ const suggestions = [
   { category: "Design & UX", color: "bg-purple-100" },
   { category: "Marketing & SEO", color: "bg-green-100" },
   { category: "AI & Data Science", color: "bg-orange-100" },
-]
+];
 
-const searchResults = [
-  {
-    title: "UX/UI Design",
-    description: "UX/UI designers create user-friendly digital experiences for apps and websites.",
-  },
-  {
-    title: "Graphic Design",
-    description:
-      "Graphic designers craft visual content to communicate messages effectively using typography, imagery, and color.",
-  },
-  {
-    title: "Web Development",
-    description: "Web developers build and maintain websites, ensuring functionality, performance, and responsiveness.",
-  },
-  {
-    title: "Product Management",
-    description:
-      "Product managers oversee product development from concept to launch, aligning cross-functional teams.",
-  },
-]
+export default function SearchDialog({ isOpen, onClose, onSelect, userId }: SearchDialogProps) {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<{ category: string; description: string }[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedSkill, setSelectedSkill] = useState<string | null>(null); 
+  const [isNextLoading, setIsNextLoading] = useState(false); 
+  const router = useRouter();
 
-export default function SearchDialog({ isOpen, onClose, onSelect }: SearchDialogProps) {
-  const [searchQuery, setSearchQuery] = useState("")
+  // useEffect(() => {
+  //   if (isOpen) {
+  //     router.push("/roadmap?search"); // Update URL to /roadmap?search
+  //   }
+  // }, [isOpen, router]);
+
+  useEffect(() => {
+    if (isOpen) {
+      setIsLoading(true);
+      searchSkills(searchQuery)
+        .then((data) => {
+          setSearchResults(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching search results:", error);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [searchQuery, isOpen]);
+
+  // Handle "Next" button click
+  const handleNext = async () => {
+    if (!selectedSkill || !userId) {
+      return;
+    }
+
+    setIsNextLoading(true);
+
+    try {
+      await selectSkillFromSearch(userId, selectedSkill);
+
+      // Redirect to the roadmap page
+      router.push("/roadmap");
+    } catch (error) {
+      console.error("Error selecting skill:", error);
+      alert("Failed to select skill. Please try again.");
+    } finally {
+      setIsNextLoading(false); // Stop loading for the "Next" button
+    }
+  };
+
+  // Handle dialog close
+  const handleClose = () => {
+    onClose(); // Call the onClose prop
+    router.push("/roadmap"); // Redirect to /roadmap
+  };
 
   return (
     <AnimatePresence>
@@ -53,7 +89,7 @@ export default function SearchDialog({ isOpen, onClose, onSelect }: SearchDialog
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
+            onClick={handleClose} // Use handleClose for backdrop click
           />
           <motion.div
             className="z-50 w-full max-w-lg bg-background p-6 shadow-lg border rounded-lg"
@@ -64,7 +100,7 @@ export default function SearchDialog({ isOpen, onClose, onSelect }: SearchDialog
           >
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold">Search for Skill</h2>
-              <Button variant="ghost" size="icon" className="rounded-full" onClick={onClose}>
+              <Button variant="ghost" size="icon" className="rounded-full" onClick={handleClose}>
                 <X className="h-4 w-4" />
               </Button>
             </div>
@@ -99,32 +135,55 @@ export default function SearchDialog({ isOpen, onClose, onSelect }: SearchDialog
               <div>
                 <h3 className="text-sm font-medium mb-2">Search Results</h3>
                 <div className="space-y-2 max-h-60 overflow-y-auto">
-                  {searchResults.map((result) => (
-                    <motion.div
-                      key={result.title}
-                      className="p-3 rounded-lg hover:bg-accent cursor-pointer"
-                      onClick={() => onSelect(result.title)}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <h4 className="font-medium">{result.title}</h4>
-                      <p className="text-sm text-muted-foreground">{result.description}</p>
-                    </motion.div>
-                  ))}
+                  {isLoading ? (
+                    <div className="flex items-center justify-center p-6">
+                      <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                    </div>
+                  ) : searchResults.length > 0 ? (
+                    searchResults.map((result) => (
+                      <motion.div
+                        key={result.category}
+                        className={`p-3 rounded-lg hover:bg-accent cursor-pointer ${
+                          selectedSkill === result.category ? "bg-accent" : ""
+                        }`}
+                        onClick={() => {
+                          setSelectedSkill(result.category); // Set the selected skill
+                          onSelect(result.category); // Trigger the onSelect callback
+                        }}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <h4 className="font-medium">{result.category}</h4>
+                        <p className="text-sm text-muted-foreground">{result.description}</p>
+                      </motion.div>
+                    ))
+                  ) : (
+                    <div className="flex items-center justify-center p-6">
+                      <p className="text-sm text-muted-foreground">No results found.</p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
 
             <div className="flex justify-end gap-3 mt-4">
-              <Button variant="outline" onClick={onClose}>
+              <Button variant="outline" onClick={handleClose}>
                 Cancel
               </Button>
-              <Button onClick={onClose}>Search</Button>
+              <Button
+                onClick={handleNext}
+                disabled={!selectedSkill || isNextLoading} // Disable if no skill is selected or loading
+              >
+                {isNextLoading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  "Next"
+                )}
+              </Button>
             </div>
           </motion.div>
         </div>
       )}
     </AnimatePresence>
-  )
+  );
 }
-

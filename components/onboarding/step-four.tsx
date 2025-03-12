@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import AnalyzingScreen from "@/components/analyzing-screen";
-import { getRoadmap } from "@/lib/api"; // Import the API function
+import { getRoadmap } from "@/lib/api"; 
 
 interface Phase {
   id: number;
@@ -36,8 +36,6 @@ export default function StepFour({ selectedOptions, onOptionSelect, onNextStep, 
     const fetchRoadmapData = async () => {
       try {
         const roadmap = await getRoadmap(userId); 
-        console.log("Roadmap", roadmap);
-
         if (roadmap && roadmap.phases) {
           // Transform the roadmap data into the required format
           const transformedPhases = roadmap.phases.map((phase: any, index: number) => ({

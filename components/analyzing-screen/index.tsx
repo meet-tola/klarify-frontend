@@ -1,13 +1,12 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Progress } from "@/components/ui/progress"
-import { getRoadmapContent } from "@/lib/api" // Import the API function
-
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Progress } from "@/components/ui/progress";
+import { getRoadmapContent } from "@/lib/api";
 interface AnalyzingScreenProps {
-  onComplete?: () => void
-  userId: string // Pass the userId as a prop
+  onComplete?: () => void;
+  userId: string; 
 }
 
 const facts = [
@@ -15,59 +14,68 @@ const facts = [
   "73% of professionals who match their interests to their career report higher job satisfaction.",
   "Career alignment with personal values leads to 40% higher workplace productivity.",
   "Employees in well-matched careers are 3x more likely to stay with their companies long-term.",
-]
+];
 
-export default function AnalyzingScreen({ onComplete, userId }: AnalyzingScreenProps) {
-  const [progress, setProgress] = useState(0)
-  const [currentFact, setCurrentFact] = useState(0)
-  const [isGenerating, setIsGenerating] = useState(true) // Track API call status
+export default function AnalyzingScreen({
+  onComplete,
+  userId,
+}: AnalyzingScreenProps) {
+  const [progress, setProgress] = useState(0);
+  const [currentFact, setCurrentFact] = useState(0);
+  const [isGenerating, setIsGenerating] = useState(true);
 
   useEffect(() => {
     // Simulate progress for the first 50%
     const progressTimer = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 50) {
-          clearInterval(progressTimer)
-          return 50
+          clearInterval(progressTimer);
+          return 50;
         }
-        return prev + 1
-      })
-    }, 50)
+        return prev + 1;
+      });
+    }, 50);
 
     // Start generating the roadmap content
     const generateRoadmap = async () => {
       try {
-        await getRoadmapContent(userId) // Call the API
-        setIsGenerating(false) // Stop generating
-        setProgress(100) // Set progress to 100%
+        await getRoadmapContent(userId);
+        setIsGenerating(false);
+        setProgress(100);
         if (onComplete) {
-          setTimeout(onComplete, 500) // Trigger onComplete after a short delay
+          setTimeout(onComplete, 500);
         }
       } catch (error) {
-        console.error("Failed to generate roadmap:", error)
-        setIsGenerating(false)
-        setProgress(100) // Set progress to 100% even if there's an error
+        console.log("Failed to generate roadmap:", error);
+        setIsGenerating(false);
+        setProgress(100);
       }
-    }
+    };
 
-    generateRoadmap()
+    generateRoadmap();
 
     const factTimer = setInterval(() => {
-      setCurrentFact((prev) => (prev + 1) % facts.length)
-    }, 3000)
+      setCurrentFact((prev) => (prev + 1) % facts.length);
+    }, 3000);
 
     return () => {
-      clearInterval(progressTimer)
-      clearInterval(factTimer)
-    }
-  }, [onComplete, userId])
+      clearInterval(progressTimer);
+      clearInterval(factTimer);
+    };
+  }, [onComplete, userId]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-background">
       <div className="w-full max-w-2xl text-center space-y-8">
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           <h1 className="text-4xl font-bold mb-4">
-            {isGenerating ? "Analyzing Your Assessment Results..." : "Roadmap Generated Successfully!"}
+            {isGenerating
+              ? "Analyzing Your Assessment Results..."
+              : "Roadmap Generated Successfully!"}
           </h1>
           <p className="text-lg text-muted-foreground">
             {isGenerating
@@ -87,11 +95,13 @@ export default function AnalyzingScreen({ onComplete, userId }: AnalyzingScreenP
               transition={{ duration: 0.3 }}
               className="h-16 flex items-center justify-center"
             >
-              <p className="text-sm text-primary rounded-full bg-primary/10 px-4 py-2">{facts[currentFact]}</p>
+              <p className="text-sm text-primary rounded-full bg-primary/10 px-4 py-2">
+                {facts[currentFact]}
+              </p>
             </motion.div>
           </AnimatePresence>
         </div>
       </div>
     </div>
-  )
+  );
 }

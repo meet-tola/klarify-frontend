@@ -81,6 +81,30 @@ export const selectSkill = async (userId: string, pickedSkill: string) => {
   }
 };
 
+export const searchSkills = async (query?: string) => {
+  try {
+    const response = await API.get("/skills/search-skills", {
+      params: { query }, 
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error searching skills:", error);
+    throw error;
+  }
+};
+
+export const selectSkillFromSearch = async (userId: string, pickedSkill: string) => {
+  try {
+    const response = await API.post(`/skills/${userId}/select-skill-from-search`, {
+      pickedSkill,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error selecting skill:", error);
+    throw error;
+  }
+};
+
 // CAREER QUESTIONS AND EVALUATION
 export const getCareerQuestions = async (userId: string) => {
   try {
@@ -104,7 +128,6 @@ export const evaluateCareerAnswers = async (userId: string, answers: { questionI
 export const getRoadmap = async (userId: string) => {
   try {
     const response = await API.get(`/roadmap/${userId}/roadmap`);
-    console.log("Data",response.data)
     return response.data.roadmaps[0];
   } catch (error: any) {
     handleError(error);
