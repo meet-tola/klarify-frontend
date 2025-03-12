@@ -64,20 +64,19 @@ export default function SearchDialog({ isOpen, onClose, onSelect, userId }: Sear
     try {
       await selectSkillFromSearch(userId, selectedSkill);
 
-      // Redirect to the roadmap page
       router.push("/roadmap");
     } catch (error) {
       console.error("Error selecting skill:", error);
       alert("Failed to select skill. Please try again.");
     } finally {
-      setIsNextLoading(false); // Stop loading for the "Next" button
+      setIsNextLoading(false);
     }
   };
 
   // Handle dialog close
   const handleClose = () => {
-    onClose(); // Call the onClose prop
-    router.push("/roadmap"); // Redirect to /roadmap
+    onClose(); 
+    router.push("/roadmap"); 
   };
 
   return (
@@ -89,7 +88,7 @@ export default function SearchDialog({ isOpen, onClose, onSelect, userId }: Sear
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={handleClose} // Use handleClose for backdrop click
+            onClick={handleClose}
           />
           <motion.div
             className="z-50 w-full max-w-lg bg-background p-6 shadow-lg border rounded-lg"
@@ -146,10 +145,7 @@ export default function SearchDialog({ isOpen, onClose, onSelect, userId }: Sear
                         className={`p-3 rounded-lg hover:bg-accent cursor-pointer ${
                           selectedSkill === result.category ? "bg-accent" : ""
                         }`}
-                        onClick={() => {
-                          setSelectedSkill(result.category); // Set the selected skill
-                          onSelect(result.category); // Trigger the onSelect callback
-                        }}
+                        onClick={() => setSelectedSkill(result.category)}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                       >
@@ -172,7 +168,7 @@ export default function SearchDialog({ isOpen, onClose, onSelect, userId }: Sear
               </Button>
               <Button
                 onClick={handleNext}
-                disabled={!selectedSkill || isNextLoading} // Disable if no skill is selected or loading
+                disabled={!selectedSkill || isNextLoading} 
               >
                 {isNextLoading ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
