@@ -22,7 +22,9 @@ export default function OnboardingPage() {
   }, [user, loading, router]);
 
   const [currentStep, setCurrentStep] = useState(0);
-  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
+  const [selectedOptions, setSelectedOptions] = useState<
+    Record<string, string>
+  >({});
   const [isLoading, setIsLoading] = useState(true);
   const [isChangingStep, setIsChangingStep] = useState(false);
 
@@ -154,7 +156,9 @@ export default function OnboardingPage() {
           <StepFour
             selectedOptions={selectedOptions}
             onOptionSelect={handleOptionSelect}
-            activeQuestionIndex={0} // Provide the appropriate value for activeQuestionIndex
+            onNextStep={function (): void {
+              throw new Error("Function not implemented.");
+            }}
           />
         );
       default:
