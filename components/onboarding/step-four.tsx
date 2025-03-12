@@ -1,81 +1,72 @@
-"use client"
-
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { motion, AnimatePresence } from "framer-motion"
-import { ChevronDown } from "lucide-react"
-import AnalyzingScreen from "@/components/analyzing-screen"
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronDown } from "lucide-react";
+import AnalyzingScreen from "@/components/analyzing-screen";
+import { getRoadmap } from "@/lib/api"; // Import the API function
 
 interface Phase {
-  id: number
-  title: string
+  id: number;
+  title: string;
   weeks: {
-    number: number
-    title: string
-  }[]
+    number: number;
+    title: string;
+  }[];
 }
-
-const phases: Phase[] = [
-  {
-    id: 1,
-    title: "Foundations (Week 1-4) – Understanding Design Basics",
-    weeks: [
-      { number: 1, title: "Introduction to UX/UI" },
-      { number: 2, title: "Design Thinking & User Research" },
-      { number: 3, title: "Wireframing & Prototyping" },
-      { number: 4, title: "UI Design Basics" },
-    ],
-  },
-  {
-    id: 2,
-    title: "Intermediate (Week 5-8) – Hands-on Design & Industry Tools",
-    weeks: [
-      { number: 5, title: "Advanced UI Design Principles" },
-      { number: 6, title: "Design Systems & Components" },
-      { number: 7, title: "Interactive Prototyping" },
-      { number: 8, title: "User Testing & Iteration" },
-    ],
-  },
-  {
-    id: 3,
-    title: "Advanced & Real-World Application (Week 9-12)",
-    weeks: [
-      { number: 9, title: "Portfolio Development" },
-      { number: 10, title: "Case Studies" },
-      { number: 11, title: "Industry Best Practices" },
-      { number: 12, title: "Final Project & Presentation" },
-    ],
-  },
-]
 
 interface StepFourProps {
-  selectedOptions: Record<string, string>
-  onOptionSelect: (questionId: string, optionId: string) => void
-  onNextStep: () => void
+  selectedOptions: Record<string, string>;
+  onOptionSelect: (questionId: string, optionId: string) => void;
+  onNextStep: () => void;
+  userId: string; 
 }
 
-export default function StepFour({ selectedOptions, onOptionSelect, onNextStep }: StepFourProps) {
-  const [isAnalyzing, setIsAnalyzing] = useState(true)
-  const [expandedPhase, setExpandedPhase] = useState<number>(1)
+export default function StepFour({ selectedOptions, onOptionSelect, onNextStep, userId }: StepFourProps) {
+  const [isAnalyzing, setIsAnalyzing] = useState(true);
+  const [expandedPhase, setExpandedPhase] = useState<number>(1);
+  const [phases, setPhases] = useState<Phase[]>([]);
 
   useEffect(() => {
-    // Simulate analysis completion after 5 seconds
     const timer = setTimeout(() => {
-      setIsAnalyzing(false)
-      // Set the completion in the selected options
-      onOptionSelect("analysis-complete", "true")
-    }, 5000)
+      setIsAnalyzing(false);
+      onOptionSelect("analysis-complete", "true");
+    }, 90000);
 
-    return () => clearTimeout(timer)
-  }, [onOptionSelect])
+    // Fetch roadmap data
+    const fetchRoadmapData = async () => {
+      try {
+        const roadmap = await getRoadmap(userId); 
+        console.log("Roadmap", roadmap);
+
+        if (roadmap && roadmap.phases) {
+          // Transform the roadmap data into the required format
+          const transformedPhases = roadmap.phases.map((phase: any, index: number) => ({
+            id: index + 1,
+            title: phase.title,
+            weeks: phase.weeks.map((week: any, weekIndex: number) => ({
+              number: weekIndex + 1,
+              title: week.topic,
+            })),
+          }));
+          setPhases(transformedPhases); 
+        }
+      } catch (error) {
+        console.error("Failed to fetch roadmap:", error);
+      }
+    };
+
+    fetchRoadmapData();
+
+    return () => clearTimeout(timer);
+  }, [userId, onOptionSelect]);
 
   if (isAnalyzing) {
-    return <AnalyzingScreen onComplete={() => setIsAnalyzing(false)} />
+    return <AnalyzingScreen onComplete={() => setIsAnalyzing(false)} userId={userId} />;
   }
 
   const togglePhase = (phaseId: number) => {
-    setExpandedPhase(expandedPhase === phaseId ? 0 : phaseId)
-  }
+    setExpandedPhase(expandedPhase === phaseId ? 0 : phaseId);
+  };
 
   return (
     <div className="space-y-8 max-w-3xl mx-auto">
@@ -165,6 +156,5 @@ export default function StepFour({ selectedOptions, onOptionSelect, onNextStep }
         <Button onClick={onNextStep}>Start learning</Button>
       </motion.div>
     </div>
-  )
+  );
 }
-

@@ -16,22 +16,22 @@ const postRequest = async (url: string, data?: any) => {
 
 // AUTH AND CURRENT USERS
 
-export const register = async (data: { name: string; email: string; password: string }) => 
+export const register = async (data: { name: string; email: string; password: string }) =>
   postRequest("/auth/register", data);
 
-export const verifyEmail = async (data: { code: string }) => 
+export const verifyEmail = async (data: { code: string }) =>
   postRequest("/auth/verify-email", data);
 
-export const resendVerificationCode = async () => 
+export const resendVerificationCode = async () =>
   postRequest("/auth/resend-verification-code");
 
-export const resetPassword = async (data: { newPassword: string }) => 
+export const resetPassword = async (data: { newPassword: string }) =>
   postRequest("/auth/reset-password", data);
 
-export const login = async (data: { email: string; password: string }) => 
+export const login = async (data: { email: string; password: string }) =>
   postRequest("/auth/login", data);
 
-export const logout = async () => 
+export const logout = async () =>
   postRequest("/auth/logout");
 
 export const getCurrentUser = async (): Promise<CurrentUserResponseType | undefined> => {
@@ -94,6 +94,26 @@ export const getCareerQuestions = async (userId: string) => {
 export const evaluateCareerAnswers = async (userId: string, answers: { questionId: string; answer: string }[]) => {
   try {
     const response = await API.post(`/career/${userId}/evaluate-career`, { answers });
+    return response.data;
+  } catch (error: any) {
+    handleError(error);
+  }
+};
+
+// LEARNING & ROADMAP
+export const getRoadmap = async (userId: string) => {
+  try {
+    const response = await API.get(`/roadmap/${userId}/roadmap`);
+    console.log("Data",response.data)
+    return response.data.roadmaps[0];
+  } catch (error: any) {
+    handleError(error);
+  }
+};
+
+export const getRoadmapContent = async (userId: string) => {
+  try {
+    const response = await API.post(`/roadmap/${userId}/content`);
     return response.data;
   } catch (error: any) {
     handleError(error);

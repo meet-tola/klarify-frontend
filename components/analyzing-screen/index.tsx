@@ -3,9 +3,11 @@
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Progress } from "@/components/ui/progress"
+import { getRoadmapContent } from "@/lib/api" // Import the API function
 
 interface AnalyzingScreenProps {
   onComplete?: () => void
+  userId: string // Pass the userId as a prop
 }
 
 const facts = [
@@ -15,42 +17,62 @@ const facts = [
   "Employees in well-matched careers are 3x more likely to stay with their companies long-term.",
 ]
 
-export default function AnalyzingScreen({ onComplete }: AnalyzingScreenProps) {
+export default function AnalyzingScreen({ onComplete, userId }: AnalyzingScreenProps) {
   const [progress, setProgress] = useState(0)
   const [currentFact, setCurrentFact] = useState(0)
+  const [isGenerating, setIsGenerating] = useState(true) // Track API call status
 
   useEffect(() => {
-    const timer = setInterval(() => {
+    // Simulate progress for the first 50%
+    const progressTimer = setInterval(() => {
       setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(timer)
-          if (onComplete) {
-            setTimeout(onComplete, 500)
-          }
-          return 100
+        if (prev >= 50) {
+          clearInterval(progressTimer)
+          return 50
         }
         return prev + 1
       })
     }, 50)
+
+    // Start generating the roadmap content
+    const generateRoadmap = async () => {
+      try {
+        await getRoadmapContent(userId) // Call the API
+        setIsGenerating(false) // Stop generating
+        setProgress(100) // Set progress to 100%
+        if (onComplete) {
+          setTimeout(onComplete, 500) // Trigger onComplete after a short delay
+        }
+      } catch (error) {
+        console.error("Failed to generate roadmap:", error)
+        setIsGenerating(false)
+        setProgress(100) // Set progress to 100% even if there's an error
+      }
+    }
+
+    generateRoadmap()
 
     const factTimer = setInterval(() => {
       setCurrentFact((prev) => (prev + 1) % facts.length)
     }, 3000)
 
     return () => {
-      clearInterval(timer)
+      clearInterval(progressTimer)
       clearInterval(factTimer)
     }
-  }, [onComplete])
+  }, [onComplete, userId])
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-background">
       <div className="w-full max-w-2xl text-center space-y-8">
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          <h1 className="text-4xl font-bold mb-4">Analyzing Your Assessment Results...</h1>
+          <h1 className="text-4xl font-bold mb-4">
+            {isGenerating ? "Analyzing Your Assessment Results..." : "Roadmap Generated Successfully!"}
+          </h1>
           <p className="text-lg text-muted-foreground">
-            Every great journey starts with self-discovery. We're uncovering your strengths and interests to craft the
-            perfect roadmap.
+            {isGenerating
+              ? "Every great journey starts with self-discovery. We're uncovering your strengths and interests to craft the perfect roadmap."
+              : "Your personalized roadmap is ready! Let's get started on your learning journey."}
           </p>
         </motion.div>
 
@@ -73,4 +95,3 @@ export default function AnalyzingScreen({ onComplete }: AnalyzingScreenProps) {
     </div>
   )
 }
-

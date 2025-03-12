@@ -22,9 +22,7 @@ export default function OnboardingPage() {
   }, [user, loading, router]);
 
   const [currentStep, setCurrentStep] = useState(0);
-  const [selectedOptions, setSelectedOptions] = useState<
-    Record<string, string>
-  >({});
+  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [isChangingStep, setIsChangingStep] = useState(false);
 
@@ -121,8 +119,10 @@ export default function OnboardingPage() {
   }
 
   if (!user) {
-    return null; // Redirecting to login, so no need to render anything
+    return null; 
   }
+
+  const userId = user.user?._id;
 
   // Render the current step component
   const renderStep = () => {
@@ -156,9 +156,8 @@ export default function OnboardingPage() {
           <StepFour
             selectedOptions={selectedOptions}
             onOptionSelect={handleOptionSelect}
-            onNextStep={function (): void {
-              throw new Error("Function not implemented.");
-            }}
+            onNextStep={handleNextStep}
+            userId={userId}
           />
         );
       default:
