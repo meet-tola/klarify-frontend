@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { EyeIcon, EyeOffIcon, Loader2 } from "lucide-react"; // Import Loader2
+import { EyeIcon, EyeOffIcon, Loader2, Verified } from "lucide-react"; // Import Loader2
 import OnboardingNavbar from "@/components/onboarding-navbar";
 import LoadingScreen from "@/components/loading-screen";
 import { useForm } from "react-hook-form";
@@ -65,35 +65,46 @@ export default function LoginPage() {
 
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
-
+  
     try {
       const loggedInUser = await loginAPI(data);
-      setUser(loggedInUser);
-
-      toast.success("Login Successful", {
-        description: "You will be redirected now.",
-      });
-
-      // Redirect to verify-email if verificationCode contains digits
       if (
-        loggedInUser.verificationCode &&
-        /\d/.test(loggedInUser.verificationCode)
+        loggedInUser.user?.verificationCode &&
+        !isNaN(Number(loggedInUser.user?.verificationCode))
       ) {
         router.push("/verify-email");
         return;
       }
-
-      if (!loggedInUser.user?.pickedSkill) {
+  
+      setUser(loggedInUser);
+  
+      toast.success("Login Successful", {
+        description: "You will be redirected now.",
+      });
+  
+      // Onboarding logic
+      if (!loggedInUser.user?.selectedSkills || loggedInUser.user.selectedSkills.length === 0) {
         setIsDialogOpen(true);
-      } else {
-        router.push("/onboarding");
+        return;
       }
+  
+      if (loggedInUser.user.selectedSkills.length > 0 && !loggedInUser.user?.pickedSkill) {
+        router.push("/onboarding?step=two");
+        return;
+      }
+  
+      if (!loggedInUser.user?.careerAssessment || loggedInUser.user.careerAssessment.length === 0) {
+        router.push("/onboarding?step=three");
+        return;
+      }
+  
+      router.push("/dashboard");
     } catch (error) {
-      toast.error("Invalid email or password."); // Use toast for error message
+      toast.error("Invalid email or password.");
     } finally {
       setIsLoading(false);
     }
-  };
+  };  
 
   return (
     <>

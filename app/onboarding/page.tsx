@@ -15,14 +15,12 @@ export default function OnboardingPage() {
   const searchParams = useSearchParams();
   const { user, loading } = useAuthContext();
 
-  // Redirect to login if user is not authenticated and loading is done
   useEffect(() => {
     if (!loading && !user) {
       router.push("/login");
     }
   }, [user, loading, router]);
 
-  // State for tracking current step, selected options, and loading states
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(true);

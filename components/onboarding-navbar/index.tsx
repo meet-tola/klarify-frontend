@@ -55,10 +55,12 @@ export default function OnboardingNavbar() {
         </div>
 
         <div className="flex items-center gap-4">
-          <Button variant="outline" size="sm" className="w-[141px] h-[40px] ">
-            <HelpCircle className="h-4 w-4 mr-2" />
-            Get Help
+          {/* Help Button */}
+          <Button variant="outline" size="sm">
+            <HelpCircle className="h-5 w-5" />
+            <span className="hidden sm:inline">Get Help</span>
           </Button>
+
           {user && (
             <motion.div
               initial={{ opacity: 0, x: 20 }}
@@ -68,8 +70,8 @@ export default function OnboardingNavbar() {
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button variant="outline" size="sm">
-                    <LogOut className="h-4 w-4 mr-2" />
-                    Logout
+                    <LogOut className="h-5 w-5" />
+                    <span className="hidden sm:inline">Logout</span>
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
