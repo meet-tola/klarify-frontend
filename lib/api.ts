@@ -1,10 +1,12 @@
 import API from "./axios-client";
 import { CurrentUserResponseType } from "@/types/api.type";
 
+// Helper function to handle errors
 const handleError = (error: any) => {
   throw error.response?.data || { message: "Something went wrong. Please try again." };
 };
 
+// Helper function for POST requests
 const postRequest = async (url: string, data?: any) => {
   try {
     const response = await API.post(url, data);
@@ -14,25 +16,69 @@ const postRequest = async (url: string, data?: any) => {
   }
 };
 
+// Helper function for authenticated GET requests
+const getRequest = async (url: string) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await API.get(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    handleError(error);
+  }
+};
+
+// Helper function to set the token in storage
+const setToken = (token: string) => {
+  localStorage.setItem("token", token);
+};
+
+// Helper function to clear the token from storage
+const clearToken = () => {
+  localStorage.removeItem("token"); 
+};
+
 // AUTH AND CURRENT USERS
 
-export const register = async (data: { name: string; email: string; password: string }) =>
-  postRequest("/auth/register", data);
+export const register = async (data: { name: string; email: string; password: string }) => {
+  const response = await postRequest("/auth/register", data);
+  setToken(response.accessToken); 
+  return response;
+};
 
-export const verifyEmail = async (data: { code: string }) =>
-  postRequest("/auth/verify-email", data);
+export const verifyEmail = async (data: { code: string }) => {
+  const response = await postRequest("/auth/verify-email", data);
+  setToken(response.token);
+  return response;
+};
 
-export const resendVerificationCode = async () =>
-  postRequest("/auth/resend-verification-code");
+export const resendVerificationCode = async () => {
+  return postRequest("/auth/resend-verification-code");
+};
 
-export const resetPassword = async (data: { newPassword: string }) =>
-  postRequest("/auth/reset-password", data);
+export const resetPassword = async (data: { newPassword: string }) => {
+  return postRequest("/auth/reset-password", data);
+};
 
-export const login = async (data: { email: string; password: string }) =>
-  postRequest("/auth/login", data);
+export const login = async (data: { email: string; password: string }) => {
+  try {
+    const response = await API.post("/auth/login", data);
+    setToken(response.data.accessToken);
+    return response.data;
+  } catch (error) {
+    console.error("Login failed:", error);
+    throw error;
+  }
+};
 
-export const logout = async () =>
-  postRequest("/auth/logout");
+export const logout = async () => {
+  clearToken(); 
+  return postRequest("/auth/logout");
+};
+
 
 export const getCurrentUser = async (): Promise<CurrentUserResponseType | undefined> => {
   try {
