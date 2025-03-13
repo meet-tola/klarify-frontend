@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -11,8 +12,11 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { motion } from "framer-motion";
+import { useAuthContext } from "@/context/auth-provider";
 
 export default function DashboardPage() {
+  const { user } = useAuthContext();
+
   return (
     <div className="container py-8 space-y-8">
       {/* Welcome Section */}

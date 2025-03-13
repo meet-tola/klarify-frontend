@@ -264,32 +264,46 @@ export default function StepTwo({
       </motion.div>
 
       <motion.div
-        className="flex justify-between mt-12"
+        className="flex flex-col sm:flex-row justify-between mt-12 gap-4"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}
       >
-        <div>
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="w-full sm:w-auto" 
+        >
+          <Button
+            variant="outline"
+            onClick={handleNotInterested}
+            className="w-full"
+          >
+            Not Interested
+          </Button>
+        </motion.div>
+
+        <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button variant="outline" onClick={handleNotInterested}>
-              Not Interested
-            </Button>
-          </motion.div>
-        </div>
-        <div className="flex gap-3">
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button variant="outline" disabled={!selectedCareer}>
+            <Button
+              variant="outline"
+              disabled={!selectedCareer}
+              className="w-full"
+            >
               Learn More
             </Button>
           </motion.div>
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button disabled={!selectedCareer} onClick={handleChoosePath}>
+            <Button
+              disabled={!selectedCareer}
+              onClick={handleChoosePath}
+              className="w-full"
+            >
               Choose This Path
             </Button>
           </motion.div>
         </div>
       </motion.div>
-
       <SearchDialog
         isOpen={showSearchDialog}
         onClose={() => setShowSearchDialog(false)}

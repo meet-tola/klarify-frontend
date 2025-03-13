@@ -108,9 +108,7 @@ export default function LoginPage() {
       // Set the logged-in user in state
       setUser(loggedInUser);
 
-      toast.success("Login Successful", {
-        description: "You will be redirected now.",
-      });
+      toast.success("Login Successful");
 
       // Check if all fields are null or empty except pickedSkill
       const isAllNullExceptPickedSkill =
@@ -174,6 +172,7 @@ export default function LoginPage() {
         open={isDialogOpen}
         onClose={() => {
           setIsDialogOpen(false);
+          router.push("/roadmap")
         }}
         userId={userId}
       />

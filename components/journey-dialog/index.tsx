@@ -10,17 +10,17 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import SearchDialog from "@/components/search-dialog"; // Import the SearchDialog component
+import SearchDialog from "@/components/search-dialog"; 
 
 interface JourneyDialogProps {
   open: boolean;
   onClose: () => void;
-  userId?: string; // Add userId as an optional prop
+  userId?: string; 
 }
 
 export default function JourneyDialog({ open, onClose, userId }: JourneyDialogProps) {
   const router = useRouter();
-  const [isSearchDialogOpen, setIsSearchDialogOpen] = useState(false); // State for SearchDialog visibility
+  const [isSearchDialogOpen, setIsSearchDialogOpen] = useState(false);
 
   return (
     <>
@@ -60,12 +60,11 @@ export default function JourneyDialog({ open, onClose, userId }: JourneyDialogPr
       {/* Search Dialog */}
       <SearchDialog
         isOpen={isSearchDialogOpen}
-        onClose={() => setIsSearchDialogOpen(false)} // Close SearchDialog
+        onClose={() => setIsSearchDialogOpen(false)} 
         onSelect={(skill) => {
-          setIsSearchDialogOpen(false); // Close SearchDialog after selection
-          // Add logic to handle the selected skill (e.g., save it to the user's profile)
+          setIsSearchDialogOpen(false); 
         }}
-        userId={userId} // Pass userId to SearchDialog
+        userId={userId} 
       />
     </>
   );

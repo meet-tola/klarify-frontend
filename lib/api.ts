@@ -122,6 +122,18 @@ export const selectSkillFromSearch = async (userId: string, pickedSkill: string)
   }
 };
 
+export const selectedSearchSkill = async (userId: string, pickedSkill: string) => {
+  try {
+    const response = await API.post(`/skills/${userId}/selected-search-skill`, {
+      pickedSkill,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error selecting skill:", error);
+    throw error;
+  }
+};
+
 // CAREER QUESTIONS AND EVALUATION
 export const getCareerQuestions = async (userId: string) => {
   try {

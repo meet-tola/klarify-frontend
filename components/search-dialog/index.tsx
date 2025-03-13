@@ -61,13 +61,12 @@ export default function SearchDialog({ isOpen, onClose, onSelect, userId }: Sear
 
     setIsNextLoading(true);
 
-    try {
+    try {      
       await selectSkillFromSearch(userId, selectedSkill);
 
       router.push("/roadmap");
     } catch (error) {
       console.error("Error selecting skill:", error);
-      alert("Failed to select skill. Please try again.");
     } finally {
       setIsNextLoading(false);
     }

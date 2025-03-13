@@ -40,7 +40,6 @@ export default function StepThree({ selectedOptions, onOptionSelect, onNextStep 
       if (user?.user?._id) {
         try {
           const data = await getCareerQuestions(user.user._id);
-          console.log("Fetched Career Questions:", data); // Debugging
 
           // Check if the response is an array and has at least one element
           if (Array.isArray(data) && data.length > 0 && data[0].questions) {
@@ -212,8 +211,8 @@ export default function StepThree({ selectedOptions, onOptionSelect, onNextStep 
       >
         <div>
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button variant="outline" onClick={() => (window.location.href = "/dashboard")}>
-              Skip this step
+            <Button variant="outline" onClick={() => (window.location.href = "/roadmap")}>
+              cancel
             </Button>
           </motion.div>
         </div>
