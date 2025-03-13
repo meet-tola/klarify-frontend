@@ -16,42 +16,15 @@ const postRequest = async (url: string, data?: any) => {
   }
 };
 
-// Helper function for authenticated GET requests
-const getRequest = async (url: string) => {
-  try {
-    const token = localStorage.getItem("token");
-    const response = await API.get(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (error: any) {
-    handleError(error);
-  }
-};
-
-// Helper function to set the token in storage
-const setToken = (token: string) => {
-  localStorage.setItem("token", token);
-};
-
-// Helper function to clear the token from storage
-const clearToken = () => {
-  localStorage.removeItem("token"); 
-};
-
 // AUTH AND CURRENT USERS
 
 export const register = async (data: { name: string; email: string; password: string }) => {
   const response = await postRequest("/auth/register", data);
-  setToken(response.accessToken); 
   return response;
 };
 
 export const verifyEmail = async (data: { code: string }) => {
   const response = await postRequest("/auth/verify-email", data);
-  setToken(response.token);
   return response;
 };
 
@@ -66,7 +39,6 @@ export const resetPassword = async (data: { newPassword: string }) => {
 export const login = async (data: { email: string; password: string }) => {
   try {
     const response = await API.post("/auth/login", data);
-    setToken(response.data.accessToken);
     return response.data;
   } catch (error) {
     console.error("Login failed:", error);
@@ -75,7 +47,6 @@ export const login = async (data: { email: string; password: string }) => {
 };
 
 export const logout = async () => {
-  clearToken(); 
   return postRequest("/auth/logout");
 };
 
