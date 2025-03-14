@@ -5,7 +5,7 @@ import { ChevronDown } from "lucide-react";
 import AnalyzingScreen from "@/components/analyzing-screen";
 import { getRoadmap } from "@/lib/api";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useAuthContext } from "@/context/auth-provider"; 
+import { useAuthContext } from "@/context/auth-provider";
 
 interface Phase {
   id: number;
@@ -23,12 +23,17 @@ interface StepFourProps {
   userId: string;
 }
 
-export default function StepFour({ selectedOptions, onOptionSelect, onNextStep, userId }: StepFourProps) {
+export default function StepFour({
+  selectedOptions,
+  onOptionSelect,
+  onNextStep,
+  userId,
+}: StepFourProps) {
   const [isAnalyzing, setIsAnalyzing] = useState(true);
   const [expandedPhase, setExpandedPhase] = useState<number>(1);
   const [phases, setPhases] = useState<Phase[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { user } = useAuthContext();
+  const [roadmapSkill, setRoadmapSkill] = useState<string>("");
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -40,15 +45,18 @@ export default function StepFour({ selectedOptions, onOptionSelect, onNextStep, 
     const fetchRoadmapData = async () => {
       try {
         const roadmap = await getRoadmap(userId);
+        setRoadmapSkill(roadmap.skill);
         if (roadmap && roadmap.phases) {
-          const transformedPhases = roadmap.phases.map((phase: any, index: number) => ({
-            id: index + 1,
-            title: phase.title,
-            weeks: phase.weeks.map((week: any, weekIndex: number) => ({
-              number: weekIndex + 1,
-              title: week.topic,
-            })),
-          }));
+          const transformedPhases = roadmap.phases.map(
+            (phase: any, index: number) => ({
+              id: index + 1,
+              title: phase.title,
+              weeks: phase.weeks.map((week: any, weekIndex: number) => ({
+                number: weekIndex + 1,
+                title: week.topic,
+              })),
+            })
+          );
           setPhases(transformedPhases);
         } else {
           setPhases([]);
@@ -56,17 +64,22 @@ export default function StepFour({ selectedOptions, onOptionSelect, onNextStep, 
       } catch (error) {
         console.error("Failed to fetch roadmap:", error);
       } finally {
-        setIsLoading(false); 
+        setIsLoading(false);
       }
     };
 
     fetchRoadmapData();
 
     return () => clearTimeout(timer);
-  }, [userId, onOptionSelect, user]);
+  }, [userId, onOptionSelect]);
 
   if (isAnalyzing) {
-    return <AnalyzingScreen onComplete={() => setIsAnalyzing(false)} userId={userId} />;
+    return (
+      <AnalyzingScreen
+        onComplete={() => setIsAnalyzing(false)}
+        userId={userId}
+      />
+    );
   }
 
   const togglePhase = (phaseId: number) => {
@@ -110,7 +123,7 @@ export default function StepFour({ selectedOptions, onOptionSelect, onNextStep, 
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          UI/UX Design Roadmap
+          {roadmapSkill} Roadmap
         </motion.h1>
         <motion.p
           className="text-muted-foreground"
@@ -118,7 +131,8 @@ export default function StepFour({ selectedOptions, onOptionSelect, onNextStep, 
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          Great choice! Let's fine-tune your learning experience based on your goals and experience level.
+          Great choice! We've fine-tune your learning experience based on your
+          goals and experience level.
         </motion.p>
       </div>
 
@@ -139,7 +153,9 @@ export default function StepFour({ selectedOptions, onOptionSelect, onNextStep, 
             >
               <h3 className="font-semibold">{phase.title}</h3>
               <ChevronDown
-                className={`transform transition-transform ${expandedPhase === phase.id ? "rotate-180" : ""}`}
+                className={`transform transition-transform ${
+                  expandedPhase === phase.id ? "rotate-180" : ""
+                }`}
               />
             </motion.button>
             <AnimatePresence>
@@ -183,10 +199,15 @@ export default function StepFour({ selectedOptions, onOptionSelect, onNextStep, 
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.6 }}
       >
-        <Button variant="outline" onClick={() => (window.location.href = "/dashboard")}>
+        <Button
+          variant="outline"
+          onClick={() => (window.location.href = "/my-learning")}
+        >
           Go to dashboard
         </Button>
-        <Button onClick={onNextStep}>Start learning</Button>
+        <Button onClick={() => (window.location.href = "/my-learning/learningpath")}>
+          Start learning
+        </Button>
       </motion.div>
     </div>
   );

@@ -44,7 +44,7 @@ export default function SecondaryNav() {
 
   return (
     <div className="sticky top-16 px-6 md:px-12 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container relative flex h-14 items-center">
+      <div className="container relative flex h-14 items-center overflow-x-auto scrollbar-none">
         {showLeftScroll && (
           <Button
             variant="ghost"

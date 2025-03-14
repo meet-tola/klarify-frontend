@@ -21,6 +21,16 @@ import SearchDialog from "@/components/search-dialog";
 import LoadingScreen from "@/components/loading-screen";
 import OnboardingNavbar from "@/components/onboarding-navbar";
 
+
+interface Phase {
+  id: number;
+  title: string;
+  weeks: {
+    number: number;
+    title: string;
+  }[];
+}
+
 export default function RoadmapPage() {
   const { user, loading } = useAuthContext();
   const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
@@ -34,8 +44,8 @@ export default function RoadmapPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showRoadmap, setShowRoadmap] = useState(false);
-  const [phases, setPhases] = useState<any[]>([]);
-  const [expandedPhase, setExpandedPhase] = useState<string | null>(null);
+  const [expandedPhase, setExpandedPhase] = useState<number>(1);
+  const [phases, setPhases] = useState<Phase[]>([]);
   const [isSearchDialogOpen, setIsSearchDialogOpen] = useState(false);
 
   const router = useRouter();
@@ -65,21 +75,36 @@ export default function RoadmapPage() {
     }
   }, [user, userId]);
 
-  const handleGenerateRoadmap = async () => {
-    setIsAnalyzing(true);
+  const handleGetRoadmap = async () => {
     try {
       const roadmap = await getRoadmap(userId as string);
-      setPhases(roadmap.phases);
+      if (roadmap && roadmap.phases) {
+        const transformedPhases = roadmap.phases.map(
+          (phase: any, index: number) => ({
+            id: index + 1,
+            title: phase.title,
+            weeks: phase.weeks.map((week: any, weekIndex: number) => ({
+              number: weekIndex + 1,
+              title: week.topic,
+            })),
+          })
+        );
+        setPhases(transformedPhases);
+      } else {
+        setPhases([]);
+      }
       setShowRoadmap(true);
     } catch (error) {
-      console.error("Failed to generate roadmap:", error);
-    } finally {
-      setIsAnalyzing(false);
+      console.error("Failed to fetch roadmap:", error);
     }
   };
 
-  const togglePhase = (phaseId: string) => {
-    setExpandedPhase(expandedPhase === phaseId ? null : phaseId);
+  const handleGenerateRoadmap = () => {
+    setIsAnalyzing(true);
+  };
+
+  const togglePhase = (phaseId: number) => {
+    setExpandedPhase(expandedPhase === phaseId ? 0 : phaseId);
   };
 
   if (isLoading) {
@@ -91,7 +116,7 @@ export default function RoadmapPage() {
       <AnalyzingScreen
         onComplete={() => {
           setIsAnalyzing(false);
-          setShowRoadmap(true);
+          handleGetRoadmap(); // Fetch and show roadmap after analysis
         }}
         userId={userId as string}
       />
@@ -170,19 +195,31 @@ export default function RoadmapPage() {
                   </div>
                 </div>
 
-                {/* Buttons */}
-                <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                  <Button
-                    variant="outline"
-                    onClick={() => setIsDialogOpen(true)}
-                  >
-                    Change Skill
-                  </Button>
-                  <Button onClick={handleGenerateRoadmap}>
-                    <Sparkles className="h-4 w-4 mr-2" />
-                    Generate Roadmap
-                  </Button>
-                </div>
+                {/* Buttons - Conditional Rendering */}
+                {!showRoadmap && (
+                  <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                    <Button
+                      variant="outline"
+                      onClick={() => setIsDialogOpen(true)}
+                    >
+                      Change Skill
+                    </Button>
+                    <Button
+                      onClick={
+                        user?.user.learningPath &&
+                        user?.user.learningPath.length > 0
+                          ? handleGetRoadmap // Show Roadmap
+                          : handleGenerateRoadmap // Generate Roadmap
+                      }
+                    >
+                      <Sparkles className="h-4 w-4 mr-2" />
+                      {user?.user.learningPath &&
+                      user?.user.learningPath.length > 0
+                        ? "Show Roadmap"
+                        : "Generate Roadmap"}
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -198,66 +235,78 @@ export default function RoadmapPage() {
                   Your Personalized Roadmap
                 </h2>
                 <motion.div
-                  className="space-y-4"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.2 }}
+        className="space-y-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
+      >
+        {phases.map((phase) => (
+          <div key={phase.id} className="border rounded-lg overflow-hidden">
+            <motion.button
+              className={`w-full p-4 text-left flex justify-between items-center ${
+                expandedPhase === phase.id ? "bg-primary/5" : "hover:bg-accent"
+              }`}
+              onClick={() => togglePhase(phase.id)}
+              whileHover={{ backgroundColor: "rgba(0,0,0,0.05)" }}
+            >
+              <h3 className="font-semibold">{phase.title}</h3>
+              <ChevronDown
+                className={`transform transition-transform ${
+                  expandedPhase === phase.id ? "rotate-180" : ""
+                }`}
+              />
+            </motion.button>
+            <AnimatePresence>
+              {expandedPhase === phase.id && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="border-t"
                 >
-                  {phases.map((phase) => (
-                    <div
-                      key={phase.id}
-                      className="border rounded-lg overflow-hidden"
-                    >
-                      <motion.button
-                        className={`w-full p-4 text-left flex justify-between items-center ${
-                          expandedPhase === phase.id
-                            ? "bg-primary/5"
-                            : "hover:bg-accent"
-                        }`}
-                        onClick={() => togglePhase(phase.id)}
-                        whileHover={{ backgroundColor: "rgba(0,0,0,0.05)" }}
+                  <div className="relative pl-8 py-2">
+                    <div className="absolute left-6 top-0 bottom-0 w-px bg-border" />
+                    {phase.weeks.map((week, index) => (
+                      <motion.div
+                        key={week.number}
+                        className="relative py-3 pl-6"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
                       >
-                        <h3 className="font-semibold">{phase.title}</h3>
-                        <ChevronDown
-                          className={`transform transition-transform ${
-                            expandedPhase === phase.id ? "rotate-180" : ""
-                          }`}
-                        />
-                      </motion.button>
-                      <AnimatePresence>
-                        {expandedPhase === phase.id && (
-                          <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: "auto", opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.3 }}
-                            className="border-t"
-                          >
-                            <div className="relative pl-8 py-2">
-                              <div className="absolute left-6 top-0 bottom-0 w-px bg-border" />
-                              {phase.weeks.map((week: any, index: number) => (
-                                <motion.div
-                                  key={week.number}
-                                  className="relative py-3 pl-6"
-                                  initial={{ opacity: 0, x: -20 }}
-                                  animate={{ opacity: 1, x: 0 }}
-                                  transition={{ delay: index * 0.1 }}
-                                >
-                                  <div className="absolute left-0 top-1/2 -translate-y-1/2">
-                                    <div className="w-2 h-2 rounded-full bg-[#7C3AED]" />
-                                  </div>
-                                  <p className="font-medium">
-                                    Week {week.number}: {week.title}
-                                  </p>
-                                </motion.div>
-                              ))}
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  ))}
+                        <div className="absolute left-0 top-1/2 -translate-y-1/2">
+                          <div className="w-2 h-2 rounded-full bg-primary" />
+                        </div>
+                        <p className="font-medium">
+                          Week {week.number}: {week.title}
+                        </p>
+                      </motion.div>
+                    ))}
+                  </div>
                 </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        ))}
+      </motion.div>
+
+                {/* New Buttons Below Roadmap */}
+                <div className="flex justify-end gap-4 mt-8">
+                  <Button
+                    variant="outline"
+                    onClick={() => (window.location.href = "/my-learning")}
+                  >
+                    Go to dashboard
+                  </Button>
+                  <Button
+                    onClick={() =>
+                      (window.location.href = "/my-learning/learningpath")
+                    }
+                  >
+                    Start learning
+                  </Button>
+                </div>
               </motion.div>
             )}
           </>
