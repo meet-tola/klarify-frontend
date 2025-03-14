@@ -39,6 +39,7 @@ export const resetPassword = async (data: { newPassword: string }) => {
 export const login = async (data: { email: string; password: string }) => {
   try {
     const response = await API.post("/auth/login", data);
+    localStorage.setItem("token", response.data.token);
     return response.data;
   } catch (error) {
     console.error("Login failed:", error);

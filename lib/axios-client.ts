@@ -7,6 +7,15 @@ const API = axios.create({
   withCredentials: true,
 });
 
+// Attach token to request headers if it exists in localStorage
+API.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 // Handle network errors or canceled requests
 API.interceptors.response.use(
   (response) => response,

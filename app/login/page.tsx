@@ -24,6 +24,7 @@ export default function LoginPage() {
   const { user, setUser } = useAuthContext();
   const router = useRouter();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  console.log("user", user)
 
   const userId = user?.user._id;
 
