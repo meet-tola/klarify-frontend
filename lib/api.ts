@@ -136,6 +136,15 @@ export const selectedSearchSkill = async (userId: string, pickedSkill: string) =
   }
 };
 
+export const clearUserSkills = async (userId: string) => {
+  try {
+    const response = await API.put(`skills/${userId}/clear-skills`);
+    return response.data;
+  } catch (error: any) {
+    handleError(error);
+  }
+};
+
 // CAREER QUESTIONS AND EVALUATION
 export const getCareerQuestions = async (userId: string) => {
   try {

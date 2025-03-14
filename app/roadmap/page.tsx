@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
 import { useAuthContext } from "@/context/auth-provider";
-import { selectedSearchSkill, getRoadmap } from "@/lib/api";
+import { selectedSearchSkill, getRoadmap, clearUserSkills } from "@/lib/api";
 import JourneyDialog from "@/components/journey-dialog";
 import AnalyzingScreen from "@/components/analyzing-screen";
 import { motion, AnimatePresence } from "framer-motion";
@@ -97,6 +97,14 @@ export default function RoadmapPage() {
       />
     );
   }
+
+  const handleSelectSkill = async () => {
+    try {
+      await clearUserSkills(userId as string);
+    } catch (error) {
+      console.error("Failed to clear user skills:", error);
+    }
+  };
 
   return (
     <>
@@ -273,7 +281,7 @@ export default function RoadmapPage() {
                 <Button
                   className="flex items-center gap-2"
                   onClick={() => {
-                    setIsDialogOpen(true);
+                    router.push("/onboarding?step=one");
                   }}
                 >
                   Take Career Assessment
@@ -368,10 +376,12 @@ export default function RoadmapPage() {
         {/* Journey Dialog */}
         <JourneyDialog
           open={isDialogOpen}
-          onClose={() => {
-            setIsDialogOpen(false);
-          }}
+          onClose={() => setIsDialogOpen(false)}
           userId={userId}
+          title="Select a new skill"
+          description="Changing your skill will remove your previous selection and generate a new roadmap."
+          onStartCareerTest={handleSelectSkill}
+          onSelectSkill={handleSelectSkill}
         />
 
         {/* Search Dialog */}

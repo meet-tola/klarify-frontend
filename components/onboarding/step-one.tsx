@@ -140,7 +140,7 @@ export default function StepOne({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h2 className="text-2xl font-bold">Discover your interests.</h2>
+        <h2 className="text-2xl font-bold roca-bold">Discover your interests.</h2>
         <p className="text-muted-foreground mt-1">
           Let's find out what you're naturally good at and what interests you!
         </p>

@@ -4,9 +4,11 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Progress } from "@/components/ui/progress";
 import { getRoadmapContent } from "@/lib/api";
+import { useAuthContext } from "@/context/auth-provider";
+
 interface AnalyzingScreenProps {
   onComplete?: () => void;
-  userId: string; 
+  userId: string;
 }
 
 const facts = [
@@ -23,8 +25,18 @@ export default function AnalyzingScreen({
   const [progress, setProgress] = useState(0);
   const [currentFact, setCurrentFact] = useState(0);
   const [isGenerating, setIsGenerating] = useState(true);
+  const { user } = useAuthContext();
 
   useEffect(() => {
+    if (user?.user?.learningPath && user?.user?.learningPath?.length > 0) {
+      setIsGenerating(false);
+      setProgress(100);
+      if (onComplete) {
+        setTimeout(onComplete, 1500);
+      }
+      return;
+    }
+
     // Simulate progress for the first 50%
     const progressTimer = setInterval(() => {
       setProgress((prev) => {
@@ -43,7 +55,7 @@ export default function AnalyzingScreen({
         setIsGenerating(false);
         setProgress(100);
         if (onComplete) {
-          setTimeout(onComplete, 500);
+          setTimeout(onComplete, 1500);
         }
       } catch (error) {
         console.log("Failed to generate roadmap:", error);
@@ -62,7 +74,7 @@ export default function AnalyzingScreen({
       clearInterval(progressTimer);
       clearInterval(factTimer);
     };
-  }, [onComplete, userId]);
+  }, [onComplete, userId, user]); 
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-background">
@@ -72,7 +84,7 @@ export default function AnalyzingScreen({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h1 className="text-4xl font-bold mb-4">
+          <h1 className="text-4xl font-bold roca-bold mb-4">
             {isGenerating
               ? "Analyzing Your Assessment Results..."
               : "Roadmap Generated Successfully!"}

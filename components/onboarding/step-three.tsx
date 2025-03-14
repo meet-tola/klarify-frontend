@@ -45,10 +45,10 @@ export default function StepThree({ selectedOptions, onOptionSelect, onNextStep 
           if (Array.isArray(data) && data.length > 0 && data[0].questions) {
             // Transform the backend data to match the frontend's expected structure
             const transformedQuestions = data[0].questions.map((question: any, index: number) => ({
-              id: question._id || `question-${index}`,
+              id: question._id, // Use the original question ID
               text: question.question,
               options: question.answers.map((answer: string, answerIndex: number) => ({
-                id: `answer-${index}-${answerIndex}`, 
+                id: answer, // Use the actual answer text as the ID
                 text: answer,
               })),
             }));
@@ -71,17 +71,22 @@ export default function StepThree({ selectedOptions, onOptionSelect, onNextStep 
   const handleNextQuestion = async () => {
     if (isLastQuestion) {
       // Prepare the answers for evaluation
-      const answers = Object.entries(selectedOptions).map(([questionId, answer]) => ({
-        questionId,
-        answer,
-      }));
+      const answers = Object.entries(selectedOptions).map(([questionId, answerId]) => {
+        const question = questions.find(q => q.id === questionId);
+        const answerText = question?.options.find(opt => opt.id === answerId)?.text || "";
+
+        return {
+          questionId, // Use the original question ID
+          answer: answerText, // Use the actual answer text
+        };
+      });
 
       console.log("Answers being sent to the backend:", answers);
 
       if (user?.user?._id) {
         try {
           const result = await evaluateCareerAnswers(user.user._id, answers);
-          console.log("Evaluation Result:", result); 
+          console.log("Evaluation Result:", result);
         } catch (error) {
           console.error("Failed to evaluate answers:", error);
         }
@@ -146,7 +151,7 @@ export default function StepThree({ selectedOptions, onOptionSelect, onNextStep 
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h2 className="text-2xl font-bold">Career Assessment</h2>
+        <h2 className="text-2xl font-bold roca-bold">Career Assessment</h2>
         <p className="text-muted-foreground mt-1">
           Let's understand your preferred work environment and career goals.
         </p>

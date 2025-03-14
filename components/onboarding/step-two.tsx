@@ -9,6 +9,7 @@ import { useAuthContext } from "@/context/auth-provider";
 import { getSuggestedSkills, selectSkill } from "@/lib/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface Career {
   id: string;
@@ -37,6 +38,7 @@ export default function StepTwo({
   const [displayedSkills, setDisplayedSkills] = useState<Career[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isChangingCareers, setIsChangingCareers] = useState(false);
+  const router = useRouter();
 
   // Fetch suggested skills when the component mounts
   useEffect(() => {
@@ -49,6 +51,7 @@ export default function StepTwo({
             setDisplayedSkills(data.slice(0, 4));
           }
         } catch (error) {
+          router.push("/roadmap")
           console.error("Failed to fetch suggested skills:", error);
         } finally {
           setIsLoading(false);
@@ -207,7 +210,7 @@ export default function StepTwo({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h2 className="text-2xl font-bold">Matching you to Careers</h2>
+        <h2 className="text-2xl font-bold roca-bold">Matching you to Careers</h2>
         <p className="text-muted-foreground mt-1">
           Based on your answers, we've identified digital careers that might be
           a great fit for you!

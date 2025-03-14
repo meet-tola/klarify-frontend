@@ -3,7 +3,9 @@ import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import AnalyzingScreen from "@/components/analyzing-screen";
-import { getRoadmap } from "@/lib/api"; 
+import { getRoadmap } from "@/lib/api";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useAuthContext } from "@/context/auth-provider"; 
 
 interface Phase {
   id: number;
@@ -18,13 +20,15 @@ interface StepFourProps {
   selectedOptions: Record<string, string>;
   onOptionSelect: (questionId: string, optionId: string) => void;
   onNextStep: () => void;
-  userId: string; 
+  userId: string;
 }
 
 export default function StepFour({ selectedOptions, onOptionSelect, onNextStep, userId }: StepFourProps) {
   const [isAnalyzing, setIsAnalyzing] = useState(true);
   const [expandedPhase, setExpandedPhase] = useState<number>(1);
   const [phases, setPhases] = useState<Phase[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { user } = useAuthContext();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -35,9 +39,8 @@ export default function StepFour({ selectedOptions, onOptionSelect, onNextStep, 
     // Fetch roadmap data
     const fetchRoadmapData = async () => {
       try {
-        const roadmap = await getRoadmap(userId); 
+        const roadmap = await getRoadmap(userId);
         if (roadmap && roadmap.phases) {
-          // Transform the roadmap data into the required format
           const transformedPhases = roadmap.phases.map((phase: any, index: number) => ({
             id: index + 1,
             title: phase.title,
@@ -46,17 +49,21 @@ export default function StepFour({ selectedOptions, onOptionSelect, onNextStep, 
               title: week.topic,
             })),
           }));
-          setPhases(transformedPhases); 
+          setPhases(transformedPhases);
+        } else {
+          setPhases([]);
         }
       } catch (error) {
         console.error("Failed to fetch roadmap:", error);
+      } finally {
+        setIsLoading(false); 
       }
     };
 
     fetchRoadmapData();
 
     return () => clearTimeout(timer);
-  }, [userId, onOptionSelect]);
+  }, [userId, onOptionSelect, user]);
 
   if (isAnalyzing) {
     return <AnalyzingScreen onComplete={() => setIsAnalyzing(false)} userId={userId} />;
@@ -66,11 +73,39 @@ export default function StepFour({ selectedOptions, onOptionSelect, onNextStep, 
     setExpandedPhase(expandedPhase === phaseId ? 0 : phaseId);
   };
 
+  // Skeleton loading state
+  if (isLoading) {
+    return (
+      <div className="space-y-8 max-w-3xl mx-auto">
+        <div className="text-center">
+          <Skeleton className="h-8 w-[200px] mx-auto mb-4" />
+          <Skeleton className="h-4 w-[300px] mx-auto" />
+        </div>
+        <div className="space-y-4">
+          {[1, 2, 3].map((phase) => (
+            <div key={phase} className="border rounded-lg overflow-hidden">
+              <Skeleton className="h-12 w-full" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // No roadmap available
+  if (phases.length === 0) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <p className="text-muted-foreground">No roadmap available.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8 max-w-3xl mx-auto">
       <div className="text-center">
         <motion.h1
-          className="text-3xl font-bold mb-4"
+          className="text-3xl font-bold roca-bold mb-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
