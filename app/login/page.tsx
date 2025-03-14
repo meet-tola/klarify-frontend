@@ -24,7 +24,6 @@ export default function LoginPage() {
   const { user, setUser } = useAuthContext();
   const router = useRouter();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  console.log("user", user)
 
   const userId = user?.user._id;
 
@@ -32,54 +31,67 @@ export default function LoginPage() {
     if (user) {
       // Check if all fields are null or empty except pickedSkill
       const isAllNullExceptPickedSkill =
-        (!user.user?.skillsAssessment || user.user.skillsAssessment.length === 0) &&
+        (!user.user?.skillsAssessment ||
+          user.user.skillsAssessment.length === 0) &&
         (!user.user?.selectedSkills || user.user.selectedSkills.length === 0) &&
-        (!user.user?.careerAssessment || user.user.careerAssessment.length === 0) &&
+        (!user.user?.careerAssessment ||
+          user.user.careerAssessment.length === 0) &&
         (!user.user?.learningPath || user.user.learningPath.length === 0) &&
-        user.user?.pickedSkill; 
-  
+        user.user?.pickedSkill;
+
       if (isAllNullExceptPickedSkill) {
-        router.push("/roadmap"); 
+        router.push("/roadmap");
         return;
       }
-  
-      // If no pickedSkill and skillsAssessment is empty, open dialog
+
+      // If no pickedSkill and skillsAssessment and careerAssessment is empty, open dialog
       if (
         !user.user?.pickedSkill &&
-        (!user.user?.skillsAssessment || user.user.skillsAssessment.length === 0)
+        (!user.user?.skillsAssessment ||
+          user.user.skillsAssessment.length === 0) &&
+        (!user.user?.careerAssessment ||
+          user.user.careerAssessment.length === 0)
       ) {
         setIsDialogOpen(true);
         return;
       }
-  
+
       // If the user has both pickedSkill and selectedSkills, go to step two
       if (user.user?.pickedSkill && user.user?.selectedSkills?.length > 0) {
         router.push("/onboarding?step=two");
         return;
       }
-  
+
       // If the user has pickedSkill but no selectedSkills, go to roadmap
-      if (user.user?.pickedSkill && (!user.user?.selectedSkills || user.user.selectedSkills.length === 0)) {
+      if (
+        user.user?.pickedSkill &&
+        (!user.user?.selectedSkills || user.user.selectedSkills.length === 0)
+      ) {
         router.push("/roadmap");
         return;
       }
-  
+
       // If the user has picked a skill but hasn't completed the career assessment, redirect to step three
-      if (!user.user?.careerAssessment || user.user.careerAssessment.length === 0) {
+      if (
+        user.user?.pickedSkill && (user.user?.selectedSkills?.length > 0) && (
+          !user.user?.careerAssessment ||
+            user.user.careerAssessment.length === 0
+        )
+      ) {
         router.push("/onboarding?step=three");
         return;
       }
-  
+
       // If the user has completed the career assessment but hasn't set up a learning path, redirect to step four
       if (!user.user?.learningPath || user.user.learningPath.length === 0) {
         router.push("/onboarding?step=four");
         return;
       }
-  
+
       // If all steps are completed, redirect to the dashboard
       router.push("/dashboard");
     }
-  }, [user, router]);  
+  }, [user, router]);
 
   const {
     register,
@@ -93,12 +105,12 @@ export default function LoginPage() {
     },
   });
 
-  const onSubmit = async (data: LoginFormData) => { 
+  const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
-  
+
     try {
       const loggedInUser = await loginAPI(data);
-  
+
       // If the user has a verification code, redirect to the email verification page
       if (
         loggedInUser.user?.verificationCode &&
@@ -107,67 +119,88 @@ export default function LoginPage() {
         router.push("/verify-email");
         return;
       }
-  
+
       // Set the logged-in user in state
       setUser(loggedInUser);
-  
+
       toast.success("Login Successful");
-  
+
       // Check if all fields are null or empty except pickedSkill
       const isAllNullExceptPickedSkill =
-        (!loggedInUser.user?.skillsAssessment || loggedInUser.user.skillsAssessment.length === 0) &&
-        (!loggedInUser.user?.selectedSkills || loggedInUser.user.selectedSkills.length === 0) &&
-        (!loggedInUser.user?.careerAssessment || loggedInUser.user.careerAssessment.length === 0) &&
-        (!loggedInUser.user?.learningPath || loggedInUser.user.learningPath.length === 0) &&
+        (!loggedInUser.user?.skillsAssessment ||
+          loggedInUser.user.skillsAssessment.length === 0) &&
+        (!loggedInUser.user?.selectedSkills ||
+          loggedInUser.user.selectedSkills.length === 0) &&
+        (!loggedInUser.user?.careerAssessment ||
+          loggedInUser.user.careerAssessment.length === 0) &&
+        (!loggedInUser.user?.learningPath ||
+          loggedInUser.user.learningPath.length === 0) &&
         loggedInUser.user?.pickedSkill; // pickedSkill is set
-  
+
       if (isAllNullExceptPickedSkill) {
         router.push("/roadmap"); // Redirect to roadmap
         return;
       }
-  
+
       // If no pickedSkill and skillsAssessment is empty, open dialog
       if (
         !loggedInUser.user?.pickedSkill &&
-        (!loggedInUser.user?.skillsAssessment || loggedInUser.user.skillsAssessment.length === 0)
+        (!loggedInUser.user?.skillsAssessment ||
+          loggedInUser.user.skillsAssessment.length === 0) &&
+        (!loggedInUser.user?.careerAssessment ||
+          loggedInUser.user.careerAssessment.length === 0)
       ) {
         setIsDialogOpen(true);
         return;
       }
-  
+
       // If the user has both pickedSkill and selectedSkills, go to step two
-      if (loggedInUser.user?.pickedSkill && loggedInUser.user?.selectedSkills?.length > 0) {
+      if (
+        loggedInUser.user?.pickedSkill &&
+        loggedInUser.user?.selectedSkills?.length > 0
+      ) {
         router.push("/onboarding?step=two");
         return;
       }
-  
+
       // If the user has pickedSkill but no selectedSkills, go to roadmap
-      if (loggedInUser.user?.pickedSkill && (!loggedInUser.user?.selectedSkills || loggedInUser.user.selectedSkills.length === 0)) {
+      if (
+        loggedInUser.user?.pickedSkill &&
+        (!loggedInUser.user?.selectedSkills ||
+          loggedInUser.user.selectedSkills.length === 0)
+      ) {
         router.push("/roadmap");
         return;
       }
-  
+
       // If the user has picked a skill but hasn't completed the career assessment, redirect to step three
-      if (!loggedInUser.user?.careerAssessment || loggedInUser.user.careerAssessment.length === 0) {
+      if (
+        loggedInUser.user?.pickedSkill && (loggedInUser.user?.selectedSkills?.length > 0) && (
+          !loggedInUser.user?.careerAssessment ||
+          loggedInUser.user.careerAssessment.length === 0
+        )
+      ) {
         router.push("/onboarding?step=three");
         return;
       }
-  
+
       // If the user has completed the career assessment but hasn't set up a learning path, redirect to step four
-      if (!loggedInUser.user?.learningPath || loggedInUser.user.learningPath.length === 0) {
+      if (
+        !loggedInUser.user?.learningPath ||
+        loggedInUser.user.learningPath.length === 0
+      ) {
         router.push("/onboarding?step=four");
         return;
       }
-  
+
       // If all steps are completed, redirect to the dashboard
       router.push("/dashboard");
-  
     } catch (error) {
       toast.error("Invalid email or password.");
     } finally {
       setIsLoading(false);
     }
-  };  
+  };
 
   return (
     <>
@@ -175,7 +208,7 @@ export default function LoginPage() {
         open={isDialogOpen}
         onClose={() => {
           setIsDialogOpen(false);
-          router.push("/roadmap")
+          router.push("/roadmap");
         }}
         userId={userId}
       />

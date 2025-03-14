@@ -23,7 +23,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const data = await getCurrentUser();
         setUser(data ?? null);
       } catch (error) {
-        console.log("Failed to fetch user data:", error);
         setUser(null);
       } finally {
         setLoading(false); 

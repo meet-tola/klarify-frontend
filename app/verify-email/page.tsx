@@ -54,9 +54,7 @@ export default function VerifyEmailPage() {
       setIsLoading(true);
       await verifyEmailAPI({ code });
 
-      toast.success("Email verified successfully!", {
-        description: "Redirecting to onboarding...",
-      });
+      toast.success("Email verified successfully!");
 
       setIsDialogOpen(true);
     } catch (error: any) {
@@ -91,7 +89,7 @@ export default function VerifyEmailPage() {
         open={isDialogOpen}
         onClose={() => {
           setIsDialogOpen(false);
-          router.push("/onboarding?step=one");
+          router.push("/roadmap");
         }}
       />
 
