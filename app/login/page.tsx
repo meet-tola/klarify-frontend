@@ -73,17 +73,22 @@ export default function LoginPage() {
 
       // If the user has picked a skill but hasn't completed the career assessment, redirect to step three
       if (
-        user.user?.pickedSkill && (user.user?.selectedSkills?.length > 0) && (
-          !user.user?.careerAssessment ||
-            user.user.careerAssessment.length === 0
-        )
+        user.user?.pickedSkill &&
+        user.user?.selectedSkills?.length > 0 &&
+        (!user.user?.careerAssessment ||
+          user.user.careerAssessment.length === 0)
       ) {
         router.push("/onboarding?step=three");
         return;
       }
 
       // If the user has completed the career assessment but hasn't set up a learning path, redirect to step four
-      if (!user.user?.learningPath || user.user.learningPath.length === 0) {
+      if (
+        user.user?.pickedSkill &&
+        user.user?.selectedSkills?.length > 0 &&
+        user.user?.careerAssessment?.length > 0 &&
+        (!user.user?.learningPath || user.user.learningPath.length === 0)
+      ) {
         router.push("/onboarding?step=four");
         return;
       }
@@ -175,10 +180,10 @@ export default function LoginPage() {
 
       // If the user has picked a skill but hasn't completed the career assessment, redirect to step three
       if (
-        loggedInUser.user?.pickedSkill && (loggedInUser.user?.selectedSkills?.length > 0) && (
-          !loggedInUser.user?.careerAssessment ||
-          loggedInUser.user.careerAssessment.length === 0
-        )
+        loggedInUser.user?.pickedSkill &&
+        loggedInUser.user?.selectedSkills?.length > 0 &&
+        (!loggedInUser.user?.careerAssessment ||
+          loggedInUser.user.careerAssessment.length === 0)
       ) {
         router.push("/onboarding?step=three");
         return;
@@ -186,8 +191,11 @@ export default function LoginPage() {
 
       // If the user has completed the career assessment but hasn't set up a learning path, redirect to step four
       if (
-        !loggedInUser.user?.learningPath ||
-        loggedInUser.user.learningPath.length === 0
+        loggedInUser.user?.pickedSkill &&
+        loggedInUser.user?.selectedSkills?.length > 0 &&
+        loggedInUser.user?.careerAssessment?.length > 0 &&
+        (!loggedInUser.user?.learningPath ||
+          loggedInUser.user.learningPath.length === 0)
       ) {
         router.push("/onboarding?step=four");
         return;
