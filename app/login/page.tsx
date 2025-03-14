@@ -47,11 +47,10 @@ export default function LoginPage() {
       // If no pickedSkill and skillsAssessment and careerAssessment is empty, open dialog
       if (
         !user.user?.pickedSkill &&
-        (!user.user?.skillsAssessment ||
-          user.user.skillsAssessment.length === 0) &&
-        (!user.user?.careerAssessment ||
-          user.user.careerAssessment.length === 0)
+        (!user.user?.skillsAssessment || user.user.skillsAssessment.length === 0) &&
+        (!user.user?.careerAssessment || user.user.careerAssessment.length === 0)
       ) {
+        console.log("Opening Dialog...");
         setIsDialogOpen(true);
         return;
       }
@@ -150,10 +149,8 @@ export default function LoginPage() {
       // If no pickedSkill and skillsAssessment is empty, open dialog
       if (
         !loggedInUser.user?.pickedSkill &&
-        (!loggedInUser.user?.skillsAssessment ||
-          loggedInUser.user.skillsAssessment.length === 0) &&
-        (!loggedInUser.user?.careerAssessment ||
-          loggedInUser.user.careerAssessment.length === 0)
+        (!loggedInUser.user?.skillsAssessment || loggedInUser.user.skillsAssessment.length === 0) &&
+        (!loggedInUser.user?.careerAssessment || loggedInUser.user.careerAssessment.length === 0)
       ) {
         setIsDialogOpen(true);
         return;
