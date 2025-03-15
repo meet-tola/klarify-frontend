@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import LoadingScreen from "@/components/loading-screen";
-import OnboardingLayout, { type Step } from "@/components/onboarding-layout";
+import OnboardingLayout, { type Step } from "@/components/onboarding/onboarding-layout";
 import StepOne from "@/components/onboarding/step-one";
 import StepTwo from "@/components/onboarding/step-two";
 import StepThree from "@/components/onboarding/step-three";
@@ -107,6 +107,58 @@ export default function OnboardingPage() {
       }, 800);
     }
   };
+
+  // Check user progress and redirect accordingly
+  useEffect(() => {
+    if (user) {
+      // If no pickedSkill and skillsAssessment and careerAssessment is empty, open dialog
+      if (
+        !user.user?.pickedSkill &&
+        (!user.user?.skillsAssessment || user.user.skillsAssessment.length === 0) &&
+        (!user.user?.careerAssessment || user.user.careerAssessment.length === 0)
+      ) {
+        router.push("/onboarding?step=one");
+        return;
+      }
+
+      // If the user has both pickedSkill and selectedSkills, go to step two
+      if (!user.user?.pickedSkill && user.user?.skillsAssessment?.length > 0) {
+        router.push("/onboarding?step=two");
+        return;
+      }
+
+      // If the user has pickedSkill but no selectedSkills, go to roadmap
+      if (
+        user.user?.pickedSkill &&
+        (!user.user?.selectedSkills || user.user.selectedSkills.length === 0)
+      ) {
+        router.push("/roadmap");
+        return;
+      }
+
+      // If the user has picked a skill but hasn't completed the career assessment, redirect to step three
+      if (
+        user.user?.pickedSkill &&
+        user.user?.selectedSkills?.length > 0 &&
+        (!user.user?.careerAssessment ||
+          user.user.careerAssessment.length === 0)
+      ) {
+        router.push("/onboarding?step=three");
+        return;
+      }
+
+      // If the user has completed the career assessment but hasn't set up a learning path, redirect to step four
+      if (
+        user.user?.pickedSkill &&
+        user.user?.selectedSkills?.length > 0 &&
+        user.user?.careerAssessment?.length > 0 &&
+        (!user.user?.learningPath || user.user.learningPath.length === 0)
+      ) {
+        router.push("/onboarding?step=four");
+        return;
+      }
+    }
+  }, [user, router]);
 
   if (isLoading || isChangingStep) {
     return (

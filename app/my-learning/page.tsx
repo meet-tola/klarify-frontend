@@ -100,7 +100,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Features Discussion Banner */}
-      <div className="bg-blue-50 p-4 rounded-lg">
+      {/* <div className="bg-blue-50 p-4 rounded-lg">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <span className="text-xs font-semibold bg-blue-100 text-blue-700 px-2 py-1 rounded">
@@ -119,7 +119,7 @@ export default function DashboardPage() {
             Go to details →
           </Link>
         </div>
-      </div>
+      </div> */}
 
       {/* Continue Learning Section */}
       <section>

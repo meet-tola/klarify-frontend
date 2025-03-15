@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { EyeIcon, EyeOffIcon, Loader2 } from "lucide-react"; // Import Loader2
 import { motion } from "framer-motion";
 import LoadingScreen from "@/components/loading-screen";
-import OnboardingNavbar from "@/components/onboarding-navbar";
+import OnboardingNavbar from "@/components/onboarding/onboarding-navbar";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {

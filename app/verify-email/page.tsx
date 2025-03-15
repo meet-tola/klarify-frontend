@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import Navbar from "@/components/onboarding-navbar";
+import Navbar from "@/components/onboarding/onboarding-navbar";
 import LoadingScreen from "@/components/loading-screen";
 import { verificationSchema } from "@/validation/auth.validation";
 import { useRouter } from "next/navigation";

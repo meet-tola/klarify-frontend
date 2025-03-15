@@ -2,11 +2,17 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, Bell, X } from "lucide-react";
+import { Menu, Bell, X, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import Logo from "../logo";
 
 const mainNavItems = [
@@ -29,18 +35,26 @@ export default function MainNav() {
               <span className="sr-only">Toggle menu</span>
             </Button>
           </SheetTrigger>
+
           <SheetContent side="left" className="w-[300px] sm:w-[400px]">
-            <nav className="flex flex-col gap-4">
-              {mainNavItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="text-lg font-medium transition-colors hover:text-primary"
-                >
-                  {item.title}
+            <SheetHeader>
+              <SheetTitle>
+                <Link href="/" className="mr-6 flex items-center space-x-2">
+                  <Logo />
                 </Link>
-              ))}
-            </nav>
+              </SheetTitle>
+              <nav className="flex flex-col gap-4">
+                {mainNavItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="text-lg font-medium transition-colors hover:text-primary"
+                  >
+                    {item.title}
+                  </Link>
+                ))}
+              </nav>
+            </SheetHeader>
           </SheetContent>
         </Sheet>
 
@@ -74,7 +88,7 @@ export default function MainNav() {
             {isSearchOpen ? (
               <X className="h-5 w-5" />
             ) : (
-              <span className="h-5 w-5">🔍</span>
+              <Search className="h-5 w-5" />
             )}
           </Button>
 

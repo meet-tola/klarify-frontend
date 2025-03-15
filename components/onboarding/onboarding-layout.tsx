@@ -5,7 +5,7 @@ import type React from "react"
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ChevronDown } from "lucide-react"
-import OnboardingNavbar from "../onboarding-navbar"
+import OnboardingNavbar from "./onboarding-navbar"
 
 export type Step = {
   id: number

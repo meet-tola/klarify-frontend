@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { EyeIcon, EyeOffIcon, Loader2, Verified } from "lucide-react"; // Import Loader2
-import OnboardingNavbar from "@/components/onboarding-navbar";
+import OnboardingNavbar from "@/components/onboarding/onboarding-navbar";
 import LoadingScreen from "@/components/loading-screen";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -50,13 +50,12 @@ export default function LoginPage() {
         (!user.user?.skillsAssessment || user.user.skillsAssessment.length === 0) &&
         (!user.user?.careerAssessment || user.user.careerAssessment.length === 0)
       ) {
-        console.log("Opening Dialog...");
         setIsDialogOpen(true);
         return;
       }
 
-      // If the user has both pickedSkill and selectedSkills, go to step two
-      if (user.user?.pickedSkill && user.user?.selectedSkills?.length > 0) {
+      // If the user no pickedSkill and skills Assessment, go to step two
+      if (!user.user?.pickedSkill && user.user?.skillsAssessment?.length > 0) {
         router.push("/onboarding?step=two");
         return;
       }

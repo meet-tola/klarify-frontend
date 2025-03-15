@@ -19,7 +19,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import SearchDialog from "@/components/search-dialog";
 import LoadingScreen from "@/components/loading-screen";
-import OnboardingNavbar from "@/components/onboarding-navbar";
+import OnboardingNavbar from "@/components/onboarding/onboarding-navbar";
 
 
 interface Phase {
