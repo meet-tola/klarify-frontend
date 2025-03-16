@@ -320,7 +320,7 @@ export default function RoadmapPage() {
 
                 {/* New Buttons Below Roadmap */}
                 <div className="flex justify-end gap-4 mt-8">
-                  <Link href={""}>
+                  <Link href={"/my-learning"}>
                     <Button variant="outline">Go to dashboard</Button>
                   </Link>
 

@@ -6,17 +6,24 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ArrowRight, BookText, FolderKanban, Info, Layers } from "lucide-react";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { motion } from "framer-motion";
 import { useAuthContext } from "@/context/auth-provider";
 import { useRouter } from "next/navigation";
 import LoadingScreen from "@/components/loading-screen";
 import { slugify } from "@/lib/slugify";
-import { getRoadmapContent, selectedSearchSkill } from "@/lib/api";
+import { getRoadmapContent } from "@/lib/api";
 
 export default function DashboardPage() {
   const { user, loading } = useAuthContext();
@@ -315,80 +322,50 @@ export default function DashboardPage() {
           {/* Right Column - Tips for Beginners */}
           <div className="p-6 bg-white rounded-lg border">
             <div className="flex items-center gap-2 mb-4">
-              <h3 className="text-lg font-semibold">Tip for Beginners</h3>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Info className="h-4 w-4 text-gray-400" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Helpful tips for getting started</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <h3 className="text-lg font-semibold">
+                Tips for {learningPath?.level || "Beginners"}
+              </h3>
+              <Popover>
+                <PopoverTrigger>
+                  <Info className="h-4 w-4 text-gray-400 cursor-pointer" />
+                </PopoverTrigger>
+                <PopoverContent>
+                  <p>Helpful tips for getting started</p>
+                </PopoverContent>
+              </Popover>
             </div>
             <p className="text-gray-600 mb-6">
-              Learning to code can be overwhelming, here are some tips to help
-              you get started:
+              Here are some tips tailored for your current level:
             </p>
             <div className="space-y-4">
-              <Link
-                href="/tips/tutorial"
-                className="flex items-center justify-between py-2 text-gray-700 hover:text-gray-900"
-              >
-                <span>Avoid Tutorial Hell</span>
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </Link>
-              <Link
-                href="/tips/habits"
-                className="flex items-center justify-between py-2 text-gray-700 hover:text-gray-900"
-              >
-                <span>Consistent study habits</span>
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </Link>
-              <Link
-                href="/tips/goals"
-                className="flex items-center justify-between py-2 text-gray-700 hover:text-gray-900"
-              >
-                <span>Set a clear goal</span>
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </Link>
+              {learningPath?.tips?.map((tip: any, index: any) => (
+                <Dialog key={index}>
+                  <DialogTrigger asChild>
+                    <div className="flex items-center justify-between py-2 text-gray-700 hover:text-gray-900 cursor-pointer">
+                      <span>{tip.title}</span>
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </div>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>{tip.title}</DialogTitle>
+                      <DialogDescription>{tip.content}</DialogDescription>
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>
+              ))}
             </div>
           </div>
         </div>
