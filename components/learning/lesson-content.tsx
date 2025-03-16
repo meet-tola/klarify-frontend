@@ -272,9 +272,9 @@ export default function LessonContent({ lessonId, onBack, activeTab }: LessonCon
       )}
 
       {/* Bottom Progress Bar */}
-      <div className="fixed bottom-0 left-0 right-0 md:right-[20rem] lg:right-[24rem] bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t z-30 md:z-10">
-        <div className="max-w-5xl mx-auto px-4 py-2">
-          <div className="flex items-center justify-between mb-1">
+      <div className="fixed bottom-0 left-0 right-0 px-4 md:px-8 md:right-[20rem] lg:right-[24rem] bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t z-30 md:z-10">
+        <div className="max-w-5xl mx-auto px-4 py-3">
+          <div className="flex items-center justify-between mb-4">
             <div className="text-xs font-medium">
               Lesson {lessonData.lessonNumber} of {lessonData.totalLessons}
             </div>

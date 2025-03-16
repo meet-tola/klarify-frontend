@@ -31,7 +31,7 @@ export default function CourseHeader({
         </div>          
 
           {/* Tabs - Centered on both mobile and desktop */}
-          <div className="mx-auto md:mx-0">
+          <div className="mx-auto md:mx-0 hidden md:block">
             <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as "content" | "materials")}>
               <TabsList>
                 <TabsTrigger value="content">Content</TabsTrigger>

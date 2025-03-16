@@ -9,7 +9,7 @@ interface CourseContentProps {
 
 export default function CourseContent({ onStartLesson }: CourseContentProps) {
   return (
-    <div className="py-6 space-y-8 px-6 md:px-12 bg-white mt-6 rounded-lg">
+    <div className="py-8 space-y-8 px-6 md:px-8 bg-white mt-6 rounded-lg">
       <div>
         <h1 className="text-2xl font-bold mb-2">Intermediate UI Design with Figma</h1>
         <p className="text-muted-foreground">Intermediate</p>
@@ -32,7 +32,7 @@ export default function CourseContent({ onStartLesson }: CourseContentProps) {
                   </p>
                 </div>
               </div>
-              <Button className="flex-shrink-0 gap-1" variant={"ghost"} onClick={() => onStartLesson("1-1")}>
+              <Button className="flex justify-between flex-shrink-0 gap-1" variant={"ghost"} onClick={() => onStartLesson("1-1")}>
                 Start <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
@@ -47,7 +47,7 @@ export default function CourseContent({ onStartLesson }: CourseContentProps) {
                   <p className="text-sm text-muted-foreground mt-1">Dive deep into component creation and management</p>
                 </div>
               </div>
-              <Button className="flex-shrink-0 gap-1" variant={"ghost"} onClick={() => onStartLesson("1-2")}>
+              <Button className="flex justify-between flex-shrink-0 gap-1" variant={"ghost"} onClick={() => onStartLesson("1-2")}>
                 Start <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
@@ -64,7 +64,7 @@ export default function CourseContent({ onStartLesson }: CourseContentProps) {
                   </p>
                 </div>
               </div>
-              <Button className="flex-shrink-0 gap-1" variant={"ghost"} onClick={() => onStartLesson("1-3")}>
+              <Button className="flex justify-between flex-shrink-0 gap-1" variant={"ghost"} onClick={() => onStartLesson("1-3")}>
                 Start <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
@@ -81,7 +81,7 @@ export default function CourseContent({ onStartLesson }: CourseContentProps) {
                   </p>
                 </div>
               </div>
-              <Button className="flex-shrink-0 gap-1" variant={"ghost"} onClick={() => onStartLesson("1-4")}>
+              <Button className="flex justify-between flex-shrink-0 gap-1" variant={"ghost"} onClick={() => onStartLesson("1-4")}>
                 Start <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
@@ -98,7 +98,7 @@ export default function CourseContent({ onStartLesson }: CourseContentProps) {
                   </p>
                 </div>
               </div>
-              <Button className="flex-shrink-0 gap-1" variant={"ghost"} onClick={() => onStartLesson("1-5")}>
+              <Button className="flex justify-between flex-shrink-0 gap-1" variant={"ghost"} onClick={() => onStartLesson("1-5")}>
                 Start <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
@@ -115,7 +115,7 @@ export default function CourseContent({ onStartLesson }: CourseContentProps) {
                   </p>
                 </div>
               </div>
-              <Button className="flex-shrink-0 gap-1" variant={"ghost"} onClick={() => onStartLesson("1-6")}>
+              <Button className="flex justify-between flex-shrink-0 gap-1" variant={"ghost"} onClick={() => onStartLesson("1-6")}>
                 Start <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
@@ -136,7 +136,7 @@ export default function CourseContent({ onStartLesson }: CourseContentProps) {
                   <p className="text-sm text-muted-foreground mt-1">Create complex interactive prototypes in Figma</p>
                 </div>
               </div>
-              <Button className="flex-shrink-0 gap-1" variant={"ghost"} onClick={() => onStartLesson("2-1")}>
+              <Button className="flex justify-between flex-shrink-0 gap-1" variant={"ghost"} onClick={() => onStartLesson("2-1")}>
                 Start <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
@@ -153,7 +153,7 @@ export default function CourseContent({ onStartLesson }: CourseContentProps) {
                   </p>
                 </div>
               </div>
-              <Button className="flex-shrink-0 gap-1" variant={"ghost"} onClick={() => onStartLesson("2-2")}>
+              <Button className="flex justify-between flex-shrink-0 gap-1" variant={"ghost"} onClick={() => onStartLesson("2-2")}>
                 Start <ChevronRight className="h-4 w-4" />
               </Button>
             </div>

@@ -13,9 +13,22 @@ import {
 } from "@/components/ui/tooltip";
 import { motion } from "framer-motion";
 import { useAuthContext } from "@/context/auth-provider";
+import { useRouter } from "next/navigation";
+import LoadingScreen from "@/components/loading-screen";
 
 export default function DashboardPage() {
-  const { user } = useAuthContext();
+  const { user, loading } = useAuthContext();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/login");
+    }
+  }, [user]);
+
+  if (loading) {
+    return <LoadingScreen message={"Loading..."} />;
+  }
 
   return (
     <div className="container py-8 space-y-8">
