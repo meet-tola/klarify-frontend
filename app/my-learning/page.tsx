@@ -15,6 +15,7 @@ import { motion } from "framer-motion";
 import { useAuthContext } from "@/context/auth-provider";
 import { useRouter } from "next/navigation";
 import LoadingScreen from "@/components/loading-screen";
+import { slugify } from "@/lib/slugify";
 
 export default function DashboardPage() {
   const { user, loading } = useAuthContext();
@@ -40,7 +41,7 @@ export default function DashboardPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          Welcome back, Oluwatosin{" "}
+          Welcome back, {user?.user.name}
           <span role="img" aria-label="waving">
             👋
           </span>
@@ -51,7 +52,7 @@ export default function DashboardPage() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
         >
-          You're mastering UI/UX Design! Keep going!
+          You're mastering {user?.user.learningPath[0].skill}! Keep going!
         </motion.p>
       </div>
 
@@ -166,7 +167,7 @@ export default function DashboardPage() {
                 />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-2xl font-bold text-[#7C3AED]">80%</span>
+                <span className="text-2xl font-bold text-primary">80%</span>
               </div>
             </div>
             <div className="mt-4 text-center space-y-1">
@@ -182,7 +183,7 @@ export default function DashboardPage() {
           <div className="bg-white rounded-lg border p-6 md:col-span-2">
             <div className="h-full flex flex-col">
               <h3 className="text-xl font-semibold mb-auto">
-                Creating Engaging Learning Journeys UI/UX Best Practices
+                {user?.user.pickedSkill}
               </h3>
               <div className="space-y-4 mt-6">
                 <div className="space-y-2">
@@ -193,7 +194,13 @@ export default function DashboardPage() {
                   <Progress value={80} className="h-2 bg-gray-100" />
                 </div>
                 <div className="flex justify-end">
-                  <Button variant="outline">Continue</Button>
+                  <Link
+                    href={`/my-learning/${slugify(
+                      user?.user.pickedSkill
+                    )}/content`}
+                  >
+                    <Button variant="outline">Continue</Button>
+                  </Link>
                 </div>
               </div>
             </div>

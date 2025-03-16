@@ -3,7 +3,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 interface CourseHeaderProps {
   title: string
-  modules: number
+  phases: number
   lessons: number
   activeTab: "content" | "materials"
   setActiveTab: (tab: "content" | "materials") => void
@@ -13,7 +13,7 @@ interface CourseHeaderProps {
 
 export default function CourseHeader({
   title,
-  modules,
+  phases,
   lessons,
   activeTab,
   setActiveTab,
@@ -26,7 +26,7 @@ export default function CourseHeader({
         <div className="flex flex-col items-start justify-center mb-1">
           <h1 className="text-lg font-bold">{title}</h1>
           <div className="text-xs text-muted-foreground">
-            {modules} modules • {lessons} lessons
+            {phases} phases • {lessons} lessons
           </div>
         </div>          
 

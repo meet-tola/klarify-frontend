@@ -174,11 +174,23 @@ export const getRoadmap = async (userId: string) => {
   }
 };
 
-export const getRoadmapContent = async (userId: string) => {
+export const generateRoadmapContent = async (userId: string) => {
   try {
     const response = await API.post(`/roadmap/${userId}/content`);
     return response.data;
   } catch (error: any) {
     handleError(error);
+  }
+};
+
+export const getRoadmapContent = async (userId: string, pickedSkill: string) => {
+  try {
+    const response = await API.post(`/roadmap/${userId}/learning-path`, {
+      pickedSkill,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error selecting skill:", error);
+    throw error;
   }
 };

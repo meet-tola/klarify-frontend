@@ -10,9 +10,11 @@ import { useAuthContext } from "@/context/auth-provider";
 interface Phase {
   id: number;
   title: string;
-  weeks: {
+  lessons: {
+    id: number;
     number: number;
     title: string;
+    summary: string;
   }[];
 }
 
@@ -50,11 +52,16 @@ export default function StepFour({
           const transformedPhases = roadmap.phases.map(
             (phase: any, index: number) => ({
               id: index + 1,
-              title: phase.title,
-              weeks: phase.weeks.map((week: any, weekIndex: number) => ({
-                number: weekIndex + 1,
-                title: week.topic,
-              })),
+              title: phase.phaseTitle,
+              lessons: phase.lessons.map(
+                (lesson: any, lessonIndex: number) => ({
+                  id: lessonIndex + 1,
+                  title: lesson.lessonTitle,
+                  summary: lesson.lessonSummary.description,
+                  // sections: lesson.sections,
+                  // resources: lesson.resources,
+                })
+              ),
             })
           );
           setPhases(transformedPhases);
@@ -169,9 +176,9 @@ export default function StepFour({
                 >
                   <div className="relative pl-8 py-2">
                     <div className="absolute left-6 top-0 bottom-0 w-px bg-border" />
-                    {phase.weeks.map((week, index) => (
+                    {phase.lessons.map((lesson, index) => (
                       <motion.div
-                        key={week.number}
+                        key={lesson.id}
                         className="relative py-3 pl-6"
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -181,7 +188,10 @@ export default function StepFour({
                           <div className="w-2 h-2 rounded-full bg-primary" />
                         </div>
                         <p className="font-medium">
-                          Week {week.number}: {week.title}
+                          {lesson.title}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {lesson.summary}
                         </p>
                       </motion.div>
                     ))}
@@ -205,7 +215,9 @@ export default function StepFour({
         >
           Go to dashboard
         </Button>
-        <Button onClick={() => (window.location.href = "/my-learning/learningpath")}>
+        <Button
+          onClick={() => (window.location.href = "/my-learning/learningpath")}
+        >
           Start learning
         </Button>
       </motion.div>

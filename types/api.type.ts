@@ -103,26 +103,37 @@ export type CurrentUserResponseType = {
 };
 
 // ROADMAP TYPE
-export type ResourceType = {
-  videos: string[];
-  articles: string[];
-  books: string[];
+export type SectionType = {
+  type: string;
+  content: string;
+  metadata?: {
+    bold?: boolean;
+    bullets?: string[];
+    imageLink?: string;
+    alignment?: string;
+    language?: string;
+  };
 };
 
-export type WeekType = {
-  week: string;
-  topic: string;
-  overview: string;
-  concepts: string[];
-  exercises: string[];
-  resources: ResourceType;
-  illustration: string;
+export type LessonType = {
+  lessonTitle: string;
+  lessonSummary: {
+    heading: string;
+    description: string;
+  };
+  sections: SectionType[];
+  resources: {
+    exercises: string[];
+    videos: string[];
+    articles: string[];
+    books: string[];
+  };
 };
 
 export type PhaseType = {
-  title: string;
-  description: string;
-  weeks: WeekType[];
+  phaseTitle: string;
+  phaseKeywords: string[];
+  lessons: LessonType[];
 };
 
 export type RoadmapType = {

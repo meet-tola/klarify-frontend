@@ -92,7 +92,7 @@ export default function LoginPage() {
       }
 
       // If all steps are completed, redirect to the dashboard
-      router.push("/dashboard");
+      router.push("/my-learning");
     }
   }, [user, router]);
 

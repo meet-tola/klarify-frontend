@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Progress } from "@/components/ui/progress";
-import { getRoadmapContent } from "@/lib/api";
+import { generateRoadmapContent } from "@/lib/api";
 import { useAuthContext } from "@/context/auth-provider";
 
 interface AnalyzingScreenProps {
@@ -51,7 +51,7 @@ export default function AnalyzingScreen({
     // Start generating the roadmap content
     const generateRoadmap = async () => {
       try {
-        await getRoadmapContent(userId);
+        await generateRoadmapContent(userId);
         setIsGenerating(false);
         setProgress(100);
         if (onComplete) {

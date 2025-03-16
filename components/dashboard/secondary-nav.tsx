@@ -67,7 +67,9 @@ export default function SecondaryNav() {
               href={item.href}
               className="inline-flex items-center whitespace-nowrap text-sm font-medium transition-colors hover:text-primary"
             >
+              <Button variant={"ghost"}>
               {item.title}
+              </Button>
             </Link>
           ))}
         </div>

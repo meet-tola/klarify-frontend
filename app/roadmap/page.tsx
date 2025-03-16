@@ -21,13 +21,14 @@ import SearchDialog from "@/components/search-dialog";
 import LoadingScreen from "@/components/loading-screen";
 import OnboardingNavbar from "@/components/onboarding/onboarding-navbar";
 
-
 interface Phase {
   id: number;
   title: string;
-  weeks: {
+  lessons: {
+    id: number;
     number: number;
     title: string;
+    summary: string;
   }[];
 }
 
@@ -82,10 +83,13 @@ export default function RoadmapPage() {
         const transformedPhases = roadmap.phases.map(
           (phase: any, index: number) => ({
             id: index + 1,
-            title: phase.title,
-            weeks: phase.weeks.map((week: any, weekIndex: number) => ({
-              number: weekIndex + 1,
-              title: week.topic,
+            title: phase.phaseTitle,
+            lessons: phase.lessons.map((lesson: any, lessonIndex: number) => ({
+              id: lessonIndex + 1,
+              title: lesson.lessonTitle,
+              summary: lesson.lessonSummary.description,
+              // sections: lesson.sections,
+              // resources: lesson.resources,
             })),
           })
         );
@@ -235,61 +239,77 @@ export default function RoadmapPage() {
                   Your Personalized Roadmap
                 </h2>
                 <motion.div
-        className="space-y-4"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-      >
-        {phases.map((phase) => (
-          <div key={phase.id} className="border rounded-lg overflow-hidden">
-            <motion.button
-              className={`w-full p-4 text-left flex justify-between items-center ${
-                expandedPhase === phase.id ? "bg-primary/5" : "hover:bg-accent"
-              }`}
-              onClick={() => togglePhase(phase.id)}
-              whileHover={{ backgroundColor: "rgba(0,0,0,0.05)" }}
-            >
-              <h3 className="font-semibold">{phase.title}</h3>
-              <ChevronDown
-                className={`transform transition-transform ${
-                  expandedPhase === phase.id ? "rotate-180" : ""
-                }`}
-              />
-            </motion.button>
-            <AnimatePresence>
-              {expandedPhase === phase.id && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="border-t"
+                  className="space-y-4"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
                 >
-                  <div className="relative pl-8 py-2">
-                    <div className="absolute left-6 top-0 bottom-0 w-px bg-border" />
-                    {phase.weeks.map((week, index) => (
-                      <motion.div
-                        key={week.number}
-                        className="relative py-3 pl-6"
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.1 }}
+                  {phases.map((phase) => (
+                    <div
+                      key={phase.id}
+                      className="border rounded-lg overflow-hidden"
+                    >
+                      <motion.button
+                        className={`w-full p-4 text-left flex justify-between items-center ${
+                          expandedPhase === phase.id
+                            ? "bg-primary/5"
+                            : "hover:bg-accent"
+                        }`}
+                        onClick={() => togglePhase(phase.id)}
+                        whileHover={{ backgroundColor: "rgba(0,0,0,0.05)" }}
                       >
-                        <div className="absolute left-0 top-1/2 -translate-y-1/2">
-                          <div className="w-2 h-2 rounded-full bg-primary" />
-                        </div>
-                        <p className="font-medium">
-                          Week {week.number}: {week.title}
-                        </p>
-                      </motion.div>
-                    ))}
-                  </div>
+                        <h3 className="font-semibold">{phase.title}</h3>
+                        <ChevronDown
+                          className={`transform transition-transform ${
+                            expandedPhase === phase.id ? "rotate-180" : ""
+                          }`}
+                        />
+                      </motion.button>
+                      <AnimatePresence>
+                        {expandedPhase === phase.id && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="border-t"
+                          >
+                            <div className="relative pl-8 py-2">
+                              <div className="absolute left-6 top-0 bottom-0 w-px bg-border" />
+                              {phase.lessons.map((lesson, index) => (
+                                <motion.div
+                                  key={lesson.id}
+                                  className="relative py-3 pl-6"
+                                  initial={{ opacity: 0, x: -20 }}
+                                  animate={{ opacity: 1, x: 0 }}
+                                  transition={{ delay: index * 0.1 }}
+                                >
+                                  <div className="absolute left-0 top-1/2 -translate-y-1/2">
+                                    <div className="w-2 h-2 rounded-full bg-primary" />
+                                  </div>
+                                  <p className="font-medium">
+                                    {lesson.title}
+                                  </p>
+                                  <p className="text-sm text-muted-foreground">
+                                    {lesson.summary}
+                                  </p>
+                                  {/* Render sections or resources if needed */}
+                                  {/* <div className="mt-2">
+                        {lesson.sections.map((section, sectionIndex) => (
+                          <div key={sectionIndex}>
+                            <p>{section.content}</p>
+                          </div>
+                        ))}
+                      </div> */}
+                                </motion.div>
+                              ))}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  ))}
                 </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        ))}
-      </motion.div>
 
                 {/* New Buttons Below Roadmap */}
                 <div className="flex justify-end gap-4 mt-8">

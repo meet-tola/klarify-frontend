@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CourseHeader from "@/components/learning/course-header";
@@ -9,6 +9,11 @@ import CourseContent from "@/components/learning/course-content";
 import LessonContent from "@/components/learning/lesson-content";
 import MobileTabs from "@/components/learning/mobile-tabs";
 import { cn } from "@/lib/utils";
+import { useAuthContext } from "@/context/auth-provider";
+import { useParams, useRouter } from "next/navigation";
+import { slugify } from "@/lib/slugify";
+import { getRoadmapContent } from "@/lib/api";
+import LoadingScreen from "@/components/loading-screen";
 
 export default function CoursePage() {
   const [showSidebar, setShowSidebar] = useState(false);
@@ -17,20 +22,81 @@ export default function CoursePage() {
     "content"
   );
   const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
+  const [learningPath, setLearningPath] = useState<any>(null);
+  const [roadmap, setRoadmap] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const { slug } = useParams();
+  const { user } = useAuthContext();
+  const router = useRouter();
 
+  useEffect(() => {
+    if (user && slugify(user.user.pickedSkill) !== slug) {
+      router.push("/my-learning");
+    }
+  }, [user, slug]);
+
+  useEffect(() => {
+    const fetchLearningPath = async () => {
+      if (user) {
+        try {
+          if (user?.user?.pickedSkill) {
+            const data = await getRoadmapContent(
+              user.user._id,
+              user.user.pickedSkill
+            );
+
+            // Check if data.learningPath.skill matches user.user.pickedSkill
+            if (data.learningPath.skill === user.user.pickedSkill) {
+              const learningPathData = data.learningPath;
+              const roadmapData = data.roadmap;
+
+              setLearningPath(learningPathData);
+              setRoadmap(roadmapData);
+            } else {
+              console.error(
+                "Skill mismatch: Learning path skill does not match user's picked skill"
+              );
+            }
+          }
+        } catch (error) {
+          console.error("Failed to fetch learning path:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchLearningPath();
+  }, [user]);
+
+  if (!user || slugify(user.user.pickedSkill) !== slug) {
+    return null;
+  }
+
+  // Show loading state
+  if (loading) {
+    return <LoadingScreen message="Loading.." />;
+  }
+
+  if (!learningPath || !roadmap) {
+    return router.push("/my-learning");
+  }
+
+  // Toggle sidebar for mobile view
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);
-    // Prevent body scrolling when sidebar is open on mobile
     if (typeof document !== "undefined") {
       document.body.style.overflow = !showSidebar ? "hidden" : "";
     }
   };
 
+  // Handle starting a lesson
   const handleStartLesson = (lessonId: string) => {
     setActiveLessonId(lessonId);
     setActiveView("lesson");
   };
 
+  // Handle going back to the course outline
   const handleBackToOutline = () => {
     setActiveView("outline");
     setActiveLessonId(null);
@@ -42,6 +108,10 @@ export default function CoursePage() {
     total: 42,
     percentage: 19,
   };
+
+  const totalPhases = roadmap?.phases?.length || 0;
+  const totalLessons =
+    roadmap?.phases?.flatMap((phase: any) => phase.lessons).length || 0;
 
   return (
     <div className="flex flex-col h-screen bg-[#FDFDFF]">
@@ -74,9 +144,9 @@ export default function CoursePage() {
 
       {/* Course Header */}
       <CourseHeader
-        title="Intermediate UI Design with Figma"
-        modules={7}
-        lessons={42}
+        title={learningPath.skill}
+        phases={totalPhases}
+        lessons={totalLessons}
         showMenuButton={false}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -96,18 +166,24 @@ export default function CoursePage() {
         <main className="flex-1 overflow-y-auto pb-16 md:pb-0">
           <div className="max-w-5xl mx-auto px-4 md:px-12">
             {activeView === "outline" ? (
-              <CourseContent onStartLesson={handleStartLesson} />
+              <CourseContent
+                onStartLesson={handleStartLesson}
+                learningPath={learningPath}
+                roadmap={roadmap}
+              />
             ) : (
               <LessonContent
                 lessonId={activeLessonId || "1"}
                 onBack={handleBackToOutline}
                 activeTab={activeTab}
+                learningPath={learningPath}
+                roadmap={roadmap}
               />
             )}
           </div>
         </main>
 
-        {/* Course Outline Sidebar - Now on the right */}
+        {/* Course Outline Sidebar */}
         <div
           className={cn(
             "md:block md:w-80 lg:w-96 border-l overflow-y-auto bg-white",
@@ -121,11 +197,13 @@ export default function CoursePage() {
             setShowSidebar={setShowSidebar}
             onSelectLesson={handleStartLesson}
             activeView={activeView}
+            learningPath={learningPath}
+            roadmap={roadmap}
           />
         </div>
       </div>
 
-      {/* Mobile Tabs with Progress - Only visible on mobile */}
+      {/* Mobile Tabs with Progress */}
       {activeView === "outline" && (
         <MobileTabs
           activeTab={activeTab}
