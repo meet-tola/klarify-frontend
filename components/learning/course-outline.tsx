@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, Check, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -40,17 +40,47 @@ export default function CourseOutline({
   roadmap,
 }: CourseOutlineProps) {
   const [expandedPhase, setExpandedPhase] = useState<string | null>(null);
+  const [completedLessons, setCompletedLessons] = useState<string[]>([]);
 
+  // Load completed lessons from localStorage
+  useEffect(() => {
+    const storedCompletedLessons = JSON.parse(localStorage.getItem("completedLessons") || "[]");
+    setCompletedLessons(storedCompletedLessons);
+  }, []);
+
+  // Calculate completion percentage
+  const totalLessons = roadmap.phases.flatMap((phase) => phase.lessons).length;
+  const completedLessonsCount = completedLessons.length;
+  const completionPercentage = Math.round((completedLessonsCount / totalLessons) * 100);
+
+  // Toggle phase expansion
   const togglePhase = (phaseId: string) => {
     setExpandedPhase(expandedPhase === phaseId ? null : phaseId);
   };
 
-  // Calculate completion percentage
-  const totalLessons = roadmap.phases.flatMap((phase) => phase.lessons).length;
-  const completedLessons = roadmap.phases
-    .flatMap((phase) => phase.lessons)
-    .filter((lesson) => lesson.completed).length;
-  const completionPercentage = Math.round((completedLessons / totalLessons) * 100);
+  // Find the next incomplete lesson
+  const findNextIncompleteLesson = () => {
+    for (const phase of roadmap.phases) {
+      for (const lesson of phase.lessons) {
+        if (!completedLessons.includes(lesson._id)) {
+          return lesson._id;
+        }
+      }
+    }
+    return null; // All lessons are completed
+  };
+
+  // Handle "Start Course" or "View Outline" button click
+  const handleButtonClick = () => {
+    if (activeView === "outline") {
+      const nextLessonId = findNextIncompleteLesson();
+      if (nextLessonId) {
+        onSelectLesson(nextLessonId); // Open the next incomplete lesson
+      }
+    } else {
+      setShowSidebar(true); // Show the outline sidebar
+    }
+  };
 
   return (
     <div className="h-full bg-white">
@@ -71,7 +101,12 @@ export default function CourseOutline({
             </div>
             <span className="text-sm font-medium">Completed</span>
           </div>
-          <Button variant="outline" size="sm" className="text-xs h-8">
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-xs h-8"
+            onClick={handleButtonClick}
+          >
             {activeView === "outline" ? "Start Course" : "View Outline"}
           </Button>
         </div>
@@ -88,12 +123,12 @@ export default function CourseOutline({
                 <div
                   className={cn(
                     "flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center",
-                    phase.lessons.every((lesson) => lesson.completed)
+                    phase.lessons.every((lesson) => completedLessons.includes(lesson._id))
                       ? "bg-primary"
                       : "border-2 border-muted bg-background"
                   )}
                 >
-                  {phase.lessons.every((lesson) => lesson.completed) ? (
+                  {phase.lessons.every((lesson) => completedLessons.includes(lesson._id)) ? (
                     <Check className="h-5 w-5 text-primary-foreground" />
                   ) : (
                     phase.lessons.some((lesson) => lesson.current) && (
@@ -124,15 +159,21 @@ export default function CourseOutline({
                       <div
                         className={cn(
                           "flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center",
-                          lesson.completed ? "bg-primary" : "border-2 border-muted bg-background"
+                          completedLessons.includes(lesson._id)
+                            ? "bg-primary"
+                            : "border-2 border-muted bg-background"
                         )}
                       >
-                        {lesson.completed && <Check className="h-3 w-3 text-primary-foreground" />}
+                        {completedLessons.includes(lesson._id) && (
+                          <Check className="h-3 w-3 text-primary-foreground" />
+                        )}
                       </div>
                       <span
                         className={cn(
                           "text-sm",
-                          lesson.completed ? "font-medium" : "text-muted-foreground"
+                          completedLessons.includes(lesson._id)
+                            ? "font-medium"
+                            : "text-muted-foreground"
                         )}
                       >
                         {lesson.lessonTitle}

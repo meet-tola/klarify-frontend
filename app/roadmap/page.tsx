@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import SearchDialog from "@/components/search-dialog";
 import LoadingScreen from "@/components/loading-screen";
 import OnboardingNavbar from "@/components/onboarding/onboarding-navbar";
+import { slugify } from "@/lib/slugify";
 
 interface Phase {
   id: number;
@@ -54,15 +55,17 @@ export default function RoadmapPage() {
   const userId = user?.user._id;
 
   useEffect(() => {
+    let isMounted = true; // Track if the component is mounted
+  
     if (!loading && !user) {
       router.push("/login");
     }
-
-    if (user?.user?.pickedSkill) {
+  
+    if (user?.user?.pickedSkill && isMounted) {
       setIsLoading(true);
       selectedSearchSkill(userId as string, user.user.pickedSkill)
         .then((response) => {
-          if (response.data) {
+          if (response.data && isMounted) {
             setSelectedSkill(response.data.category);
             setSkillDetails(response.data);
           }
@@ -71,10 +74,16 @@ export default function RoadmapPage() {
           console.error("Failed to fetch skill details:", error);
         })
         .finally(() => {
-          setIsLoading(false);
+          if (isMounted) {
+            setIsLoading(false);
+          }
         });
     }
-  }, [user, userId]);
+  
+    return () => {
+      isMounted = false; // Cleanup function to prevent state updates on unmounted component
+    };
+  }, [user, userId, loading, router, user?.user?.pickedSkill]); // Add user.user.pickedSkill as a dependency
 
   const handleGetRoadmap = async () => {
     try {
@@ -287,9 +296,7 @@ export default function RoadmapPage() {
                                   <div className="absolute left-0 top-1/2 -translate-y-1/2">
                                     <div className="w-2 h-2 rounded-full bg-primary" />
                                   </div>
-                                  <p className="font-medium">
-                                    {lesson.title}
-                                  </p>
+                                  <p className="font-medium">{lesson.title}</p>
                                   <p className="text-sm text-muted-foreground">
                                     {lesson.summary}
                                   </p>
@@ -313,19 +320,17 @@ export default function RoadmapPage() {
 
                 {/* New Buttons Below Roadmap */}
                 <div className="flex justify-end gap-4 mt-8">
-                  <Button
-                    variant="outline"
-                    onClick={() => (window.location.href = "/my-learning")}
+                  <Link href={""}>
+                    <Button variant="outline">Go to dashboard</Button>
+                  </Link>
+
+                  <Link
+                    href={`/my-learning/${slugify(
+                      user?.user.pickedSkill
+                    )}/content`}
                   >
-                    Go to dashboard
-                  </Button>
-                  <Button
-                    onClick={() =>
-                      (window.location.href = "/my-learning/learningpath")
-                    }
-                  >
-                    Start learning
-                  </Button>
+                    <Button>Start learning</Button>
+                  </Link>
                 </div>
               </motion.div>
             )}

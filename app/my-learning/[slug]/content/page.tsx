@@ -122,7 +122,7 @@ export default function CoursePage() {
             variant="ghost"
             size="sm"
             className="mr-auto gap-2"
-            onClick={() => window.history.back()}
+            onClick={handleBackToOutline}
           >
             <ArrowLeft className="h-4 w-4" />
             <span className="text-sm">
@@ -170,12 +170,15 @@ export default function CoursePage() {
                 onStartLesson={handleStartLesson}
                 learningPath={learningPath}
                 roadmap={roadmap}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
               />
             ) : (
               <LessonContent
                 lessonId={activeLessonId || "1"}
                 onBack={handleBackToOutline}
                 activeTab={activeTab}
+                setActiveTab={setActiveTab}
                 learningPath={learningPath}
                 roadmap={roadmap}
               />

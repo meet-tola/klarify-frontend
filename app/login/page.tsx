@@ -47,8 +47,10 @@ export default function LoginPage() {
       // If no pickedSkill and skillsAssessment and careerAssessment is empty, open dialog
       if (
         !user.user?.pickedSkill &&
-        (!user.user?.skillsAssessment || user.user.skillsAssessment.length === 0) &&
-        (!user.user?.careerAssessment || user.user.careerAssessment.length === 0)
+        (!user.user?.skillsAssessment ||
+          user.user.skillsAssessment.length === 0) &&
+        (!user.user?.careerAssessment ||
+          user.user.careerAssessment.length === 0)
       ) {
         setIsDialogOpen(true);
         return;
@@ -148,8 +150,10 @@ export default function LoginPage() {
       // If no pickedSkill and skillsAssessment is empty, open dialog
       if (
         !loggedInUser.user?.pickedSkill &&
-        (!loggedInUser.user?.skillsAssessment || loggedInUser.user.skillsAssessment.length === 0) &&
-        (!loggedInUser.user?.careerAssessment || loggedInUser.user.careerAssessment.length === 0)
+        (!loggedInUser.user?.skillsAssessment ||
+          loggedInUser.user.skillsAssessment.length === 0) &&
+        (!loggedInUser.user?.careerAssessment ||
+          loggedInUser.user.careerAssessment.length === 0)
       ) {
         setIsDialogOpen(true);
         return;
@@ -197,6 +201,20 @@ export default function LoginPage() {
         return;
       }
 
+      if (
+        loggedInUser.user?.pickedSkill &&
+        (!loggedInUser.user?.skillsAssessment ||
+          loggedInUser.user.skillsAssessment.length === 0) &&
+        (!loggedInUser.user?.selectedSkills ||
+          loggedInUser.user.selectedSkills.length === 0) &&
+        (!loggedInUser.user?.careerAssessment ||
+          loggedInUser.user.careerAssessment.length === 0) &&
+        loggedInUser.user?.learningPath.length > 0
+      ) {
+        router.push("/my-learning"); 
+        return;
+      }
+
       // If all steps are completed, redirect to the dashboard
       router.push("/dashboard");
     } catch (error) {
@@ -212,7 +230,7 @@ export default function LoginPage() {
         open={isDialogOpen}
         onClose={() => {
           setIsDialogOpen(false);
-          router.push("/roadmap");
+          // router.push("/roadmap");
         }}
         userId={userId}
       />

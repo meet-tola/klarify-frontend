@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -16,20 +16,62 @@ import { useAuthContext } from "@/context/auth-provider";
 import { useRouter } from "next/navigation";
 import LoadingScreen from "@/components/loading-screen";
 import { slugify } from "@/lib/slugify";
+import { getRoadmapContent, selectedSearchSkill } from "@/lib/api";
 
 export default function DashboardPage() {
   const { user, loading } = useAuthContext();
+  const [roadmap, setRoadmap] = useState<any>(null);
+  const [learningPath, setLearningPath] = useState<any>(null);
+
   const router = useRouter();
+
+  const userId = user?.user._id;
 
   useEffect(() => {
     if (!loading && !user) {
       router.push("/login");
     }
+
+    const fetchRoadmapContent = async () => {
+      if (user?.user?.pickedSkill) {
+        try {
+          const data = await getRoadmapContent(
+            user.user._id,
+            user.user.pickedSkill
+          );
+
+          if (data.learningPath.skill === user.user.pickedSkill) {
+            const learningPathData = data.learningPath;
+            const roadmapData = data.roadmap;
+
+            setLearningPath(learningPathData);
+            setRoadmap(roadmapData);
+          }
+        } catch (error) {
+          console.error("Failed to fetch learning path:", error);
+        }
+      }
+    };
+
+    fetchRoadmapContent();
   }, [user]);
 
   if (loading) {
     return <LoadingScreen message={"Loading..."} />;
   }
+
+  const getLevelColor = (level: any) => {
+    switch (level) {
+      case "Beginner":
+        return "text-blue-800";
+      case "Intermediate":
+        return "text-yellow-800";
+      case "Advanced":
+        return "text-red-800";
+      default:
+        return "text-gray-800";
+    }
+  };
 
   return (
     <div className="container py-8 space-y-8">
@@ -140,8 +182,8 @@ export default function DashboardPage() {
         <h2 className="text-2xl font-bold roca-bold mb-6">Continue Learning</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Left Card - Progress Circle */}
-          <div className="bg-white rounded-lg border p-6">
-            <div className="relative w-32 h-32 mx-auto">
+          <div className="bg-white rounded-lg border p-6 flex items-center justify-center gap-6">
+            <div className="relative w-24 h-24 mx-auto">
               <svg
                 className="w-full h-full transform -rotate-90"
                 viewBox="0 0 100 100"
@@ -182,6 +224,13 @@ export default function DashboardPage() {
           {/* Right Card - Course Progress */}
           <div className="bg-white rounded-lg border p-6 md:col-span-2">
             <div className="h-full flex flex-col">
+              <p
+                className={`text-sm font-medium ${getLevelColor(
+                  roadmap?.level
+                )} py-1`}
+              >
+                {roadmap?.level}
+              </p>
               <h3 className="text-xl font-semibold mb-auto">
                 {user?.user.pickedSkill}
               </h3>
@@ -212,49 +261,55 @@ export default function DashboardPage() {
       <section>
         <h2 className="text-2xl font-bold roca-bold mb-6">Guides</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Left Column */}
+          {/* Left Column - One YouTube Video and One Article */}
           <div className="space-y-6">
-            <div className="p-6 bg-white rounded-lg border">
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <h3 className="text-lg font-semibold mb-1">
-                    Understanding UI/UX Design Principles
-                  </h3>
-                  <p className="text-gray-600">Youtube Video</p>
+            {/* Display One YouTube Video */}
+            {learningPath?.youtubeVideos?.[0] && (
+              <div className="p-6 bg-white rounded-lg border">
+                <div className="flex justify-between items-start mb-2">
+                  <div>
+                    <h3 className="text-lg font-semibold mb-1">
+                      {learningPath.youtubeVideos[0].title}
+                    </h3>
+                    <p className="text-gray-600">YouTube Video</p>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() =>
+                      window.open(learningPath.youtubeVideos[0].url, "_blank")
+                    }
+                  >
+                    View
+                  </Button>
                 </div>
-                <Button variant="outline" size="sm">
-                  View
-                </Button>
               </div>
-            </div>
+            )}
 
-            <div className="p-6 bg-white rounded-lg border">
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <h3 className="text-lg font-semibold mb-1">
-                    Exploring Color Theory in Design
-                  </h3>
-                  <p className="text-gray-600">Online Course</p>
+            {/* Display One Article */}
+            {learningPath?.articles?.[0] && (
+              <div className="p-6 bg-white rounded-lg border">
+                <div className="flex justify-between items-start mb-2">
+                  <div>
+                    <h3 className="text-lg font-semibold mb-1">
+                      {learningPath.articles[0].title}
+                    </h3>
+                    <p className="text-gray-600">
+                      Article by {learningPath.articles[0].author}
+                    </p>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() =>
+                      window.open(learningPath.articles[0].url, "_blank")
+                    }
+                  >
+                    View
+                  </Button>
                 </div>
-                <Button variant="outline" size="sm">
-                  View
-                </Button>
               </div>
-            </div>
-
-            <div className="p-6 bg-white rounded-lg border">
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <h3 className="text-lg font-semibold mb-1">
-                    Prototyping with Figma
-                  </h3>
-                  <p className="text-gray-600">Webinar</p>
-                </div>
-                <Button variant="outline" size="sm">
-                  View
-                </Button>
-              </div>
-            </div>
+            )}
           </div>
 
           {/* Right Column - Tips for Beginners */}

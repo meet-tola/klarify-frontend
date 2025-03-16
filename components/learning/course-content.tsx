@@ -21,6 +21,8 @@ interface CourseContentProps {
       }[];
     }[];
   };
+  activeTab: "content" | "materials";
+  setActiveTab: (tab: "content" | "materials") => void;
 }
 
 export default function CourseContent({ onStartLesson, roadmap }: CourseContentProps) {

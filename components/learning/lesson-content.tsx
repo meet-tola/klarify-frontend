@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 interface LessonContentProps {
   lessonId: string;
   onBack: () => void;
+  setActiveTab: (tab: "content" | "materials") => void;
   activeTab: "content" | "materials";
   learningPath: {
     youtubeVideos: {
@@ -95,6 +96,27 @@ export default function LessonContent({ lessonId, onBack, activeTab, learningPat
     }
   }, []);
 
+  // Handle marking a lesson as read
+  const handleMarkAsRead = () => {
+    if (!currentLesson) return;
+
+    const completedLessons = JSON.parse(localStorage.getItem("completedLessons") || "[]") as string[];
+    if (!completedLessons.includes(currentLesson._id)) {
+      completedLessons.push(currentLesson._id);
+      localStorage.setItem("completedLessons", JSON.stringify(completedLessons));
+    }
+
+    setIsLessonCompleted(true);
+  };
+
+  // Calculate overall progress
+  const calculateProgress = () => {
+    const completedLessons = JSON.parse(localStorage.getItem("completedLessons") || "[]") as string[];
+    const totalLessons = roadmap.phases.flatMap((phase: any) => phase.lessons).length;
+    return Math.round((completedLessons.length / totalLessons) * 100);
+  };
+
+
   const handlePreviousLesson = () => {
     // Logic to navigate to previous lesson
     console.log("Navigate to previous lesson");
@@ -103,11 +125,6 @@ export default function LessonContent({ lessonId, onBack, activeTab, learningPat
   const handleNextLesson = () => {
     // Logic to navigate to next lesson
     console.log("Navigate to next lesson");
-  };
-
-  const handleMarkAsRead = () => {
-    setIsLessonCompleted(true);
-    // Additional logic to mark as read in your system
   };
 
   // Render lesson sections based on type and metadata
