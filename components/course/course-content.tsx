@@ -20,7 +20,7 @@ export default function CourseContent({ onStartLesson }: CourseContentProps) {
           <h2 className="text-2xl font-bold mb-6">Module 1: Advanced Figma Fundamentals & Workflow Optimization</h2>
 
           <div className="space-y-4">
-            <div className="border rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="border rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer">
               <div className="flex items-start gap-3">
                 <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-muted text-sm font-medium mt-1">
                   1
@@ -37,7 +37,7 @@ export default function CourseContent({ onStartLesson }: CourseContentProps) {
               </Button>
             </div>
 
-            <div className="border rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="border rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer">
               <div className="flex items-start gap-3">
                 <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-muted text-sm font-medium mt-1">
                   2
@@ -52,7 +52,7 @@ export default function CourseContent({ onStartLesson }: CourseContentProps) {
               </Button>
             </div>
 
-            <div className="border rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="border rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer">
               <div className="flex items-start gap-3">
                 <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-muted text-sm font-medium mt-1">
                   3
@@ -69,7 +69,7 @@ export default function CourseContent({ onStartLesson }: CourseContentProps) {
               </Button>
             </div>
 
-            <div className="border rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="border rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer">
               <div className="flex items-start gap-3">
                 <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-muted text-sm font-medium mt-1">
                   4
@@ -86,7 +86,7 @@ export default function CourseContent({ onStartLesson }: CourseContentProps) {
               </Button>
             </div>
 
-            <div className="border rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="border rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer">
               <div className="flex items-start gap-3">
                 <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-muted text-sm font-medium mt-1">
                   5
@@ -103,7 +103,7 @@ export default function CourseContent({ onStartLesson }: CourseContentProps) {
               </Button>
             </div>
 
-            <div className="border rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="border rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer">
               <div className="flex items-start gap-3">
                 <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-muted text-sm font-medium mt-1">
                   6
@@ -126,7 +126,7 @@ export default function CourseContent({ onStartLesson }: CourseContentProps) {
           <h2 className="text-2xl font-bold mb-6">Module 2: Prototyping Interactive Experiences</h2>
 
           <div className="space-y-4">
-            <div className="border rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="border rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer">
               <div className="flex items-start gap-3">
                 <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-muted text-sm font-medium mt-1">
                   1
@@ -141,7 +141,7 @@ export default function CourseContent({ onStartLesson }: CourseContentProps) {
               </Button>
             </div>
 
-            <div className="border rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="border rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer">
               <div className="flex items-start gap-3">
                 <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-muted text-sm font-medium mt-1">
                   2
