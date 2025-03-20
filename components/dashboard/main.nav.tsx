@@ -110,9 +110,9 @@ export default function MainNav() {
             <Input type="search" placeholder="Search..." className="w-full" />
           </div>
 
-          <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setIsSearchOpen(!isSearchOpen)}>
+          {/* <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setIsSearchOpen(!isSearchOpen)}>
             {isSearchOpen ? <X className="h-5 w-5" /> : <Search className="h-5 w-5" />}
-          </Button>
+          </Button> */}
 
           <Button variant="ghost" size="icon">
             <Bell className="h-5 w-5" />

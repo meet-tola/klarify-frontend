@@ -2,90 +2,75 @@
 
 import { useRef, useEffect, useState } from "react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 const secondaryNavItems = [
-  { title: "Home", href: "/dashboard" },
-  { title: "Learning Path", href: "/learning-path" },
-  { title: "Projects", href: "/projects" },
+  { title: "Home", href: "/my-learning" },
+  { title: "Learn", href: "/my-learning/path" },
+  { title: "Skills", href: "/my-learning/skills" },
   { title: "Networking", href: "/networking" },
   { title: "Jobs", href: "/jobs" },
 ]
 
 export default function SecondaryNav() {
-  const scrollContainerRef = useRef<HTMLDivElement>(null)
-  const [showLeftScroll, setShowLeftScroll] = useState(false)
-  const [showRightScroll, setShowRightScroll] = useState(false)
+  // const scrollContainerRef = useRef<HTMLDivElement>(null)
+  // const [showLeftScroll, setShowLeftScroll] = useState(false)
+  // const [showRightScroll, setShowRightScroll] = useState(false)
+  const pathname = usePathname()
 
-  const checkScroll = () => {
-    if (scrollContainerRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current
-      setShowLeftScroll(scrollLeft > 0)
-      setShowRightScroll(scrollLeft < scrollWidth - clientWidth)
-    }
-  }
+  // const checkScroll = () => {
+  //   if (scrollContainerRef.current) {
+  //     const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current
+  //     setShowLeftScroll(scrollLeft > 0)
+  //     setShowRightScroll(scrollLeft < scrollWidth - clientWidth)
+  //   }
+  // }
 
-  useEffect(() => {
-    checkScroll()
-    window.addEventListener("resize", checkScroll)
-    return () => window.removeEventListener("resize", checkScroll)
-  }, [])
+  // useEffect(() => {
+  //   checkScroll()
+  //   window.addEventListener("resize", checkScroll)
+  //   return () => window.removeEventListener("resize", checkScroll)
+  // }, [])
 
-  const scroll = (direction: "left" | "right") => {
-    if (scrollContainerRef.current) {
-      const scrollAmount = 200
-      scrollContainerRef.current.scrollBy({
-        left: direction === "left" ? -scrollAmount : scrollAmount,
-        behavior: "smooth",
-      })
-    }
-  }
+  // const scroll = (direction: "left" | "right") => {
+  //   if (scrollContainerRef.current) {
+  //     const scrollAmount = 200
+  //     scrollContainerRef.current.scrollBy({
+  //       left: direction === "left" ? -scrollAmount : scrollAmount,
+  //       behavior: "smooth",
+  //     })
+  //   }
+  // }
 
   return (
-    <div className="sticky top-16 px-6 md:px-12 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container relative flex h-14 items-center overflow-x-auto scrollbar-none">
-        {showLeftScroll && (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute left-4 z-10 hidden md:flex"
-            onClick={() => scroll("left")}
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-        )}
-
+    <div className="sticky top-16 px-6 md:px-12 z-40 w-full border-b bg-white">
+      <div className="relative">
         <div
-          ref={scrollContainerRef}
-          className="flex gap-6 overflow-x-auto px-4 scrollbar-none md:px-8"
-          onScroll={checkScroll}
+          className="flex gap-2 overflow-x-auto scrollbar-none px-4 py-1"
         >
           {secondaryNavItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="inline-flex items-center whitespace-nowrap text-sm font-medium transition-colors hover:text-primary"
+              className="relative inline-flex items-center whitespace-nowrap font-semiBold transition-colors hover:text-primary"
             >
-              <Button variant={"ghost"}>
-              {item.title}
+              <Button
+                variant={"ghost"}
+                className={`text-[16px] px-4 ${
+                  pathname === item.href ? "text-primary" : "text-gray-600"
+                }`}
+              >
+                {item.title}
               </Button>
+              {pathname === item.href && (
+                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary rounded-t-full" />
+              )}
             </Link>
           ))}
         </div>
-
-        {showRightScroll && (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute right-4 z-10 hidden md:flex"
-            onClick={() => scroll("right")}
-          >
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-        )}
       </div>
     </div>
   )
 }
-

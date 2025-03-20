@@ -145,7 +145,7 @@ export default function RoadmapPage() {
   };
 
   return (
-    <>
+    <div className="bg-[#FDFDFF]">
       <OnboardingNavbar />
       <div className="container py-8 space-y-8 px-6">
         {/* Top Content - Centered */}
@@ -468,6 +468,6 @@ export default function RoadmapPage() {
           userId={userId}
         />
       </div>
-    </>
+    </div>
   );
 }

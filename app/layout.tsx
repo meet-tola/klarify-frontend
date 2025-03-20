@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Urbanist } from "next/font/google";
-import localFont from "next/font/local"; 
+import localFont from "next/font/local";
 import "./globals.css";
 import { AuthProvider } from "@/context/auth-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -41,7 +41,8 @@ const roca = localFont({
 
 export const metadata: Metadata = {
   title: "Klarify",
-  description: "Klarify is a career assessment tool that helps you find your dream job.",
+  description:
+    "Klarify is a career assessment tool that helps you find your dream job.",
 };
 
 export default function RootLayout({
@@ -50,11 +51,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      className={`${urbanist.variable} ${roca.variable} antialiased`}
+    >
       <AuthProvider>
-        <body
-          className={`${urbanist.variable} ${roca.variable} antialiased`}
-        >
+        <body>
           {children}
           <Toaster />
         </body>

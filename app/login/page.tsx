@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { EyeIcon, EyeOffIcon, Loader2, Verified } from "lucide-react"; // Import Loader2
 import OnboardingNavbar from "@/components/onboarding/onboarding-navbar";
-import LoadingScreen from "@/components/loading-screen";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginFormData } from "@/validation/auth.validation";

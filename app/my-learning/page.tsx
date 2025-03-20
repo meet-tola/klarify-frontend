@@ -24,6 +24,7 @@ import { useRouter } from "next/navigation";
 import LoadingScreen from "@/components/loading-screen";
 import { slugify } from "@/lib/slugify";
 import { getRoadmapContent } from "@/lib/api";
+import { getLevelColor } from "@/lib/get-level-color";
 
 export default function DashboardPage() {
   const { user, loading } = useAuthContext();
@@ -67,18 +68,7 @@ export default function DashboardPage() {
     return <LoadingScreen message={"Loading..."} />;
   }
 
-  const getLevelColor = (level: any) => {
-    switch (level) {
-      case "Beginner":
-        return "text-blue-800";
-      case "Intermediate":
-        return "text-yellow-800";
-      case "Advanced":
-        return "text-red-800";
-      default:
-        return "text-gray-800";
-    }
-  };
+
 
   return (
     <div className="container py-8 space-y-8">
@@ -208,7 +198,7 @@ export default function DashboardPage() {
                   cy="50"
                   r="45"
                   fill="none"
-                  stroke="#7C3AED"
+                  stroke="#42347B"
                   strokeWidth="10"
                   strokeDasharray="282.7"
                   strokeDashoffset={282.7 * (1 - 0.8)}
@@ -222,14 +212,14 @@ export default function DashboardPage() {
             <div className="mt-4 text-center space-y-1">
               <p className="text-gray-600">Daily Learning: 6/30 Learning</p>
               <p className="text-gray-600">Your longest streak: 14 Days</p>
-              <Button variant="link" className="text-[#7C3AED] p-0 h-auto">
+              <Button variant="link" className="text-primary p-0 h-auto">
                 See Details
               </Button>
             </div>
           </div>
 
           {/* Right Card - Course Progress */}
-          <div className="bg-white rounded-lg border p-6 md:col-span-2">
+          <div className="bg-white rounded-lg border px-6 py-4 md:col-span-2">
             <div className="h-full flex flex-col">
               <p
                 className={`text-sm font-medium ${getLevelColor(
