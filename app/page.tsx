@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { ChevronRight, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import Image from "next/image";
 import InteractiveTools from "@/components/home/interactive-tools";
 import SuccessStories from "@/components/home/success-stories";
 import DigitalCareerPath from "@/components/home/digital-career-path";
@@ -61,40 +62,12 @@ export default function Home() {
         "Find the perfect digital skill for you – from coding to marketing and beyond.",
       icon: (
         <div className="w-24 h-24 mx-auto mb-4">
-          <svg
-            viewBox="0 0 100 100"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-full h-full"
-          >
-            <path
-              d="M30 60C30 60 35 65 50 65C65 65 70 60 70 60"
-              stroke="#333"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            <path
-              d="M20 40H80"
-              stroke="#333"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            <rect
-              x="30"
-              y="20"
-              width="40"
-              height="50"
-              rx="2"
-              stroke="#333"
-              strokeWidth="2"
-            />
-            <path
-              d="M40 75C40 75 40 85 50 85C60 85 60 75 60 75"
-              stroke="#333"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-          </svg>
+          <Image
+            src="/assets/hands.svg"
+            alt="Info Illustration"
+            width={200}
+            height={200}
+          />
         </div>
       ),
       bgColor: "bg-rose-50",
@@ -105,69 +78,12 @@ export default function Home() {
         "Get a step-by-step plan tailored to your goals, skills, and interests.",
       icon: (
         <div className="w-24 h-24 mx-auto mb-4">
-          <svg
-            viewBox="0 0 100 100"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-full h-full"
-          >
-            <path
-              d="M30 20L70 20"
-              stroke="#333"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            <path
-              d="M30 40L70 40"
-              stroke="#333"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            <path
-              d="M30 60L70 60"
-              stroke="#333"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            <path
-              d="M30 80L70 80"
-              stroke="#333"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            <circle
-              cx="50"
-              cy="20"
-              r="5"
-              fill="white"
-              stroke="#333"
-              strokeWidth="2"
-            />
-            <circle
-              cx="40"
-              cy="40"
-              r="5"
-              fill="white"
-              stroke="#333"
-              strokeWidth="2"
-            />
-            <circle
-              cx="60"
-              cy="60"
-              r="5"
-              fill="white"
-              stroke="#333"
-              strokeWidth="2"
-            />
-            <circle
-              cx="45"
-              cy="80"
-              r="5"
-              fill="white"
-              stroke="#333"
-              strokeWidth="2"
-            />
-          </svg>
+          <Image
+            src="/assets/roadmap.svg"
+            alt="Info Illustration"
+            width={200}
+            height={200}
+          />
         </div>
       ),
       bgColor: "bg-blue-50",
@@ -178,46 +94,12 @@ export default function Home() {
         "Access curated courses, e-books, and tools to learn at your own pace.",
       icon: (
         <div className="w-24 h-24 mx-auto mb-4">
-          <svg
-            viewBox="0 0 100 100"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-full h-full"
-          >
-            <rect
-              x="25"
-              y="20"
-              width="15"
-              height="60"
-              rx="2"
-              stroke="#333"
-              strokeWidth="2"
-            />
-            <rect
-              x="42"
-              y="20"
-              width="15"
-              height="60"
-              rx="2"
-              stroke="#333"
-              strokeWidth="2"
-            />
-            <rect
-              x="59"
-              y="20"
-              width="15"
-              height="60"
-              rx="2"
-              stroke="#333"
-              strokeWidth="2"
-            />
-            <path
-              d="M20 85H80"
-              stroke="#333"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-          </svg>
+          <Image
+            src="/assets/cards.svg"
+            alt="Info Illustration"
+            width={200}
+            height={200}
+          />
         </div>
       ),
       bgColor: "bg-indigo-50",
@@ -337,9 +219,7 @@ export default function Home() {
                 today!
               </motion.p>
               <motion.div variants={itemVariants} className="mt-8">
-                <Button size={"lg"}>
-                  Find a skill
-                </Button>
+                <Button size={"lg"}>Find a skill</Button>
               </motion.div>
             </motion.div>
 
@@ -416,8 +296,12 @@ export default function Home() {
                 >
                   <CardContent className="p-8 text-center">
                     {feature.icon}
-                    <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
-                    <p className="text-slate-600">{feature.description}</p>
+                    <h3 className="text-2xl font-bold mb-3 roca-bold">
+                      {feature.title}
+                    </h3>
+                    <p className="text-slate-600 font-medium">
+                      {feature.description}
+                    </p>
                   </CardContent>
                 </Card>
               </motion.div>

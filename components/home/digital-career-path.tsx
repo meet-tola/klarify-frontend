@@ -63,7 +63,7 @@ export default function DigitalCareerPath() {
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="relative">
             {/* Static heading */}
-            <h2 className="text-3xl md:text-4xl font-bold mb-12 text-slate-900">
+            <h2 className="text-3xl md:text-4xl font-bold mb-12 text-slate-900 roca-bold">
               Your Path to a Digital Career in
               <br className="hidden md:block" />
               three Simple Steps
