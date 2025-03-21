@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, createContext, useContext } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { CurrentUserResponseType } from "@/types/api.type";
 import { getCurrentUser } from "@/lib/api";
 
@@ -16,6 +16,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<CurrentUserResponseType | null>(null);
   const [loading, setLoading] = useState(true); 
   const router = useRouter();
+  const pathname = usePathname();
+
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -33,10 +35,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   useEffect(() => {
-    if (!loading && !user) {
-      router.push("/");
+    if (!loading && !user && pathname !== "/") {
+      router.push("/login");
     }
-  }, [user, loading, router]);
+  }, [user, loading, pathname, router]);
 
   return (
     <AuthContext.Provider value={{ user, loading, setUser }}>

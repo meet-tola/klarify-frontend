@@ -228,7 +228,7 @@ export default function Home() {
               initial="hidden"
               animate="visible"
               variants={fadeInVariants}
-              className="bg-white rounded-xl shadow-lg p-6 md:p-8"
+              className="bg-white rounded-2xl shadow-lg p-6 md:p-8"
             >
               <h2 className="text-2xl md:text-3xl font-bold text-slate-800 mb-6 roca-bold">
                 What's Your Interest?
