@@ -98,7 +98,7 @@ export default function SuccessStories() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
-              className="text-3xl md:text-4xl font-bold text-slate-800 mb-4"
+              className="text-3xl md:text-4xl font-bold text-slate-800 mb-4 roca-bold"
             >
               Real Stories, Real Success
             </motion.h2>
