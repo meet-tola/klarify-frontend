@@ -11,7 +11,7 @@ export default {
 	theme: {
 		extend: {
 			colors: {
-				background: 'hsl(var(--background))',
+				background: '#FDFDFF',
 				foreground: 'hsl(var(--foreground))',
 				card: {
 					DEFAULT: 'hsl(var(--card))',
@@ -30,7 +30,7 @@ export default {
 					foreground: 'hsl(var(--secondary-foreground))'
 				},
 				muted: {
-					DEFAULT: 'hsl(var(--muted))',
+					DEFAULT: '#FBFBFF',
 					foreground: 'hsl(var(--muted-foreground))'
 				},
 				accent: {

@@ -1,11 +1,24 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { motion } from "framer-motion"
-import { Menu, X, User, BookOpen, Map, Home, Lightbulb, BookMarked, Briefcase, Users } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useState } from "react";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import {
+  Menu,
+  X,
+  User,
+  BookOpen,
+  Map,
+  Home,
+  Lightbulb,
+  BookMarked,
+  Briefcase,
+  Users,
+  GraduationCap,
+  ChevronDown,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,51 +26,83 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import Logo from "@/components/logo"
-import { useAuthContext } from "@/context/auth-provider"
-import { logout as logoutAPI } from "@/lib/api"
+} from "@/components/ui/dropdown-menu";
+import Logo from "@/components/logo";
+import { useAuthContext } from "@/context/auth-provider";
+import { logout as logoutAPI } from "@/lib/api";
 
 export default function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const { user, setUser } = useAuthContext()
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, setUser } = useAuthContext();
 
   // Handle mobile menu
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen)
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   // Handle logout
   const handleLogout = async () => {
     try {
-      await logoutAPI()
-      setUser(null)
+      await logoutAPI();
+      setUser(null);
     } catch (error) {
-      console.error("Logout failed:", error)
+      console.error("Logout failed:", error);
     }
-  }
+  };
 
   const mainNavItems = [
-    { title: "Inspiration", href: "/inspiration", icon: <Lightbulb className="h-5 w-5" /> },
-    { title: "Resources", href: "/resources", icon: <BookMarked className="h-5 w-5" /> },
-    { title: "Career Exploration", href: "/career", icon: <Briefcase className="h-5 w-5" /> },
-    { title: "Community Forum", href: "/community", icon: <Users className="h-5 w-5" /> },
-  ]
+    {
+      title: "Inspiration",
+      href: "/inspiration",
+      icon: <Lightbulb className="h-5 w-5" />,
+    },
+    {
+      title: "Resources",
+      href: "/resources",
+      icon: <BookMarked className="h-5 w-5" />,
+    },
+    {
+      title: "Career Exploration",
+      href: "/career",
+      icon: <Briefcase className="h-5 w-5" />,
+    },
+    {
+      title: "Community Forum",
+      href: "/community",
+      icon: <Users className="h-5 w-5" />,
+    },
+  ];
 
   const userNavItems = [
-    { title: "Dashboard", href: "/my-learning", icon: <Home className="h-5 w-5" /> },
-    { title: "Learning", href: "/my-learning/path", icon: <BookOpen className="h-5 w-5" /> },
-    { title: "Skills", href: "/my-learning/skill", icon: <Map className="h-5 w-5" /> },
-    { title: "Networking", href: "/networking", icon: <Map className="h-5 w-5" /> },
-  ]
+    {
+      title: "Dashboard",
+      href: "/my-learning",
+      icon: <Home className="h-5 w-5" />,
+    },
+    {
+      title: "Learning",
+      href: "/my-learning/path",
+      icon: <BookOpen className="h-5 w-5" />,
+    },
+    {
+      title: "Skills",
+      href: "/my-learning/skill",
+      icon: <Map className="h-5 w-5" />,
+    },
+    {
+      title: "Networking",
+      href: "/networking",
+      icon: <Map className="h-5 w-5" />,
+    },
+  ];
 
   // Get user initials for avatar fallback
   const getUserInitials = () => {
-    if (!user || !user?.user?.name) return "U"
+    if (!user || !user?.user?.name) return "U";
     return user?.user?.name
       .split(" ")
       .map((n) => n[0])
       .join("")
-      .toUpperCase()
-  }
+      .toUpperCase();
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-white shadow-sm">
@@ -85,22 +130,35 @@ export default function Header() {
           {/* Desktop CTA Buttons */}
           <div className="hidden md:flex items-center space-x-4">
             {user ? (
-              <div className="flex items-center">
-                {/* User Profile Dropdown */}
+              <div className="flex items-center space-x-2">
+                {/* My Learning Dropdown */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="rounded-full p-0 h-10 w-10">
-                      <Avatar>
-                        <AvatarImage src={user?.user?.profileImage || ""} alt={user?.user?.name || "User"} />
-                        <AvatarFallback className="bg-slate-800 text-white">{getUserInitials()}</AvatarFallback>
-                      </Avatar>
+                    <Button variant="outline">
+                      My Learning
+                      <ChevronDown className="ml-2 h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56">
                     <DropdownMenuLabel>
-                      <div className="flex flex-col space-y-1">
-                        <p className="font-medium">{user?.user?.name || "User"}</p>
-                        <p className="text-xs text-slate-500">{user?.user?.email || ""}</p>
+                      <div className="flex items-center space-x-3">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage
+                            src={user?.user?.profileImage || ""}
+                            alt={user?.user?.name || "User"}
+                          />
+                          <AvatarFallback className="bg-slate-800 text-white text-xs">
+                            {getUserInitials()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex flex-col">
+                          <p className="font-medium text-sm">
+                            {user?.user?.name || "User"}
+                          </p>
+                          <p className="text-xs text-slate-500">
+                            {user?.user?.email || ""}
+                          </p>
+                        </div>
                       </div>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
@@ -111,17 +169,24 @@ export default function Header() {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuLabel className="text-xs font-semibold text-slate-500">Learning</DropdownMenuLabel>
+                    <DropdownMenuLabel className="text-xs font-semibold text-slate-500">
+                      Learning
+                    </DropdownMenuLabel>
                     {userNavItems.map((item) => (
                       <DropdownMenuItem key={item.href} asChild>
                         <Link href={item.href} className="cursor-pointer">
-                          {item.icon && <span className="mr-2">{item.icon}</span>}
+                          {item.icon && (
+                            <span className="mr-2">{item.icon}</span>
+                          )}
                           <span>{item.title}</span>
                         </Link>
                       </DropdownMenuItem>
                     ))}
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleLogout} className="text-red-500 focus:text-red-500 cursor-pointer">
+                    <DropdownMenuItem
+                      onClick={handleLogout}
+                      className="text-red-500 focus:text-red-500 cursor-pointer"
+                    >
                       Logout
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -132,7 +197,10 @@ export default function Header() {
                 <Button variant="outline" className="rounded-full" asChild>
                   <Link href="/login">Login</Link>
                 </Button>
-                <Button className="rounded-full bg-slate-800 hover:bg-slate-700" asChild>
+                <Button
+                  className="rounded-full bg-slate-800 hover:bg-slate-700"
+                  asChild
+                >
                   <Link href="/signup">Get Started</Link>
                 </Button>
               </>
@@ -142,7 +210,11 @@ export default function Header() {
           {/* Mobile Menu Button */}
           <div className="md:hidden">
             <Button variant="ghost" size="icon" onClick={toggleMenu}>
-              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {isMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
             </Button>
           </div>
         </div>
@@ -150,7 +222,10 @@ export default function Header() {
 
       {/* Mobile Menu - Slide from right */}
       {isMenuOpen && (
-        <div className="fixed inset-0 bg-black/20 z-40 md:hidden" onClick={toggleMenu}>
+        <div
+          className="fixed inset-0 bg-black/20 z-40 md:hidden"
+          onClick={toggleMenu}
+        >
           <motion.div
             className="fixed top-0 right-0 h-full w-4/5 max-w-sm bg-white shadow-xl z-50 overflow-y-auto"
             initial={{ x: "100%" }}
@@ -169,15 +244,26 @@ export default function Header() {
               <div className="p-4 border-b">
                 <div className="flex items-center space-x-3 mb-4">
                   <Avatar>
-                    <AvatarImage src={user?.user?.profileImage || ""} alt={user?.user?.name || "User"} />
-                    <AvatarFallback className="bg-slate-800 text-white">{getUserInitials()}</AvatarFallback>
+                    <AvatarImage
+                      src={user?.user?.profileImage || ""}
+                      alt={user?.user?.name || "User"}
+                    />
+                    <AvatarFallback className="bg-slate-800 text-white">
+                      {getUserInitials()}
+                    </AvatarFallback>
                   </Avatar>
                   <div>
                     <p className="font-medium">{user?.user?.name || "User"}</p>
-                    <p className="text-sm text-slate-500">{user?.user?.email || ""}</p>
+                    <p className="text-sm text-slate-500">
+                      {user?.user?.email || ""}
+                    </p>
                   </div>
                 </div>
-                <Button variant="outline" className="w-full rounded-full" asChild>
+                <Button
+                  variant="outline"
+                  className="w-full rounded-full"
+                  asChild
+                >
                   <Link href="/profile">
                     <User className="mr-2 h-4 w-4" />
                     Visit Profile
@@ -188,7 +274,9 @@ export default function Header() {
 
             {user && (
               <div className="p-4 border-b">
-                <p className="font-semibold text-sm uppercase text-slate-500 mb-2">Your Learning</p>
+                <p className="font-semibold text-sm uppercase text-slate-500 mb-2">
+                  Your Learning
+                </p>
                 <nav className="space-y-2">
                   {userNavItems.map((item) => (
                     <Link
@@ -206,7 +294,9 @@ export default function Header() {
             )}
 
             <div className="p-4">
-              <p className="font-semibold text-sm uppercase text-slate-500 mb-2">Explore</p>
+              <p className="font-semibold text-sm uppercase text-slate-500 mb-2">
+                Explore
+              </p>
               <nav className="space-y-2">
                 {mainNavItems.map((item) => (
                   <Link
@@ -227,20 +317,27 @@ export default function Header() {
                 <Button
                   className="w-full rounded-full bg-slate-800 hover:bg-slate-700"
                   onClick={() => {
-                    handleLogout()
-                    toggleMenu()
+                    handleLogout();
+                    toggleMenu();
                   }}
                 >
                   Logout
                 </Button>
               ) : (
                 <div className="flex flex-col space-y-2">
-                  <Button variant="outline" className="w-full rounded-full" asChild>
+                  <Button
+                    variant="outline"
+                    className="w-full rounded-full"
+                    asChild
+                  >
                     <Link href="/login" onClick={toggleMenu}>
                       Login
                     </Link>
                   </Button>
-                  <Button className="w-full rounded-full bg-slate-800 hover:bg-slate-700" asChild>
+                  <Button
+                    className="w-full rounded-full bg-slate-800 hover:bg-slate-700"
+                    asChild
+                  >
                     <Link href="/signup" onClick={toggleMenu}>
                       Get Started
                     </Link>
@@ -252,6 +349,5 @@ export default function Header() {
         </div>
       )}
     </header>
-  )
+  );
 }
-

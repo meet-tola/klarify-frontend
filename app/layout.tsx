@@ -55,6 +55,9 @@ export default function RootLayout({
       lang="en"
       className={`${urbanist.variable} ${roca.variable} antialiased`}
     >
+      <head>
+        <link rel="icon" href="/favicon.png" sizes="any" />
+      </head>
       <AuthProvider>
         <body>
           {children}

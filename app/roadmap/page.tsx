@@ -145,9 +145,9 @@ export default function RoadmapPage() {
   };
 
   return (
-    <div className="bg-[#FDFDFF]">
+    <div className="bg-background">
       <OnboardingNavbar />
-      <div className="container py-8 space-y-8 px-6">
+      <div className="w-full flex justify-center flex-col py-8 space-y-8 px-6">
         {/* Top Content - Centered */}
         <div className="text-center">
           <h1 className="text-3xl font-bold roca-bold mb-2">

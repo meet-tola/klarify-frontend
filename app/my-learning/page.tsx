@@ -1,18 +1,11 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { ArrowRight, BookText, FolderKanban, Info, Layers } from "lucide-react"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { motion } from "framer-motion"
 import { useAuthContext } from "@/context/auth-provider"
@@ -22,10 +15,36 @@ import { slugify } from "@/lib/slugify"
 import { getRoadmapContent } from "@/lib/api"
 import { getLevelColor } from "@/lib/get-level-color"
 
+// Tip Dropdown Component
+function TipDropdown({ title, content }: { title: string; content: string }) {
+  const [isOpen, setIsOpen] = useState(false)
+
+  return (
+    <div className="border-b">
+      <div
+        className="flex items-center justify-between py-2 text-gray-700 hover:text-gray-900 cursor-pointer"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <span className="font-medium">{title}</span>
+        <svg
+          className={`w-5 h-5 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </div>
+      {isOpen && <div className="py-3 px-2 text-sm text-gray-600 bg-gray-50 rounded-md mb-2">{content}</div>}
+    </div>
+  )
+}
+
 export default function DashboardPage() {
   const { user, loading } = useAuthContext()
   const [roadmap, setRoadmap] = useState<any>(null)
   const [learningPath, setLearningPath] = useState<any>(null)
+  const [tipStates, setTipStates] = useState<boolean[]>([])
 
   const router = useRouter()
 
@@ -57,12 +76,26 @@ export default function DashboardPage() {
     fetchRoadmapContent()
   }, [user])
 
+  useEffect(() => {
+    if (learningPath?.tips) {
+      setTipStates(Array(learningPath.tips.length).fill(false))
+    }
+  }, [learningPath])
+
+  const toggleTip = useCallback((index: number) => {
+    setTipStates((prevStates) => {
+      const newStates = [...prevStates]
+      newStates[index] = !newStates[index]
+      return newStates
+    })
+  }, [])
+
   if (loading) {
     return <LoadingScreen message={"Loading..."} />
   }
 
   return (
-    <div className="container py-8 space-y-8">
+    <div className="container py-8 space-y-8 bg-background">
       {/* Welcome Section */}
       <div>
         <motion.h1
@@ -88,7 +121,7 @@ export default function DashboardPage() {
 
       {/* Action Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Link href="/learning" className="block p-6 border rounded-lg hover:border-primary">
+        <Link href="/learning" className="block p-6 border rounded-lg hover:border-primary bg-white hover:bg-muted">
           <div className="flex items-start gap-4">
             <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
               <BookText />
@@ -101,7 +134,7 @@ export default function DashboardPage() {
           </div>
         </Link>
 
-        <Link href="/projects" className="block p-6 border rounded-lg hover:border-primary">
+        <Link href="/projects" className="block p-6 border rounded-lg hover:border-primary bg-white hover:bg-muted">
           <div className="flex items-start gap-4">
             <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
               <FolderKanban />
@@ -114,7 +147,7 @@ export default function DashboardPage() {
           </div>
         </Link>
 
-        <Link href="/resources" className="block p-6 border rounded-lg hover:border-primary">
+        <Link href="/resources" className="block p-6 border rounded-lg hover:border-primary bg-white hover:bg-muted">
           <div className="flex items-start gap-4">
             <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
               <Layers />
@@ -176,7 +209,7 @@ export default function DashboardPage() {
               </div>
             </div>
             <div className="mt-4 text-center space-y-1">
-              <p className="text-gray-600">Should be learnt today</p>
+              <p className="text-gray-600">0 Learnt Today</p>
               <p className="text-gray-600">Longest streak: 14 Days</p>
               <Dialog>
                 <DialogTrigger asChild>
@@ -188,60 +221,60 @@ export default function DashboardPage() {
                   <DialogHeader>
                     <DialogTitle className="text-xl font-bold">Your Streak</DialogTitle>
                   </DialogHeader>
-                  <div className="bg-[#1e293b] text-white p-6 rounded-lg">
+                  <div className="bg-white p-6 rounded-lg">
                     <div className="flex justify-between mb-6">
                       <div>
-                        <p className="text-gray-400">Current Streak</p>
+                        <p className="text-gray-500">Current Streak</p>
                         <p className="text-2xl font-bold">1</p>
                       </div>
                       <div>
-                        <p className="text-gray-400">Longest Streak</p>
+                        <p className="text-gray-500">Longest Streak</p>
                         <p className="text-2xl font-bold">4</p>
                       </div>
                     </div>
 
                     <div className="grid grid-cols-8 gap-4 mb-4">
                       <div className="flex flex-col items-center">
-                        <div className="w-8 h-8 rounded-full bg-[#f87171] flex items-center justify-center">
+                        <div className="w-8 h-8 rounded-full bg-red-400 flex items-center justify-center">
                           <span className="text-xs">⚡</span>
                         </div>
-                        <span className="text-xs mt-1">1</span>
+                        <span className="text-xs mt-1 text-gray-700">1</span>
                       </div>
                       <div className="flex flex-col items-center">
-                        <div className="w-8 h-8 rounded-full bg-[#6b7280] flex items-center justify-center">
+                        <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
                           <span className="text-xs">✕</span>
                         </div>
-                        <span className="text-xs mt-1">2</span>
+                        <span className="text-xs mt-1 text-gray-700">2</span>
                       </div>
                       <div className="flex flex-col items-center">
-                        <div className="w-8 h-8 rounded-full bg-[#fbbf24] flex items-center justify-center">
+                        <div className="w-8 h-8 rounded-full bg-amber-300 flex items-center justify-center">
                           <span className="text-xs">⚡</span>
                         </div>
-                        <span className="text-xs mt-1">1</span>
+                        <span className="text-xs mt-1 text-gray-700">3</span>
                       </div>
                       <div className="flex flex-col items-center">
-                        <div className="w-8 h-8 rounded-full border border-dashed border-gray-500 flex items-center justify-center"></div>
-                        <span className="text-xs mt-1">2</span>
+                        <div className="w-8 h-8 rounded-full border border-dashed border-gray-400 flex items-center justify-center"></div>
+                        <span className="text-xs mt-1 text-gray-700">4</span>
                       </div>
                       <div className="flex flex-col items-center">
-                        <div className="w-8 h-8 rounded-full bg-[#475569] flex items-center justify-center"></div>
-                        <span className="text-xs mt-1">3</span>
+                        <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center"></div>
+                        <span className="text-xs mt-1 text-gray-700">5</span>
                       </div>
                       <div className="flex flex-col items-center">
-                        <div className="w-8 h-8 rounded-full bg-[#475569] flex items-center justify-center"></div>
-                        <span className="text-xs mt-1">4</span>
+                        <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center"></div>
+                        <span className="text-xs mt-1 text-gray-700">6</span>
                       </div>
                       <div className="flex flex-col items-center">
-                        <div className="w-8 h-8 rounded-full bg-[#475569] flex items-center justify-center"></div>
-                        <span className="text-xs mt-1">5</span>
+                        <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center"></div>
+                        <span className="text-xs mt-1 text-gray-700">7</span>
                       </div>
                       <div className="flex flex-col items-center">
-                        <div className="w-8 h-8 rounded-full bg-[#475569] flex items-center justify-center"></div>
-                        <span className="text-xs mt-1">6</span>
+                        <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center"></div>
+                        <span className="text-xs mt-1 text-gray-700">8</span>
                       </div>
                     </div>
 
-                    <p className="text-center text-sm text-gray-400 mt-4">Visit every day to keep your streak going!</p>
+                    <p className="text-center text-sm text-gray-500 mt-4">Visit every day to keep your streak going!</p>
                   </div>
                 </DialogContent>
               </Dialog>
@@ -333,22 +366,7 @@ export default function DashboardPage() {
             <p className="text-gray-600 mb-6">Here are some tips tailored for your current level:</p>
             <div className="space-y-4">
               {learningPath?.tips?.map((tip: any, index: any) => (
-                <Dialog key={index}>
-                  <DialogTrigger asChild>
-                    <div className="flex items-center justify-between py-2 text-gray-700 hover:text-gray-900 cursor-pointer">
-                      <span>{tip.title}</span>
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>{tip.title}</DialogTitle>
-                      <DialogDescription>{tip.content}</DialogDescription>
-                    </DialogHeader>
-                  </DialogContent>
-                </Dialog>
+                <TipDropdown key={index} title={tip.title.replace(/^Tips:\s*/, "")} content={tip.content} />
               ))}
             </div>
           </div>
