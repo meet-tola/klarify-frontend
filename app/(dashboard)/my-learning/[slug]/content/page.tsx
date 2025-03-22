@@ -73,7 +73,6 @@ export default function CoursePage() {
     return null;
   }
 
-  // Show loading state
   if (loading) {
     return <LoadingScreen message="Loading.." />;
   }
@@ -96,10 +95,15 @@ export default function CoursePage() {
     setActiveView("lesson");
   };
 
-  // Handle going back to the course outline
+  // Handle going back to the course outline or dashboard
   const handleBackToOutline = () => {
-    setActiveView("outline");
-    setActiveLessonId(null);
+    if (activeView === "lesson") {
+      setActiveView("outline");
+      setActiveLessonId(null);
+      // router.push(`/my-learning/${slugify(user.user.pickedSkill)}`);
+    } else if (activeView === "outline") {
+      router.push("/my-learning");
+    }
   };
 
   // Mock data for course progress

@@ -155,7 +155,11 @@ export default function DashboardPage() {
       {/* Action Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Link
-          href="/learning"
+          href={
+            user?.user.pickedSkill
+              ? `/my-learning/${slugify(user.user.pickedSkill)}`
+              : "#"
+          }
           className="block p-6 border rounded-lg hover:border-primary bg-white hover:bg-muted"
         >
           <div className="flex items-start gap-4">
@@ -236,49 +240,64 @@ export default function DashboardPage() {
         <h2 className="text-2xl font-bold roca-bold mb-6">Continue Learning</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Left Card - Progress Circle */}
-          <div className="bg-white rounded-lg border p-6 flex items-center justify-center gap-6">
-            <div className="relative w-24 h-24 mx-auto">
-              <svg
-                className="w-full h-full transform -rotate-90"
-                viewBox="0 0 100 100"
-              >
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="45"
-                  fill="none"
-                  stroke="#F4F4F5"
-                  strokeWidth="10"
-                />
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="45"
-                  fill="none"
-                  stroke="#42347B"
-                  strokeWidth="10"
-                  strokeDasharray="282.7"
-                  strokeDashoffset={282.7 * (1 - progress / 100)}
-                  strokeLinecap="round"
-                />
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-2xl font-bold text-primary">
-                  {progress}%
-                </span>
-              </div>
+          <div className="bg-white rounded-lg border flex flex-col p-6 items-start">
+            <div className="flex items-center gap-2 mb-4">
+              <h3 className="text-lg font-semibold">
+                Tips for {learningPath?.level || "Beginners"}
+              </h3>
+              <Popover>
+                <PopoverTrigger>
+                  <Info className="h-4 w-4 text-gray-400 cursor-pointer" />
+                </PopoverTrigger>
+                <PopoverContent>
+                  <p>Helpful tips for getting started</p>
+                </PopoverContent>
+              </Popover>
             </div>
-            <div className="mt-4 text-center space-y-1">
-              <p className="font-medium text-primary">
-                {learntToday} Learnt Today
-              </p>
-              <p className="text-gray-600">
-                Longest streak:{" "}
-                <span className="font-medium text-primary">
-                  {longestStreak} Days
-                </span>
-              </p>
-              <StreakTracker />
+            <div className="flex items-center justify-center gap-6 w-full">
+              <div className="relative w-24 h-24 mx-auto">
+                <svg
+                  className="w-full h-full transform -rotate-90"
+                  viewBox="0 0 100 100"
+                >
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="45"
+                    fill="none"
+                    stroke="#F4F4F5"
+                    strokeWidth="10"
+                  />
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="45"
+                    fill="none"
+                    stroke="#42347B"
+                    strokeWidth="10"
+                    strokeDasharray="282.7"
+                    strokeDashoffset={282.7 * (1 - progress / 100)}
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-2xl font-bold text-primary">
+                    {progress}%
+                  </span>
+                </div>
+              </div>
+              <div className="mt-2 text-center space-y-1 pr-4">
+                <p className="font-medium text-primary">
+                  {learntToday} Learnt Today
+                </p>
+                <p className="text-gray-600">
+                  Longest streak:{" "}
+                  <span className="font-medium text-primary">
+                    {longestStreak} Days
+                  </span>
+                </p>
+                <StreakTracker />
+              </div>
             </div>
           </div>
 

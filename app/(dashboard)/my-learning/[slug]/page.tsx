@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress"
 import { ArrowRight, Calendar, ChevronLeft, ChevronRight, Info } from "lucide-react"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { useAuthContext } from "@/context/auth-provider"
-import { useRouter } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import LoadingScreen from "@/components/loading-screen"
 import { slugify } from "@/lib/slugify"
 import { getRoadmapContent } from "@/lib/api"
@@ -18,6 +18,8 @@ import { getLevelColor } from "@/lib/get-level-color"
 
 export default function PathPage() {
   const { user, loading } = useAuthContext()
+    const { slug } = useParams();
+    const router = useRouter();
   const [roadmap, setRoadmap] = useState<any>(null)
   const [learningPath, setLearningPath] = useState<any>(null)
   const [todoItems, setTodoItems] = useState([
@@ -44,11 +46,10 @@ export default function PathPage() {
     },
   ])
 
-  const router = useRouter()
 
   useEffect(() => {
-    if (!loading && !user) {
-      router.push("/login")
+    if (user && slugify(user.user.pickedSkill) !== slug) {
+      router.push("/my-learning");
     }
 
     const fetchRoadmapContent = async () => {
@@ -70,7 +71,11 @@ export default function PathPage() {
     }
 
     fetchRoadmapContent()
-  }, [user, loading, router])
+  }, [user, loading, slug, router]);
+
+  if (!user || slugify(user.user.pickedSkill) !== slug) {
+    return null;
+  }
 
   if (loading) {
     return <LoadingScreen message={"Loading..."} />

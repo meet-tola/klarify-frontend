@@ -104,8 +104,7 @@ export default function StreakTracker() {
 
   // Handle redirect to create goal page
   const handleCreateGoal = () => {
-    console.log("Navigate to goal creation page");
-    Example: router.push('/create-goal');
+    router.push('/my-learning/goal');
   };
 
   // Split streakHistory into chunks of 7 for each container
