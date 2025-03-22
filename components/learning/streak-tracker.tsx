@@ -12,7 +12,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Bell, Calendar, Clock, Plus, Target } from 'lucide-react';
+import { Bell, Calendar, Clock, Plus, Target } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 // Define the Goal type
@@ -38,7 +38,8 @@ export default function StreakTracker() {
   useEffect(() => {
     const savedStreak = localStorage.getItem("streak");
     if (savedStreak) {
-      const { currentStreak, longestStreak, streakHistory } = JSON.parse(savedStreak);
+      const { currentStreak, longestStreak, streakHistory } =
+        JSON.parse(savedStreak);
       setCurrentStreak(currentStreak);
       setLongestStreak(longestStreak);
       setStreakHistory(streakHistory);
@@ -55,29 +56,29 @@ export default function StreakTracker() {
   useEffect(() => {
     const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
     const lastVisit = localStorage.getItem("lastVisit");
-
+  
     if (lastVisit !== today) {
       // If the user is visiting for the first time today
       const newStreakHistory = [...streakHistory];
       const isConsecutive = lastVisit && new Date(today).getTime() - new Date(lastVisit).getTime() === 86400000; // 86400000 ms = 1 day
-
+  
       if (isConsecutive) {
         // Increment streak if consecutive
         setCurrentStreak((prev) => prev + 1);
-        newStreakHistory.push(true); // Mark today as completed
+        newStreakHistory.push(true); 
       } else {
         // Reset streak if not consecutive
         setCurrentStreak(1);
-        newStreakHistory.push(true); // Mark today as completed
+        newStreakHistory.push(true);
       }
-
+  
       // Update longest streak if current streak is higher
       if (currentStreak + 1 > longestStreak) {
         setLongestStreak(currentStreak + 1);
       }
-
+  
       setStreakHistory(newStreakHistory);
-
+  
       // Save updated streak data to localStorage
       localStorage.setItem(
         "streak",
@@ -87,7 +88,7 @@ export default function StreakTracker() {
           streakHistory: newStreakHistory,
         })
       );
-
+  
       // Update last visit date
       localStorage.setItem("lastVisit", today);
     }
@@ -104,7 +105,7 @@ export default function StreakTracker() {
 
   // Handle redirect to create goal page
   const handleCreateGoal = () => {
-    router.push('/my-learning/goal');
+    router.push("/my-learning/goal");
   };
 
   // Split streakHistory into chunks of 7 for each container
@@ -123,9 +124,11 @@ export default function StreakTracker() {
       </DialogTrigger>
       <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold">Your Learning Journey</DialogTitle>
+          <DialogTitle className="text-xl font-bold">
+            Your Learning Journey
+          </DialogTitle>
         </DialogHeader>
-        
+
         {/* Goals Container */}
         <div className="bg-white p-4 rounded-lg mb-4 border">
           <div className="flex justify-between items-center mb-4">
@@ -142,7 +145,9 @@ export default function StreakTracker() {
 
           {goals.length === 0 ? (
             <div className="text-center py-6">
-              <p className="text-gray-500 mb-4">You haven't set any learning goals yet.</p>
+              <p className="text-gray-500 mb-4">
+                You haven't set any learning goals yet.
+              </p>
               <Button onClick={handleCreateGoal}>
                 <Plus size={16} className="mr-2" /> Create Your First Goal
               </Button>
@@ -155,13 +160,20 @@ export default function StreakTracker() {
                     <div className="flex justify-between items-start mb-2">
                       <div>
                         <h4 className="font-medium">{goal.title}</h4>
-                        <p className="text-sm text-gray-500">{goal.description}</p>
+                        <p className="text-sm text-gray-500">
+                          {goal.description}
+                        </p>
                       </div>
-                      <Badge variant={goal.progress === 100 ? "default" : "secondary"} className="ml-2">
+                      <Badge
+                        variant={
+                          goal.progress === 100 ? "default" : "secondary"
+                        }
+                        className="ml-2"
+                      >
                         {goal.category}
                       </Badge>
                     </div>
-                    
+
                     <div className="mb-2">
                       <div className="flex justify-between text-xs text-gray-500 mb-1">
                         <span>Progress</span>
@@ -169,15 +181,20 @@ export default function StreakTracker() {
                       </div>
                       <Progress value={goal.progress} className="h-2" />
                     </div>
-                    
+
                     <div className="flex justify-between text-xs mt-3">
                       <div className="flex items-center gap-1 text-gray-600">
                         <Calendar size={14} />
-                        <span>{new Date(goal.startDate).toLocaleDateString()} - {new Date(goal.endDate).toLocaleDateString()}</span>
+                        <span>
+                          {new Date(goal.startDate).toLocaleDateString()} -{" "}
+                          {new Date(goal.endDate).toLocaleDateString()}
+                        </span>
                       </div>
                       <div className="flex items-center gap-1 text-gray-600">
                         <Clock size={14} />
-                        <span>{calculateDaysRemaining(goal.endDate)} days left</span>
+                        <span>
+                          {calculateDaysRemaining(goal.endDate)} days left
+                        </span>
                       </div>
                       {goal.reminder && (
                         <div className="flex items-center gap-1 text-gray-600">
@@ -210,7 +227,7 @@ export default function StreakTracker() {
           {streakChunks.map((chunk, chunkIndex) => (
             <div key={chunkIndex} className="grid grid-cols-7 gap-4 mb-4">
               {chunk.map((completed, index) => {
-                const dayNumber = chunkIndex * chunkSize + index + 1; // Calculate the day number
+                const dayNumber = chunkIndex * chunkSize + index + 1;
                 return (
                   <div key={dayNumber} className="flex flex-col items-center">
                     <div
@@ -220,21 +237,31 @@ export default function StreakTracker() {
                     >
                       <span className="text-xl">{completed ? "⚡" : ""}</span>
                     </div>
-                    <span className="text-xs mt-1 text-gray-700">{dayNumber}</span>
+                    <span className="text-xs mt-1 text-gray-700">
+                      {dayNumber}
+                    </span>
                   </div>
                 );
               })}
               {/* Fill remaining empty slots in the last chunk */}
               {chunk.length < chunkSize &&
-                Array.from({ length: chunkSize - chunk.length }).map((_, emptyIndex) => {
-                  const dayNumber = chunkIndex * chunkSize + chunk.length + emptyIndex + 1;
-                  return (
-                    <div key={`empty-${dayNumber}`} className="flex flex-col items-center">
-                      <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center"></div>
-                      <span className="text-xs mt-1 text-gray-700">{dayNumber}</span>
-                    </div>
-                  );
-                })}
+                Array.from({ length: chunkSize - chunk.length }).map(
+                  (_, emptyIndex) => {
+                    const dayNumber =
+                      chunkIndex * chunkSize + chunk.length + emptyIndex + 1;
+                    return (
+                      <div
+                        key={`empty-${dayNumber}`}
+                        className="flex flex-col items-center"
+                      >
+                        <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center"></div>
+                        <span className="text-xs mt-1 text-gray-700">
+                          {dayNumber}
+                        </span>
+                      </div>
+                    );
+                  }
+                )}
             </div>
           ))}
 
