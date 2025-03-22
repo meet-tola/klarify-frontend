@@ -2,8 +2,6 @@
 
 import { usePathname } from "next/navigation";
 import type React from "react";
-import MainNav from "@/components/dashboard/main.nav";
-import SecondaryNav from "@/components/dashboard/secondary-nav";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 

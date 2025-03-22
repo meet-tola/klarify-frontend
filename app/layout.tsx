@@ -7,7 +7,7 @@ import { Toaster } from "@/components/ui/sonner";
 
 // Google Font (Urbanist)
 const urbanist = Geist({
-  variable: "--font-urbanist",
+  variable: "--font-geist",
   subsets: ["latin"],
 });
 
