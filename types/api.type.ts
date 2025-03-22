@@ -18,6 +18,7 @@ export type UserType = {
   _id: string;
   name: string;
   email: string;
+  profileImage: string;
   isActive: boolean;
   lastLogin: Date | null;
   verificationCode?: string;
@@ -62,6 +63,7 @@ export type CurrentUserResponseType = {
     _id: string;
     name: string;
     email: string;
+    profileImage: string;
     isActive: boolean;
     lastLogin: Date | null;
     verificationCode?: string;

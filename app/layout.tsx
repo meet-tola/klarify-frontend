@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Urbanist } from "next/font/google";
+import { Geist } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import { AuthProvider } from "@/context/auth-provider";
 import { Toaster } from "@/components/ui/sonner";
 
 // Google Font (Urbanist)
-const urbanist = Urbanist({
+const urbanist = Geist({
   variable: "--font-urbanist",
   subsets: ["latin"],
 });

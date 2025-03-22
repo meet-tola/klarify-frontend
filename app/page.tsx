@@ -1,4 +1,4 @@
-import Header from "@/components/home/header"
+import Header from "@/components/header"
 import HeroSection from "@/components/home/hero-section"
 import FeaturesSection from "@/components/home/features-section"
 import DigitalCareerPath from "@/components/home/digital-career-path"
