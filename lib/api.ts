@@ -19,8 +19,14 @@ const postRequest = async (url: string, data?: any) => {
 // AUTH AND CURRENT USERS
 
 export const register = async (data: { name: string; email: string; password: string }) => {
-  const response = await postRequest("/auth/register", data);
-  return response;
+  try {
+    const response = await API.post("/auth/register", data);
+    localStorage.setItem("token", response.data.token);
+    return response.data;
+  } catch (error) {
+    console.error("Signup failed:", error);
+    throw error;
+  }
 };
 
 export const verifyEmail = async (data: { code: string }) => {
@@ -48,7 +54,7 @@ export const login = async (data: { email: string; password: string }) => {
 };
 
 export const logout = async () => {
-  localStorage.removeItem("token"); 
+  localStorage.removeItem("token");
   return postRequest("/auth/logout");
 };
 
@@ -103,7 +109,7 @@ export const selectSkill = async (userId: string, pickedSkill: string) => {
 export const searchSkills = async (query?: string) => {
   try {
     const response = await API.get("/skills/search-skills", {
-      params: { query }, 
+      params: { query },
     });
     return response.data;
   } catch (error) {

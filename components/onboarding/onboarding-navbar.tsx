@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { HelpCircle, LogOut } from "lucide-react"
-import { motion } from "framer-motion"
-import Logo from "../logo"
-import { useAuthContext } from "@/context/auth-provider"
-import { logout as logoutAPI } from "@/lib/api"
-import { useRouter } from "next/navigation"
-import { toast } from "sonner"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { HelpCircle, LogOut } from "lucide-react";
+import { motion } from "framer-motion";
+import Logo from "../logo";
+import { useAuthContext } from "@/context/auth-provider";
+import { logout as logoutAPI } from "@/lib/api";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,33 +19,46 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
+import React from "react";
 
 export default function OnboardingNavbar() {
-  const { user, setUser } = useAuthContext()
-  const router = useRouter()
-  const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const { user, setUser } = useAuthContext();
+  const router = useRouter();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [buttonSize, setButtonSize] = React.useState<
+    "icon" | "default" | "md" | "sm" | null
+  >("icon");
+
+  React.useEffect(() => {
+    const handleResize = () => {
+      setButtonSize(window.innerWidth < 640 ? "icon" : "md");
+    };
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleLogout = async () => {
-    setIsLoggingOut(true)
+    setIsLoggingOut(true);
 
     try {
-      await logoutAPI()
-      setUser(null)
+      await logoutAPI();
+      setUser(null);
 
       toast.success("Logged out successfully", {
         description: "Redirecting to login page...",
-      })
+      });
 
-      router.push("/login")
+      router.push("/login");
     } catch (error) {
       toast.error("Logout failed", {
         description: "Something went wrong. Please try again.",
-      })
+      });
     } finally {
-      setIsLoggingOut(false)
+      setIsLoggingOut(false);
     }
-  }
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-white shadow-sm">
@@ -57,30 +70,47 @@ export default function OnboardingNavbar() {
 
           <div className="flex items-center space-x-4">
             {/* Help Button */}
-            <Button variant="outline" className="rounded-full" size="sm">
-              <HelpCircle className="h-4 w-4 mr-2" />
+            <Button
+              variant="outline"
+              size={buttonSize}
+              className="rounded-full flex items-center justify-center"
+            >
+              <HelpCircle className="h-4 w-4 sm:mr-2" />
               <span className="hidden sm:inline">Get Help</span>
             </Button>
 
             {user && (
-              <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3 }}>
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3 }}
+              >
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button variant="outline" className="rounded-full" size="sm">
-                      <LogOut className="h-4 w-4 mr-2" />
+                    <Button
+                      variant="outline"
+                      size={buttonSize}
+                      className="rounded-full flex items-center justify-center"
+                    >
+                      <LogOut className="h-4 w-4 sm:mr-2" />
                       <span className="hidden sm:inline">Logout</span>
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Are you sure you want to logout?</AlertDialogTitle>
+                      <AlertDialogTitle>
+                        Are you sure you want to logout?
+                      </AlertDialogTitle>
                       <AlertDialogDescription>
                         You will be logged out and redirected to the login page.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={handleLogout} disabled={isLoggingOut}>
+                      <AlertDialogAction
+                        onClick={handleLogout}
+                        disabled={isLoggingOut}
+                      >
                         {isLoggingOut ? "Logging out..." : "Logout"}
                       </AlertDialogAction>
                     </AlertDialogFooter>
@@ -92,6 +122,5 @@ export default function OnboardingNavbar() {
         </div>
       </div>
     </header>
-  )
+  );
 }
-

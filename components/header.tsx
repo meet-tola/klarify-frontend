@@ -9,13 +9,13 @@ import {
   User,
   BookOpen,
   Map,
-  Home,
   Lightbulb,
   BookMarked,
   Briefcase,
   Users,
-  GraduationCap,
   ChevronDown,
+  BookOpenText,
+  UserRound,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -27,24 +27,51 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import Logo from "@/components/logo";
 import { useAuthContext } from "@/context/auth-provider";
 import { logout as logoutAPI } from "@/lib/api";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, setUser } = useAuthContext();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const router = useRouter();
 
   // Handle mobile menu
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   // Handle logout
   const handleLogout = async () => {
+    setIsLoggingOut(true);
+
     try {
       await logoutAPI();
       setUser(null);
+
+      toast.success("Logged out successfully", {
+        description: "Redirecting to login page...",
+      });
+
+      router.push("/login");
     } catch (error) {
-      console.error("Logout failed:", error);
+      toast.error("Logout failed", {
+        description: "Something went wrong. Please try again.",
+      });
+    } finally {
+      setIsLoggingOut(false);
     }
   };
 
@@ -75,7 +102,7 @@ export default function Header() {
     {
       title: "Dashboard",
       href: "/my-learning",
-      icon: <Home className="h-5 w-5" />,
+      icon: <BookOpenText className="h-5 w-5" />,
     },
     {
       title: "Learning",
@@ -84,13 +111,13 @@ export default function Header() {
     },
     {
       title: "Skills",
-      href: "/my-learning/skill",
+      href: "/my-learning/skills",
       icon: <Map className="h-5 w-5" />,
     },
     {
       title: "Networking",
       href: "/networking",
-      icon: <Map className="h-5 w-5" />,
+      icon: <UserRound className="h-5 w-5" />,
     },
   ];
 
@@ -136,7 +163,7 @@ export default function Header() {
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline">
                       My Learning
-                      <ChevronDown className="ml-2 h-4 w-4" />
+                      {/* <ChevronDown className="ml-2 h-4 w-4" /> */}
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56">
@@ -183,12 +210,35 @@ export default function Header() {
                       </DropdownMenuItem>
                     ))}
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onClick={handleLogout}
-                      className="text-red-500 focus:text-red-500 cursor-pointer"
-                    >
-                      Logout
-                    </DropdownMenuItem>
+                    <div className="relative">
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <div className="w-full cursor-pointer text-sm text-red-500 focus:text-red-500 px-2 py-1.5 hover:bg-slate-100 rounded">
+                            Logout
+                          </div>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              Are you sure you want to logout?
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                              You will be logged out and redirected to the login
+                              page.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={handleLogout}
+                              disabled={isLoggingOut}
+                            >
+                              {isLoggingOut ? "Logging out..." : "Logout"}
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
@@ -314,15 +364,32 @@ export default function Header() {
 
             <div className="p-4 mt-auto border-t">
               {user ? (
-                <Button
-                  className="w-full rounded-full bg-slate-800 hover:bg-slate-700"
-                  onClick={() => {
-                    handleLogout();
-                    toggleMenu();
-                  }}
-                >
-                  Logout
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button className="w-full rounded-full bg-slate-800 hover:bg-slate-700">
+                      Logout
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Are you sure you want to logout?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        You will be logged out and redirected to the login page.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={handleLogout}
+                        disabled={isLoggingOut}
+                      >
+                        {isLoggingOut ? "Logging out..." : "Logout"}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               ) : (
                 <div className="flex flex-col space-y-2">
                   <Button

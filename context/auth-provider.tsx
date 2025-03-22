@@ -1,12 +1,11 @@
 "use client";
 import { useState, useEffect, createContext, useContext } from "react";
-import { usePathname, useRouter } from "next/navigation";
 import { CurrentUserResponseType } from "@/types/api.type";
 import { getCurrentUser } from "@/lib/api";
 
 type AuthContextType = {
   user: CurrentUserResponseType | null;
-  loading: boolean; 
+  loading: boolean;
   setUser: React.Dispatch<React.SetStateAction<CurrentUserResponseType | null>>;
 };
 
@@ -14,10 +13,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<CurrentUserResponseType | null>(null);
-  const [loading, setLoading] = useState(true); 
-  const router = useRouter();
-  const pathname = usePathname();
-
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -27,24 +23,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } catch (error) {
         setUser(null);
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     };
 
     fetchUserData();
   }, []);
 
-  useEffect(() => {
-    if (!loading && !user && pathname !== "/" && pathname !== "/signup") {
-      router.push("/login");
-    }
-  }, [user, loading, pathname, router]);
-
-  return (
-    <AuthContext.Provider value={{ user, loading, setUser }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={{ user, loading, setUser }}>{children}</AuthContext.Provider>;
 };
 
 export const useAuthContext = () => {

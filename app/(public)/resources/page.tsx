@@ -1,5 +1,5 @@
 export default function Page() {
     return (
-        <div></div>
+        <div>Resources</div>
     );
 }
