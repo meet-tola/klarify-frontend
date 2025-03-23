@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Calendar } from "@/components/ui/calendar";
+// import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
@@ -176,12 +176,12 @@ export function CreateGoalDialog({
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
-                    <Calendar
+                    {/* <Calendar
                       mode="single"
                       selected={startDate}
                       onSelect={setStartDate}
                       initialFocus
-                    />
+                    /> */}
                   </PopoverContent>
                 </Popover>
               </div>
@@ -199,13 +199,13 @@ export function CreateGoalDialog({
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
-                    <Calendar
+                    {/* <Calendar
                       mode="single"
                       selected={endDate}
                       onSelect={setEndDate}
                       initialFocus
                       disabled={(date) => date < (startDate || new Date())}
-                    />
+                    /> */}
                   </PopoverContent>
                 </Popover>
               </div>
