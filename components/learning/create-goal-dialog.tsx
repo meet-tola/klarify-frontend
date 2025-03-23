@@ -27,6 +27,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { format } from "date-fns";
 import { CalendarIcon, Target } from "lucide-react";
 
 interface Goal {
@@ -171,7 +172,7 @@ export function CreateGoalDialog({
                       className="w-full justify-start text-left font-normal"
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {/* {startDate ? format(startDate, "PPP") : "Select date"} */}
+                      {startDate ? format(startDate, "PPP") : "Select date"}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
@@ -194,7 +195,7 @@ export function CreateGoalDialog({
                       className="w-full justify-start text-left font-normal"
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {/* {endDate ? format(endDate, "PPP") : "Select date"} */}
+                      {endDate ? format(endDate, "PPP") : "Select date"}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
