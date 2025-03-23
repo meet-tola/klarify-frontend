@@ -61,7 +61,7 @@ export default function HeroSection() {
               Start your journey today!
             </motion.p>
             <motion.div variants={itemVariants} className="mt-8">
-              <Button size={"lg"}>Find a skill</Button>
+              <Button>Find a skill</Button>
             </motion.div>
           </motion.div>
 
