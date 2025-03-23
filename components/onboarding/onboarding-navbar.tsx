@@ -1,13 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { HelpCircle, LogOut } from "lucide-react";
 import { motion } from "framer-motion";
 import Logo from "../logo";
 import { useAuthContext } from "@/context/auth-provider";
 import { logout as logoutAPI } from "@/lib/api";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -20,17 +19,18 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import React from "react";
 
 export default function OnboardingNavbar() {
   const { user, setUser } = useAuthContext();
-  const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const [buttonSize, setButtonSize] = React.useState<
-    "icon" | "default" | "md" | "sm" | null
-  >("icon");
+  const [buttonSize, setButtonSize] = useState<"icon" | "default" | "md" | "sm" | null>("icon");
 
-  React.useEffect(() => {
+  // Always check for user
+  useEffect(() => {
+    console.log("Checking user:", user); 
+  }, [user]);
+
+  useEffect(() => {
     const handleResize = () => {
       setButtonSize(window.innerWidth < 640 ? "icon" : "md");
     };
@@ -47,10 +47,8 @@ export default function OnboardingNavbar() {
       setUser(null);
 
       toast.success("Logged out successfully", {
-        description: "Redirecting to login page...",
+        description: "See you next time!",
       });
-
-      router.push("/login");
     } catch (error) {
       toast.error("Logout failed", {
         description: "Something went wrong. Please try again.",
@@ -102,7 +100,7 @@ export default function OnboardingNavbar() {
                         Are you sure you want to logout?
                       </AlertDialogTitle>
                       <AlertDialogDescription>
-                        You will be logged out and redirected to the login page.
+                        You will be logged out and will need to sign in again next time.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
