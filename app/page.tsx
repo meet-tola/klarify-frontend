@@ -13,7 +13,6 @@ export default function Home() {
       <Header />
       <HeroSection />
       <FeaturesSection />
-      <DigitalCareerPath />
       <InteractiveTools />
       <SuccessStories />
       <CTASection />

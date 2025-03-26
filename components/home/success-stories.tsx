@@ -1,206 +1,127 @@
-"use client";
+"use client"
 
-import { useState, useEffect, useRef } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight } from "lucide-react";
-import AnimatedButton from "../animated-button";
+import { motion } from "framer-motion"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { ArrowRight } from "lucide-react"
+import Link from "next/link"
 
 const stories = [
   {
     id: 1,
-    quote:
-      "From self-taught cloud skills to working at Microsoft. Adaora is a tech influencer and co-founder of She Code Africa, empowering women in tech.",
-    advice: "Start small, stay consistent, and never stop learning.",
-    name: "Adaora Nwodo",
-    title: "Cloud Engineer at Microsoft",
-    image: "/placeholder.svg",
+    name: "TREASURE AJEFU",
+    role: "Frontend Engineer",
+    company: "TechCorp",
+    image: "/placeholder.svg?height=200&width=200",
+    skills: ["Web Development", "React"],
+    story:
+      "I was 17 years old when I joined the platform. They have the best instructors for live classes and recorded lessons. Since I completed my program, I have been able to get jobs as a software engineer. The platform gave me the roadmap and the learning experience that I wouldn't have gotten at any other place.",
+    position: "left",
   },
   {
     id: 2,
-    quote:
-      "From self-taught cloud skills to working at Microsoft. Adaora is a tech influencer and co-founder of She Code Africa, empowering women in tech.",
-    advice: "Start small, stay consistent, and never stop learning.",
-    name: "Adaora Nwodo",
-    title: "Cloud Engineer at Microsoft",
-    image: "/placeholder.svg",
+    name: "SAMANTHA GLORIA",
+    role: "Backend Engineer",
+    company: "DataSystems",
+    image: "/placeholder.svg?height=200&width=200",
+    skills: ["Python", "Node.js"],
+    story:
+      "I think one of the best things that happened to me was learning from people from Nigeria, Kenya and other countries. You get a different perspective on learning and also enjoy a community that helps people grow in so many different ways. The platform equipped me with what I needed to get into the door. If I hadn't joined, I'd know nothing.",
+    position: "right",
   },
   {
     id: 3,
-    quote:
-      "From self-taught design skills to leading UX at a major tech company. Sarah transformed her career through continuous learning and networking.",
-    advice: "Start small, stay consistent, and never stop learning.",
-    name: "Sarah Johnson",
-    title: "Senior UX Designer",
-    image: "/placeholder.svg",
+    name: "MICHAEL CHEN",
+    role: "Data Scientist",
+    company: "AnalyticsPro",
+    image: "/placeholder.svg?height=200&width=200",
+    skills: ["Data Science", "Machine Learning"],
+    story:
+      "With a background in statistics, I taught myself Python and machine learning through the platform's courses. The structured curriculum and mentor support made all the difference. Now I build recommendation algorithms at a leading tech company and mentor others on their journey.",
+    position: "left",
   },
-  {
-    id: 4,
-    quote:
-      "From marketing assistant to data analyst in just 8 months. Michael discovered his passion for data through Klarity's assessment tools.",
-    advice:
-      "Don't be afraid to pivot your career when you find what truly excites you.",
-    name: "Michael Chen",
-    title: "Data Analyst at TechCorp",
-    image: "/placeholder.svg",
-  },
-];
+]
 
-export default function SuccessStories() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isCarouselHovered, setIsCarouselHovered] = useState(false);
-  const autoplayRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Handle automatic sliding
-  useEffect(() => {
-    if (isCarouselHovered) {
-      // Clear the interval when hovering
-      if (autoplayRef.current) {
-        clearInterval(autoplayRef.current);
-        autoplayRef.current = null;
-      }
-      return;
-    }
-
-    // Set up the interval for automatic sliding
-    autoplayRef.current = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % stories.length);
-    }, 5000);
-
-    // Clean up the interval on component unmount
-    return () => {
-      if (autoplayRef.current) {
-        clearInterval(autoplayRef.current);
-      }
-    };
-  }, [isCarouselHovered, stories.length]);
-
-  // Go to a specific slide
-  const goToSlide = (index: number) => {
-    setCurrentIndex(index);
-  };
-
-  // Calculate visible stories (current and next two)
-  const visibleStories = [];
-  for (let i = 0; i < 3; i++) {
-    const index = (currentIndex + i) % stories.length;
-    visibleStories.push(stories[index]);
-  }
-
+export default function SucessStories() {
   return (
-    <section className="py-16 md:py-24">
+    <section className="py-16 md:py-24 bg-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
-          <div className="max-w-2xl">
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-              className="text-3xl md:text-4xl font-bold text-slate-800 mb-4 roca-bold"
-            >
-              Real Stories, Real Success
-            </motion.h2>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              viewport={{ once: true }}
-              className="text-slate-600"
-            >
-              Take our interactive quiz to discover your skills, interests, and
-              learning style.
-            </motion.p>
-          </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="text-center max-w-3xl mx-auto mb-16"
+        >
+          <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">Success Stories</h2>
+          <p className="text-lg text-slate-600">
+            Real stories from people who transformed their careers through our platform
+          </p>
+        </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="mt-6 md:mt-0"
-          >
-            <Link href="#">
-              <AnimatedButton>See more Stories</AnimatedButton>
-            </Link>
-          </motion.div>
+        <div className="space-y-12 md:space-y-20">
+          {stories.map((story, index) => (
+            <motion.div
+              key={story.id}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+              viewport={{ once: true, margin: "-100px" }}
+              className={`flex flex-col ${story.position === "right" ? "md:flex-row-reverse" : "md:flex-row"} gap-8 items-center`}
+            >
+              <div className="w-full md:w-1/4 flex justify-center">
+                <div className="w-48 h-48 md:w-56 md:h-56 rounded-full overflow-hidden border-4 border-slate-100 shadow-lg">
+                  <img
+                    src={story.image || "/placeholder.svg"}
+                    alt={story.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
+
+              <div className="w-full md:w-3/4">
+                <div className="bg-white rounded-xl shadow-sm p-6 md:p-8 border border-slate-100">
+                  <div className="mb-4">
+                    <h3 className="text-xl font-bold text-blue-600">{story.role}</h3>
+                    <p className="font-bold text-lg text-slate-800">{story.name}</p>
+                  </div>
+
+                  <div className="mb-4 flex flex-wrap gap-2">
+                    {story.skills.map((skill) => (
+                      <Badge key={skill} variant="secondary">
+                        {skill}
+                      </Badge>
+                    ))}
+                  </div>
+
+                  <p className="text-slate-600 mb-6 text-lg leading-relaxed">"{story.story}"</p>
+
+                  <Link href={`/stories/${story.id}`}>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-blue-600 hover:text-blue-700 p-0 h-auto font-medium"
+                    >
+                      Read Full Story
+                      <ArrowRight className="ml-1 h-4 w-4" />
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          ))}
         </div>
 
-        <div
-          className="relative overflow-hidden"
-          onMouseEnter={() => setIsCarouselHovered(true)}
-          onMouseLeave={() => setIsCarouselHovered(false)}
-        >
-          <div className="flex gap-6 overflow-visible">
-            <AnimatePresence initial={false}>
-              {visibleStories.map((story, index) => (
-                <motion.div
-                  key={`${story.id}-${index}`}
-                  initial={{ opacity: 0, x: 100 }}
-                  animate={{
-                    opacity: 1,
-                    x: 0,
-                    scale: index === 0 ? 1 : 0.95,
-                    zIndex: 10 - index,
-                  }}
-                  exit={{ opacity: 0, x: -100 }}
-                  transition={{
-                    duration: 0.5,
-                    ease: "easeInOut",
-                  }}
-                  className="bg-white rounded-lg border-4 border-slate-200 p-6 min-w-[300px] md:min-w-[400px] flex-1"
-                >
-                  <p className="text-slate-700 mb-4">{story.quote}</p>
-                  <p className="text-slate-800 font-medium italic mb-6">
-                    "{story.advice}"
-                  </p>
-
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full overflow-hidden bg-slate-200">
-                      <Image
-                        src={story.image || "/placeholder.svg"}
-                        alt={story.name}
-                        width={40}
-                        height={40}
-                        className="object-cover"
-                      />
-                    </div>
-                    <div>
-                      <h4 className="font-medium text-slate-800">
-                        {story.name}
-                      </h4>
-                      <p className="text-sm text-slate-600">{story.title}</p>
-                    </div>
-                    <div className="ml-auto">
-                      <Link
-                        href="#"
-                        className="flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-800 hover:text-white transition-colors"
-                      >
-                        <ArrowRight className="h-4 w-4" />
-                      </Link>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
-
-          {/* Pagination dots */}
-          <div className="flex justify-center mt-8 space-x-2">
-            {stories.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => goToSlide(index)}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                  index === currentIndex ? "bg-slate-800 w-6" : "bg-slate-300"
-                }`}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
-          </div>
+        <div className="mt-16 text-center">
+          <Link href="/stories">
+            <Button variant="outline">
+              View All Success Stories
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </Link>
         </div>
       </div>
     </section>
-  );
+  )
 }
+
