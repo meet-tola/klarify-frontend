@@ -97,7 +97,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.7 }}
-              className="absolute -bottom-6 -left-6 bg-white p-4 rounded-lg shadow-lg"
+              className="absolute -bottom-12 -left-6 bg-white p-2 md:p-4 px-4 rounded-lg shadow-lg"
             >
               <div className="flex items-center gap-3">
                 <div className="bg-green-100 p-2 rounded-full">
@@ -122,7 +122,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.8 }}
-              className="absolute -top-6 -right-6 bg-white p-4 rounded-lg shadow-lg"
+              className="absolute -top-6 -right-6 bg-white p-2 md:p-4 rounded-lg shadow-lg"
             >
               <div className="flex items-center gap-3">
                 <div className="bg-blue-100 p-2 rounded-full">

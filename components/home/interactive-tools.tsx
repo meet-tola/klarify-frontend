@@ -65,7 +65,7 @@ export default function InteractiveTools() {
                 <TabsTrigger
                   key={tool.id}
                   value={tool.id}
-                  className="flex items-center gap-2 sm:text-base sm:px-4 data-[state=active]:bg-primary/10 whitespace-nowrap"
+                  className="flex items-center gap-2 sm:text-base sm:px-4 data-[state=active]:bg-slate-50 whitespace-nowrap"
                 >
                   <span className="inline-flex">{tool.icon}</span>
                   <span className="hidden lg:inline">{tool.title}</span>
@@ -89,7 +89,7 @@ export default function InteractiveTools() {
                     <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 mb-6 sm:mb-8">
                       <div className="bg-primary/10 p-3 sm:p-4 rounded-full text-primary self-start">{tool.icon}</div>
                       <div>
-                        <h3 className="text-xl sm:text-2xl font-semibold mb-1 sm:mb-2">{tool.title}</h3>
+                        <h3 className="text-xl sm:text-2xl roca-bold font-semibold mb-1 sm:mb-2">{tool.title}</h3>
                         <p className="text-muted-foreground text-sm sm:text-base">{tool.description}</p>
                       </div>
                     </div>

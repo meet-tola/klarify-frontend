@@ -230,7 +230,24 @@ export default function Header() {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-4">
+          <nav className="hidden md:flex items-center space-x-2">
+            <Link href={"/"}>
+              <Button
+                variant={"ghost"}
+                className="text-primary hover:text-slate-900 px-4 font-medium"
+              >
+                Home
+              </Button>
+            </Link>
+
+            <Link href={""}>
+              <Button
+                variant={"ghost"}
+                className="text-primary hover:text-slate-900 px-4 font-medium"
+              >
+                Careers
+              </Button>
+            </Link>
             {/* Tools Dropdown */}
             <div
               ref={(el) => {
@@ -240,7 +257,7 @@ export default function Header() {
             >
               <button
                 onClick={() => toggleDropdown("tools")}
-                className={`flex items-center px-3 py-2 rounded-md font-medium transition-colors ${
+                className={`flex items-center px-3 py-2 rounded-md font-medium transition-colors text-sm ${
                   isActive("/tools")
                     ? "text-primary"
                     : "text-slate-600 hover:text-slate-900"
@@ -270,7 +287,7 @@ export default function Header() {
             >
               <button
                 onClick={() => toggleDropdown("resources")}
-                className={`flex items-center px-3 py-2 rounded-md font-medium transition-colors ${
+                className={`flex items-center px-3 py-2 rounded-md font-medium transition-colors text-sm ${
                   isActive("/resources")
                     ? "text-primary"
                     : "text-slate-600 hover:text-slate-900"
@@ -300,7 +317,7 @@ export default function Header() {
             >
               <button
                 onClick={() => toggleDropdown("inspiration")}
-                className={`flex items-center px-3 py-2 rounded-md font-medium transition-colors ${
+                className={`flex items-center px-3 py-2 rounded-md font-medium transition-colors text-sm ${
                   isActive("/inspiration")
                     ? "text-primary"
                     : "text-slate-600 hover:text-slate-900"
@@ -321,12 +338,13 @@ export default function Header() {
               </AnimatePresence>
             </div>
 
-            <Link href={""} className="text-primary hover:text-slate-900 px-4">
-              Skill
-            </Link>
-
-            <Link href={""} className="text-primary hover:text-slate-900 px-4">
-              Career
+            <Link href={""}>
+              <Button
+                variant={"ghost"}
+                className="text-primary hover:text-slate-900 px-4 font-medium"
+              >
+                Community
+              </Button>
             </Link>
           </nav>
 
@@ -435,11 +453,11 @@ export default function Header() {
               </div>
             ) : (
               <>
-                <Button variant="outline" className="rounded-full" asChild>
+                <Button variant="outline" size={"md"} asChild>
                   <Link href="/login">Login</Link>
                 </Button>
                 <Button
-                  className="rounded-full bg-slate-800 hover:bg-slate-700"
+                 size={"md"}
                   asChild
                 >
                   <Link href="/signup">Get Started</Link>
