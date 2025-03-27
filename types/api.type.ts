@@ -172,8 +172,27 @@ export type SkillQuestionType = {
   questionText: string;
   options: string[];
   skillMapping: {
-    [key: string]: string[]; // Example: { "Frontend": ["React", "Vue"] }
+    [key: string]: string[];
   };
   createdAt: Date;
   updatedAt: Date;
+};
+
+// GOAL TYPE 
+export type GoalType = {
+  title: string;
+  description: string;
+  skill: string;
+  startDate: Date;
+  endDate: Date;
+  repeat: "daily" | "weekly" | "weekend" | "none";
+  reminders: {
+    email: boolean;
+    inApp: boolean;
+  };
+  target: number;
+}
+
+export type UpdateGoalType = Partial<GoalType> & {
+  progressIncrement?: number;
 };

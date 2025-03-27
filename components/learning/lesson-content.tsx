@@ -7,7 +7,9 @@ import { Progress } from "@/components/ui/progress";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { atomOneDark } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { cn } from "@/lib/utils";
-import CourseMaterials from "./course-materials"; 
+import CourseMaterials from "./course-materials";
+import { useAuthContext } from "@/context/auth-provider";
+import { getUserGoals, updateGoalProgress } from "@/lib/api";
 
 interface LessonContentProps {
   lessonId: string;
@@ -59,9 +61,21 @@ interface LessonContentProps {
   };
 }
 
-export default function LessonContent({ lessonId, onBack, activeTab, learningPath, roadmap }: LessonContentProps) {
+export default function LessonContent({
+  lessonId,
+  onBack,
+  activeTab,
+  learningPath,
+  roadmap,
+}: LessonContentProps) {
+  const { user } = useAuthContext();
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isLessonCompleted, setIsLessonCompleted] = useState(false);
+  const [lastProgressUpdate, setLastProgressUpdate] = useState<Date | null>(
+    null
+  );
+  const [relatedGoals, setRelatedGoals] = useState<any[]>([]);
+  const [isLoadingGoals, setIsLoadingGoals] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
   // Find the current lesson based on lessonId
@@ -78,7 +92,10 @@ export default function LessonContent({ lessonId, onBack, activeTab, learningPat
       const clientHeight = contentRef.current.clientHeight;
 
       // Calculate scroll percentage
-      const scrolled = Math.min(100, Math.round((scrollTop / (scrollHeight - clientHeight)) * 100));
+      const scrolled = Math.min(
+        100,
+        Math.round((scrollTop / (scrollHeight - clientHeight)) * 100)
+      );
       setScrollProgress(isNaN(scrolled) ? 0 : scrolled);
 
       // Mark as completed when scrolled to 90%
@@ -95,25 +112,128 @@ export default function LessonContent({ lessonId, onBack, activeTab, learningPat
         contentElement.removeEventListener("scroll", handleScroll);
       };
     }
+
+    const today = new Date().toISOString().split("T")[0];
+    const lastUpdate = localStorage.getItem("lastProgressUpdate");
+    if (lastUpdate && lastUpdate === today) {
+      setIsLessonCompleted(true);
+    }
   }, []);
 
-  // Handle marking a lesson as read
-  const handleMarkAsRead = () => {
-    if (!currentLesson) return;
+  useEffect(() => {
+    const fetchRelatedGoals = async () => {
+      if (!user?.user?._id || !currentLesson) return;
 
-    const completedLessons = JSON.parse(localStorage.getItem("completedLessons") || "[]") as string[];
-    if (!completedLessons.includes(currentLesson._id)) {
-      completedLessons.push(currentLesson._id);
-      localStorage.setItem("completedLessons", JSON.stringify(completedLessons));
+      try {
+        setIsLoadingGoals(true);
+        const allGoals = await getUserGoals(user.user._id);
+
+        // Find goals that match the current skill (you'll need to determine the current skill)
+        const currentSkill = user?.user?.pickedSkill;
+        const matchingGoals = allGoals.filter(
+          (goal: {
+            skill: string | null | undefined;
+            progress: { completed: any };
+          }) => goal.skill === currentSkill && !goal.progress.completed
+        );
+        console.log("Checking for matching goals", matchingGoals);
+        setRelatedGoals(matchingGoals);
+      } catch (error) {
+        console.error("Failed to fetch goals:", error);
+      } finally {
+        setIsLoadingGoals(false);
+      }
+    };
+
+    fetchRelatedGoals();
+  }, [currentLesson, user]);
+
+  // Handle marking a lesson as read with frequency checks
+  const handleMarkAsRead = async () => {
+    if (!currentLesson || !user?.user?._id) return;
+
+    const today = new Date();
+    const todayString = today.toISOString().split("T")[0];
+    const lastUpdate = localStorage.getItem("lastProgressUpdate");
+
+    // Check if user already made progress today
+    if (lastUpdate === todayString) {
+      setIsLessonCompleted(true);
+      return;
     }
 
-    setIsLessonCompleted(true);
+    try {
+      // Update each related goal based on its frequency
+      for (const goal of relatedGoals) {
+        if (goal.progress.completed) continue;
+
+        const lastUpdated = new Date(goal.progress.lastUpdated);
+        const canUpdate = checkFrequency(goal.repeat, lastUpdated, today);
+
+        if (canUpdate) {
+          await updateGoalProgress(goal._id, 1);
+        }
+      }
+
+      // Mark lesson as completed
+      const completedLessons = JSON.parse(
+        localStorage.getItem("completedLessons") || "[]"
+      ) as string[];
+      if (!completedLessons.includes(currentLesson._id)) {
+        completedLessons.push(currentLesson._id);
+        localStorage.setItem(
+          "completedLessons",
+          JSON.stringify(completedLessons)
+        );
+      }
+
+      // Update last progress date
+      localStorage.setItem("lastProgressUpdate", todayString);
+      setIsLessonCompleted(true);
+    } catch (error) {
+      console.error("Failed to update goal progress:", error);
+    }
+  };
+
+  // Check if progress can be updated based on frequency
+  const checkFrequency = (
+    frequency: string,
+    lastUpdated: Date,
+    today: Date
+  ): boolean => {
+    const lastUpdatedDate = new Date(lastUpdated);
+    const todayDate = new Date(today);
+
+    // Reset time components for date comparison
+    lastUpdatedDate.setHours(0, 0, 0, 0);
+    todayDate.setHours(0, 0, 0, 0);
+
+    const timeDiff = todayDate.getTime() - lastUpdatedDate.getTime();
+    const dayDiff = timeDiff / (1000 * 60 * 60 * 24);
+
+    switch (frequency) {
+      case "daily":
+        return dayDiff >= 1; // At least 1 day since last update
+      case "weekly":
+        return dayDiff >= 7; // At least 7 days since last update
+      case "weekend":
+        const dayOfWeek = today.getDay();
+        return (dayOfWeek === 0 || dayOfWeek === 6) && dayDiff >= 1; // Weekend day and at least 1 day since last update
+      case "none":
+        return false; // No automatic progress updates
+      default:
+        return dayDiff >= 1; // Default to daily
+    }
   };
 
   // Calculate overall progress
   const calculateProgress = () => {
-    const completedLessons = JSON.parse(localStorage.getItem("completedLessons") || "[]") as string[];
-    const totalLessons = roadmap.phases.flatMap((phase: any) => phase.lessons).length;
+    const completedLessons = JSON.parse(
+      localStorage.getItem("completedLessons") || "[]"
+    ) as string[];
+    const totalLessons = roadmap.phases.flatMap(
+      (phase: any) => phase.lessons
+    ).length;
     return Math.round((completedLessons.length / totalLessons) * 100);
   };
 
@@ -197,7 +317,9 @@ export default function LessonContent({ lessonId, onBack, activeTab, learningPat
       {activeTab === "content" ? (
         <div className="py-6 max-w-3xl mx-auto">
           {/* Lesson Title */}
-          <h1 className="text-3xl font-bold mb-4">{currentLesson?.lessonTitle}</h1>
+          <h1 className="text-3xl font-bold mb-4">
+            {currentLesson?.lessonTitle}
+          </h1>
 
           {/* Lesson Sections */}
           {currentLesson?.sections.map((section, index) => (
@@ -206,13 +328,21 @@ export default function LessonContent({ lessonId, onBack, activeTab, learningPat
 
           {/* Lesson Summary */}
           <div className="mt-10 p-4 bg-muted rounded-lg">
-            <h3 className="text-xl font-bold mb-4">{currentLesson?.lessonSummary.heading}</h3>
-            <p className="text-muted-foreground">{currentLesson?.lessonSummary.description}</p>
+            <h3 className="text-xl font-bold mb-4">
+              {currentLesson?.lessonSummary.heading}
+            </h3>
+            <p className="text-muted-foreground">
+              {currentLesson?.lessonSummary.description}
+            </p>
           </div>
 
           {/* Navigation Buttons */}
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-between">
-            <Button variant="outline" className="gap-2" onClick={handlePreviousLesson}>
+            <Button
+              variant="outline"
+              className="gap-2"
+              onClick={handlePreviousLesson}
+            >
               <ArrowLeft className="h-4 w-4" /> Previous Lesson
             </Button>
             <Button className="gap-2" onClick={handleNextLesson}>
@@ -229,7 +359,8 @@ export default function LessonContent({ lessonId, onBack, activeTab, learningPat
         <div className="max-w-5xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between mb-4">
             <div className="text-xs font-medium">
-              Lesson {currentLesson?.lessonNumber} of {currentLesson?.totalLessons}
+              Lesson {currentLesson?.lessonNumber} of{" "}
+              {currentLesson?.totalLessons}
             </div>
             <Button
               variant={isLessonCompleted ? "outline" : "default"}

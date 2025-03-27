@@ -4,7 +4,14 @@ import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { ArrowRight, BookText, FolderKanban, Info, Layers } from "lucide-react";
+import {
+  ArrowRight,
+  BookText,
+  FolderKanban,
+  Info,
+  Layers,
+  Target,
+} from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -15,9 +22,10 @@ import { useAuthContext } from "@/context/auth-provider";
 import { useRouter } from "next/navigation";
 import LoadingScreen from "@/components/loading-screen";
 import { slugify } from "@/lib/slugify";
-import { getRoadmapContent } from "@/lib/api";
+import { getInAppReminders, getRoadmapContent, getUserGoals } from "@/lib/api";
 import { getLevelColor } from "@/lib/get-level-color";
 import StreakTracker from "@/components/learning/streak-tracker";
+import FeaturesBanner from "@/components/features-banner";
 
 // Tip Dropdown Component
 function TipDropdown({ title, content }: { title: string; content: string }) {
@@ -60,9 +68,14 @@ export default function DashboardPage() {
   const [roadmap, setRoadmap] = useState<any>(null);
   const [learningPath, setLearningPath] = useState<any>(null);
   const [tipStates, setTipStates] = useState<boolean[]>([]);
-  const [progress, setProgress] = useState(0);
+  const [goalProgress, setGoalProgress] = useState(0);
+  const [courseProgress, setCourseProgress] = useState(0);
   const [learntToday, setLearntToday] = useState(0);
   const [longestStreak, setLongestStreak] = useState(0);
+  const [goalsCount, setGoalsCount] = useState(0);
+  const [isLoadingGoals, setIsLoadingGoals] = useState(true);
+  const [showReminder, setShowReminder] = useState(false);
+  const [reminderData, setReminderData] = useState<any>(null);
 
   useEffect(() => {
     const fetchRoadmapContent = async () => {
@@ -87,7 +100,35 @@ export default function DashboardPage() {
     };
 
     fetchRoadmapContent();
-  }, []);
+  }, [user]);
+
+  // Fetch goal progress
+  useEffect(() => {
+    const fetchGoalProgress = async () => {
+      if (!user?.user?._id) return;
+
+      try {
+        setIsLoadingGoals(true);
+        const goals = await getUserGoals(user.user._id);
+        setGoalsCount(goals.length);
+
+        if (goals.length > 0) {
+          // Calculate average progress across all goals
+          const totalProgress = goals.reduce((sum: any, goal: any) => {
+            return sum + (goal.progress.current / goal.progress.target) * 100;
+          }, 0);
+          const averageProgress = Math.round(totalProgress / goals.length);
+          setGoalProgress(averageProgress);
+        }
+      } catch (error) {
+        console.error("Failed to fetch goal progress:", error);
+      } finally {
+        setIsLoadingGoals(false);
+      }
+    };
+
+    fetchGoalProgress();
+  }, [user]);
 
   useEffect(() => {
     if (learningPath?.tips) {
@@ -95,21 +136,15 @@ export default function DashboardPage() {
     }
   }, [learningPath]);
 
-  const toggleTip = useCallback((index: number) => {
-    setTipStates((prevStates) => {
-      const newStates = [...prevStates];
-      newStates[index] = !newStates[index];
-      return newStates;
-    });
-  }, []);
-
+  // Fetch course progress from localStorage
   useEffect(() => {
-    // Fetch progress
     const completedLessons = JSON.parse(
       localStorage.getItem("completedLessons") || "[]"
     ) as string[];
-    const totalLessons = 50;
-    setProgress(Math.round((completedLessons.length / totalLessons) * 100));
+    const totalLessons = 50; // Adjust this based on your actual total lessons
+    setCourseProgress(
+      Math.round((completedLessons.length / totalLessons) * 100)
+    );
 
     // Fetch "Learnt Today"
     const today = new Date().toISOString().split("T")[0];
@@ -121,6 +156,67 @@ export default function DashboardPage() {
     // Fetch longest streak
     const streakData = JSON.parse(localStorage.getItem("streak") || "{}");
     setLongestStreak(streakData.longestStreak || 0);
+  }, []);
+
+  useEffect(() => {
+    const checkForReminders = async () => {
+      if (!user?.user?._id) return;
+
+      try {
+        // Check if we should show a reminder today
+        const today = new Date().toISOString().split("T")[0];
+        const lastReminderShown = localStorage.getItem("lastReminderShown");
+
+        // Only show once per day
+        if (lastReminderShown !== today) {
+          // Get reminders from API
+          const reminders = await getInAppReminders(user.user._id);
+
+          if (reminders.length > 0) {
+            // Get the first reminder (most urgent)
+            const reminder = reminders[0];
+
+            // Get course progress from localStorage
+            const completedLessons = JSON.parse(
+              localStorage.getItem("completedLessons") || "[]"
+            ) as string[];
+            const totalLessons = 50; // Adjust based on your actual total
+            const progress = Math.round(
+              (completedLessons.length / totalLessons) * 100
+            );
+
+            // Prepare reminder data
+            setReminderData({
+              title: reminder.title,
+              description: reminder.message,
+              progress: progress,
+              daysRemaining: reminder.daysRemaining,
+              totalLessons: totalLessons,
+              completedLessons: completedLessons.length,
+              estimatedTimeLeft: `${Math.ceil(
+                (totalLessons - completedLessons.length) * 0.5
+              )} hours`, 
+              skill: reminder.skill || "your skill",
+            });
+
+            setShowReminder(true);
+            localStorage.setItem("lastReminderShown", today);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to check for reminders:", error);
+      }
+    };
+
+    checkForReminders();
+  }, [user]);
+
+  const toggleTip = useCallback((index: number) => {
+    setTipStates((prevStates) => {
+      const newStates = [...prevStates];
+      newStates[index] = !newStates[index];
+      return newStates;
+    });
   }, []);
 
   if (loading) {
@@ -213,44 +309,23 @@ export default function DashboardPage() {
         </Link>
       </div>
 
-      {/* Features Discussion Banner */}
-      {/* <div className="bg-blue-50 p-4 rounded-lg">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold bg-blue-100 text-blue-700 px-2 py-1 rounded">
-              New
-            </span>
-            <span className="font-medium">Features Discussion</span>
-          </div>
-          <p className="text-sm text-muted-foreground flex-1">
-            The learning content and a new feature in "Feature Discussion" can
-            be explain the material problem chat.
-          </p>
-          <Link
-            href="/details"
-            className="text-sm text-primary hover:underline"
-          >
-            Go to details →
-          </Link>
-        </div>
-      </div> */}
-
       {/* Continue Learning Section */}
       <section>
         <h2 className="text-2xl font-bold roca-bold mb-6">Continue Learning</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Left Card - Progress Circle */}
+          {/* Left Card - Goals Progress Circle */}
           <div className="bg-white rounded-lg border flex flex-col p-6 items-start">
             <div className="flex items-center gap-2 mb-4">
-              <h3 className="text-lg font-semibold">
-                Tips for {learningPath?.level || "Beginners"}
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <Target className="h-5 w-5 text-primary" />
+                Goals
               </h3>
               <Popover>
                 <PopoverTrigger>
                   <Info className="h-4 w-4 text-gray-400 cursor-pointer" />
                 </PopoverTrigger>
                 <PopoverContent>
-                  <p>Helpful tips for getting started</p>
+                  <p>Track your learning goals progress</p>
                 </PopoverContent>
               </Popover>
             </div>
@@ -276,19 +351,19 @@ export default function DashboardPage() {
                     stroke="#42347B"
                     strokeWidth="10"
                     strokeDasharray="282.7"
-                    strokeDashoffset={282.7 * (1 - progress / 100)}
+                    strokeDashoffset={282.7 * (1 - goalProgress / 100)}
                     strokeLinecap="round"
                   />
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center">
                   <span className="text-2xl font-bold text-primary">
-                    {progress}%
+                    {isLoadingGoals ? "..." : `${goalProgress}%`}
                   </span>
                 </div>
               </div>
               <div className="mt-2 text-center space-y-1 pr-4">
                 <p className="font-medium text-primary">
-                  {learntToday} Learnt Today
+                  {goalsCount} Active {goalsCount === 1 ? "Goal" : "Goals"}
                 </p>
                 <p className="text-gray-600">
                   Longest streak:{" "}
@@ -318,9 +393,12 @@ export default function DashboardPage() {
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Progress:</span>
-                    <span className="text-gray-600">80%</span>
+                    <span className="text-gray-600">{courseProgress}%</span>
                   </div>
-                  <Progress value={80} className="h-2 bg-gray-100" />
+                  <Progress
+                    value={courseProgress}
+                    className="h-2 bg-gray-100"
+                  />
                 </div>
                 <div className="flex justify-end">
                   <Link

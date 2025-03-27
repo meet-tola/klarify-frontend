@@ -12,27 +12,37 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Bell, Calendar, Clock, Plus, Target } from "lucide-react";
+import { Bell, Calendar, Clock, Plus, Target, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { getUserGoals } from "@/lib/api";
+import Link from "next/link";
+import { useAuthContext } from "@/context/auth-provider";
 
-// Define the Goal type
 interface Goal {
   id: string;
   title: string;
   description: string;
-  progress: number;
+  progress: {
+    current: number;
+    target: number;
+    completed: boolean;
+  };
   startDate: string;
   endDate: string;
-  reminder: string;
-  category: string;
+  repeat: "daily" | "weekly" | "weekend" | "none";
+  skill: string;
 }
 
 export default function StreakTracker() {
+  const { user } = useAuthContext();
   const [currentStreak, setCurrentStreak] = useState(0);
   const [longestStreak, setLongestStreak] = useState(0);
   const [streakHistory, setStreakHistory] = useState<boolean[]>([]);
   const [goals, setGoals] = useState<Goal[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+
+  const userId = user?.user._id;
 
   // Load streak data from localStorage on component mount
   useEffect(() => {
@@ -44,52 +54,65 @@ export default function StreakTracker() {
       setLongestStreak(longestStreak);
       setStreakHistory(streakHistory);
     }
+  }, []);
 
-    // Load goals from localStorage
-    const savedGoals = localStorage.getItem("goals");
-    if (savedGoals) {
-      setGoals(JSON.parse(savedGoals));
-    }
+  // Load goals from API
+  useEffect(() => {
+    const fetchGoals = async () => {
+      try {
+        setIsLoading(true);
+        if (!userId) {
+          throw new Error("User ID is undefined");
+        }
+        const userGoals = await getUserGoals(userId);
+        setGoals(userGoals.slice(0, 3));
+      } catch (error) {
+        console.error("Failed to fetch goals:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchGoals();
   }, []);
 
   // Update streak when the user visits the page
   useEffect(() => {
-    const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+    const today = new Date().toISOString().split("T")[0];
     const lastVisit = localStorage.getItem("lastVisit");
-  
+
     if (lastVisit !== today) {
-      // If the user is visiting for the first time today
       const newStreakHistory = [...streakHistory];
-      const isConsecutive = lastVisit && new Date(today).getTime() - new Date(lastVisit).getTime() === 86400000; // 86400000 ms = 1 day
-  
+      const isConsecutive =
+        lastVisit &&
+        new Date(today).getTime() - new Date(lastVisit).getTime() === 86400000;
+
       if (isConsecutive) {
-        // Increment streak if consecutive
         setCurrentStreak((prev) => prev + 1);
-        newStreakHistory.push(true); 
+        newStreakHistory.push(true);
       } else {
-        // Reset streak if not consecutive
         setCurrentStreak(1);
         newStreakHistory.push(true);
       }
-  
-      // Update longest streak if current streak is higher
+
       if (currentStreak + 1 > longestStreak) {
         setLongestStreak(currentStreak + 1);
       }
-  
+
       setStreakHistory(newStreakHistory);
-  
-      // Save updated streak data to localStorage
+
       localStorage.setItem(
         "streak",
         JSON.stringify({
           currentStreak: isConsecutive ? currentStreak + 1 : 1,
-          longestStreak: Math.max(longestStreak, isConsecutive ? currentStreak + 1 : 1),
+          longestStreak: Math.max(
+            longestStreak,
+            isConsecutive ? currentStreak + 1 : 1
+          ),
           streakHistory: newStreakHistory,
         })
       );
-  
-      // Update last visit date
+
       localStorage.setItem("lastVisit", today);
     }
   }, [streakHistory, currentStreak, longestStreak]);
@@ -103,9 +126,14 @@ export default function StreakTracker() {
     return diffDays > 0 ? diffDays : 0;
   };
 
+  // Calculate progress percentage
+  const calculateProgress = (current: number, target: number) => {
+    return Math.min(100, Math.round((current / target) * 100));
+  };
+
   // Handle redirect to create goal page
   const handleCreateGoal = () => {
-    router.push("/my-learning/goal");
+    router.push("/my-learning/goals");
   };
 
   // Split streakHistory into chunks of 7 for each container
@@ -143,7 +171,11 @@ export default function StreakTracker() {
             )}
           </div>
 
-          {goals.length === 0 ? (
+          {isLoading ? (
+            <div className="text-center py-6">
+              <p>Loading goals...</p>
+            </div>
+          ) : goals.length === 0 ? (
             <div className="text-center py-6">
               <p className="text-gray-500 mb-4">
                 You haven't set any learning goals yet.
@@ -153,64 +185,89 @@ export default function StreakTracker() {
               </Button>
             </div>
           ) : (
-            <div className="space-y-3">
-              {goals.map((goal) => (
-                <Card key={goal.id} className="overflow-hidden">
-                  <CardContent className="p-3">
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <h4 className="font-medium">{goal.title}</h4>
-                        <p className="text-sm text-gray-500">
-                          {goal.description}
-                        </p>
-                      </div>
-                      <Badge
-                        variant={
-                          goal.progress === 100 ? "default" : "secondary"
-                        }
-                        className="ml-2"
-                      >
-                        {goal.category}
-                      </Badge>
-                    </div>
-
-                    <div className="mb-2">
-                      <div className="flex justify-between text-xs text-gray-500 mb-1">
-                        <span>Progress</span>
-                        <span>{goal.progress}%</span>
-                      </div>
-                      <Progress value={goal.progress} className="h-2" />
-                    </div>
-
-                    <div className="flex justify-between text-xs mt-3">
-                      <div className="flex items-center gap-1 text-gray-600">
-                        <Calendar size={14} />
-                        <span>
-                          {new Date(goal.startDate).toLocaleDateString()} -{" "}
-                          {new Date(goal.endDate).toLocaleDateString()}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-1 text-gray-600">
-                        <Clock size={14} />
-                        <span>
-                          {calculateDaysRemaining(goal.endDate)} days left
-                        </span>
-                      </div>
-                      {goal.reminder && (
-                        <div className="flex items-center gap-1 text-gray-600">
-                          <Bell size={14} />
-                          <span>{goal.reminder}</span>
+            <>
+              <div className="space-y-3">
+                {goals.map((goal, index) => (
+                  <Card key={goal.id || index} className="overflow-hidden">
+                    <CardContent className="p-3">
+                      <div className="flex justify-between items-start mb-2">
+                        <div>
+                          <h4 className="font-medium">{goal.title}</h4>
+                          <p className="text-sm text-gray-500">
+                            {goal.description}
+                          </p>
                         </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                        <Badge
+                          variant={
+                            goal.progress.completed ? "default" : "secondary"
+                          }
+                        >
+                          {goal.skill}
+                        </Badge>
+                      </div>
+
+                      <div className="mb-2">
+                        <div className="flex justify-between text-xs text-gray-500 mb-1">
+                          <span>Progress</span>
+                          <span>
+                            {calculateProgress(
+                              goal.progress.current,
+                              goal.progress.target
+                            )}
+                            %
+                          </span>
+                        </div>
+                        <Progress
+                          value={calculateProgress(
+                            goal.progress.current,
+                            goal.progress.target
+                          )}
+                          className="h-2"
+                        />
+                      </div>
+
+                      <div className="flex justify-between text-xs mt-3">
+                        <div className="flex items-center gap-1 text-gray-600">
+                          <Calendar size={14} />
+                          <span>
+                            {new Date(goal.startDate).toLocaleDateString()} -{" "}
+                            {new Date(goal.endDate).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1 text-gray-600">
+                          <Clock size={14} />
+                          <span>
+                            {calculateDaysRemaining(goal.endDate)} days left
+                          </span>
+                        </div>
+                        {goal.repeat !== "none" && (
+                          <div className="flex items-center gap-1 text-gray-600">
+                            <Bell size={14} />
+                            <span>
+                              {goal.repeat === "daily" && "Daily"}
+                              {goal.repeat === "weekly" && "Weekly"}
+                              {goal.repeat === "weekend" && "Weekends"}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+              <div className="mt-4 text-center">
+                <Link
+                  href="/my-learning/goals"
+                  className="text-sm text-primary hover:underline flex items-center justify-center gap-1"
+                >
+                  View all goals <ArrowRight size={16} />
+                </Link>
+              </div>
+            </>
           )}
         </div>
 
-        {/* Streak Container (unchanged) */}
+        {/* Streak Container */}
         <div className="bg-white p-6 rounded-lg border">
           <div className="flex justify-between mb-6">
             <div>
@@ -243,7 +300,6 @@ export default function StreakTracker() {
                   </div>
                 );
               })}
-              {/* Fill remaining empty slots in the last chunk */}
               {chunk.length < chunkSize &&
                 Array.from({ length: chunkSize - chunk.length }).map(
                   (_, emptyIndex) => {

@@ -1,7 +1,5 @@
 "use client";
 
-import type React from "react";
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,7 +19,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-// import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
@@ -29,6 +26,10 @@ import {
 } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { CalendarIcon, Target } from "lucide-react";
+import { Calendar } from "../ui/calendar";
+import { useAuthContext } from "@/context/auth-provider";
+import { createGoal } from "@/lib/api";
+import { Combobox } from "../ui/combobox";
 
 interface Goal {
   id: string;
@@ -37,14 +38,14 @@ interface Goal {
   progress: number;
   startDate: string;
   endDate: string;
-  reminder: string;
-  category: string;
+  reminder: "daily" | "weekly" | "weekend" | "none";
+  skill: string;
 }
 
 interface CreateGoalDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onGoalCreated: (goal: Goal) => void;
+  onGoalCreated: () => void; // Changed to callback without parameters
 }
 
 export function CreateGoalDialog({
@@ -52,16 +53,25 @@ export function CreateGoalDialog({
   onOpenChange,
   onGoalCreated,
 }: CreateGoalDialogProps) {
+  const { user } = useAuthContext();
   const [goal, setGoal] = useState<Partial<Goal>>({
     title: "",
     description: "",
     progress: 0,
-    category: "Learning",
-    reminder: "Daily",
+    skill: "",
+    reminder: "daily",
   });
   const [startDate, setStartDate] = useState<Date | undefined>(new Date());
   const [endDate, setEndDate] = useState<Date | undefined>(
     new Date(new Date().setDate(new Date().getDate() + 30))
+  );
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Get unique skills from user's learning path
+  const userSkills = Array.from(
+    new Set(
+      user?.user?.learningPath?.flatMap((path: any) => path.skill).filter(Boolean) || []
+    )
   );
 
   const handleChange = (
@@ -75,37 +85,50 @@ export function CreateGoalDialog({
     setGoal((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
-    if (!goal.title || !startDate || !endDate) {
+    if (!goal.title || !startDate || !endDate || !goal.skill) {
       alert("Please fill in all required fields");
+      setIsSubmitting(false);
       return;
     }
 
-    const newGoal: Goal = {
-      id: "id 2",
-      title: goal.title || "",
-      description: goal.description || "",
-      progress: 0,
-      startDate: startDate.toISOString(),
-      endDate: endDate.toISOString(),
-      reminder: goal.reminder || "Daily",
-      category: goal.category || "Learning",
-    };
+    try {
+      await createGoal(user?.user._id || "", {
+        title: goal.title,
+        description: goal.description || "",
+        skill: goal.skill,
+        startDate: startDate,
+        endDate: endDate,
+        repeat: goal.reminder || "none",
+        reminders: {
+          email: true,
+          inApp: true,
+        },
+        target: 100, // Default target for progress
+      });
 
-    onGoalCreated(newGoal);
-
-    // Reset form
-    setGoal({
-      title: "",
-      description: "",
-      progress: 0,
-      category: "Learning",
-      reminder: "Daily",
-    });
-    setStartDate(new Date());
-    setEndDate(new Date(new Date().setDate(new Date().getDate() + 30)));
+      // Reset form
+      setGoal({
+        title: "",
+        description: "",
+        progress: 0,
+        skill: "",
+        reminder: "daily",
+      });
+      setStartDate(new Date());
+      setEndDate(new Date(new Date().setDate(new Date().getDate() + 30)));
+      
+      // Notify parent to refresh goals
+      onGoalCreated();
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Failed to create goal:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -144,22 +167,13 @@ export function CreateGoalDialog({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="category">Category</Label>
-              <Select
-                value={goal.category}
-                onValueChange={(value) => handleSelectChange("category", value)}
-              >
-                <SelectTrigger id="category">
-                  <SelectValue placeholder="Select a category" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Learning">Learning</SelectItem>
-                  <SelectItem value="Coding">Coding</SelectItem>
-                  <SelectItem value="Reading">Reading</SelectItem>
-                  <SelectItem value="Fitness">Fitness</SelectItem>
-                  <SelectItem value="Personal">Personal</SelectItem>
-                </SelectContent>
-              </Select>
+              <Label htmlFor="skill">Skill *</Label>
+              <Combobox
+                options={userSkills.map(skill => ({ value: skill, label: skill }))}
+                value={goal.skill || ""}
+                onChange={(value) => handleSelectChange("skill", value)}
+                placeholder="Select a skill"
+              />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -176,12 +190,12 @@ export function CreateGoalDialog({
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
-                    {/* <Calendar
+                    <Calendar
                       mode="single"
                       selected={startDate}
                       onSelect={setStartDate}
                       initialFocus
-                    /> */}
+                    />
                   </PopoverContent>
                 </Popover>
               </div>
@@ -199,13 +213,13 @@ export function CreateGoalDialog({
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
-                    {/* <Calendar
+                    <Calendar
                       mode="single"
                       selected={endDate}
                       onSelect={setEndDate}
                       initialFocus
                       disabled={(date) => date < (startDate || new Date())}
-                    /> */}
+                    />
                   </PopoverContent>
                 </Popover>
               </div>
@@ -221,11 +235,10 @@ export function CreateGoalDialog({
                   <SelectValue placeholder="Select reminder frequency" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Daily">Daily</SelectItem>
-                  <SelectItem value="Weekly">Weekly</SelectItem>
-                  <SelectItem value="Weekdays">Weekdays</SelectItem>
-                  <SelectItem value="Weekends">Weekends</SelectItem>
-                  <SelectItem value="None">None</SelectItem>
+                  <SelectItem value="daily">Daily</SelectItem>
+                  <SelectItem value="weekly">Weekly</SelectItem>
+                  <SelectItem value="weekend">Weekends</SelectItem>
+                  <SelectItem value="none">None</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -235,10 +248,13 @@ export function CreateGoalDialog({
               variant="outline"
               type="button"
               onClick={() => onOpenChange(false)}
+              disabled={isSubmitting}
             >
               Cancel
             </Button>
-            <Button type="submit">Create Goal</Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Creating..." : "Create Goal"}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

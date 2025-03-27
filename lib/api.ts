@@ -1,5 +1,5 @@
 import API from "./axios-client";
-import { CurrentUserResponseType } from "@/types/api.type";
+import { CurrentUserResponseType, GoalType, UpdateGoalType } from "@/types/api.type";
 
 // Helper function to handle errors
 const handleError = (error: any) => {
@@ -199,4 +199,94 @@ export const getRoadmapContent = async (userId: string, pickedSkill: string) => 
     console.error("Error selecting skill:", error);
     throw error;
   }
+};
+
+export const createGoal = async (userId: string, goalData: GoalType) => {
+  try {
+    const response = await API.post(`/goals/${userId}`, goalData);
+    return response.data;
+  } catch (error) {
+    console.error("Create goal failed:", error);
+    throw error;
+  }
+};
+
+export const updateGoal = async (goalId: string, updates: UpdateGoalType) => {
+  try {
+    const response = await API.put(`/goals/${goalId}`, updates);
+    return response.data;
+  } catch (error) {
+    console.error("Update goal failed:", error);
+    throw error;
+  }
+};
+
+export const deleteGoal = async (goalId: string) => {
+  try {
+    const response = await API.delete(`/goals/${goalId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Delete goal failed:", error);
+    throw error;
+  }
+};
+
+export const getUserGoals = async (userId: string) => {
+  try {
+    const response = await API.get(`/goals/user/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Get user goals failed:", error);
+    throw error;
+  }
+};
+
+export const getGoalProgress = async (goalId: string) => {
+  try {
+    const response = await API.get(`/goals/progress/${goalId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Get goal progress failed:", error);
+    throw error;
+  }
+};
+
+export const updateGoalProgress = async (goalId: string, increment: number = 1) => {
+  try {
+    const response = await API.post(`/goals/progress/${goalId}`, { increment });
+    return response.data;
+  } catch (error) {
+    console.error("Update goal progress failed:", error);
+    throw error;
+  }
+};
+
+export const getInAppReminders = async (userId: string) => {
+  try {
+    const response = await API.get(`/goals/in-app-reminders/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Get in-app reminders failed:", error);
+    throw error;
+  }
+};
+
+export const markReminderAsRead = async (goalId: string) => {
+  try {
+    const response = await API.post(`/goals/reminders/${goalId}/mark-as-read`);
+    return response.data;
+  } catch (error) {
+    console.error("Mark reminder as read failed:", error);
+    throw error;
+  }
+};
+
+// Additional utility functions
+export const calculateGoalProgress = (current: number, target: number) => {
+  return Math.min(100, Math.round((current / target) * 100));
+};
+
+export const getDaysRemaining = (endDate: Date) => {
+  const now = new Date();
+  return Math.ceil((endDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
 };
