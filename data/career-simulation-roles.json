@@ -1,0 +1,99 @@
+{
+  "1": {
+    "title": "Frontend Developer",
+    "description": "Frontend developers build the user interfaces and interactive elements of websites and web applications.",
+    "scenarios": [
+      {
+        "id": 1,
+        "title": "Morning Stand-up Meeting",
+        "description": "You're attending the daily stand-up meeting with your team. What do you report?",
+        "options": [
+          {
+            "id": "a",
+            "text": "I'll share what I worked on yesterday, what I plan to work on today, and any blockers I'm facing.",
+            "isCorrect": true,
+            "feedback": "Great! This is exactly what's expected in a stand-up meeting - concise updates on your progress and any issues."
+          },
+          {
+            "id": "b",
+            "text": "I'll give a detailed explanation of all the code I wrote yesterday and how it works.",
+            "isCorrect": false,
+            "feedback": "Stand-up meetings are meant to be brief. Detailed technical explanations are better for dedicated code reviews or technical discussions."
+          },
+          {
+            "id": "c",
+            "text": "I'll just listen to what others say and not contribute unless asked directly.",
+            "isCorrect": false,
+            "feedback": "Active participation is important. The team needs to know your progress and any challenges you're facing."
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Fixing a UI Bug",
+        "description": "A user reported that a button doesn't work on mobile devices. How do you approach this bug?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Immediately start coding a fix based on the report.",
+            "isCorrect": false,
+            "feedback": "It's important to reproduce and understand the bug before implementing a fix."
+          },
+          {
+            "id": "b",
+            "text": "First reproduce the bug, inspect the code, then implement and test a solution.",
+            "isCorrect": true,
+            "feedback": "Excellent approach! Reproducing the bug helps you understand the issue, and testing ensures your fix works."
+          },
+          {
+            "id": "c",
+            "text": "Ask another developer to fix it since you're busy with other tasks.",
+            "isCorrect": false,
+            "feedback": "While delegation is sometimes necessary, you should first assess the bug's priority and your capacity."
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Code Review",
+        "description": "You're reviewing a colleague's pull request. What aspects do you focus on?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Just check if the code works as expected.",
+            "isCorrect": false,
+            "feedback": "While functionality is important, code reviews should also consider code quality, performance, and maintainability."
+          },
+          {
+            "id": "b",
+            "text": "Look for bugs, code quality issues, and suggest improvements in a constructive way.",
+            "isCorrect": true,
+            "feedback": "Perfect! Good code reviews are thorough but constructive, helping improve both the code and the developer."
+          },
+          {
+            "id": "c",
+            "text": "Point out all the mistakes and how you would have done it better.",
+            "isCorrect": false,
+            "feedback": "This approach can be demoralizing. Code reviews should be constructive and respectful."
+          }
+        ]
+      }
+    ],
+    "skills": ["HTML/CSS", "JavaScript", "React", "Responsive Design", "Browser DevTools"],
+    "dailyTasks": [
+      "Implementing UI components",
+      "Fixing bugs",
+      "Code reviews",
+      "Collaborating with designers",
+      "Writing tests"
+    ],
+    "challenges": [
+      "Browser compatibility issues",
+      "Performance optimization",
+      "Accessibility requirements",
+      "Keeping up with framework updates"
+    ],
+    "tools": ["VS Code", "Chrome DevTools", "Git", "Figma", "Jest"]
+  }
+}
+

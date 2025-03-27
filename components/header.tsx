@@ -234,7 +234,7 @@ export default function Header() {
             <Link href={"/"}>
               <Button
                 variant={"ghost"}
-                className="text-primary hover:text-slate-900 px-4 font-medium"
+                className="text-slate-600 hover:text-slate-900 px-4 font-medium"
               >
                 Home
               </Button>
@@ -243,7 +243,7 @@ export default function Header() {
             <Link href={""}>
               <Button
                 variant={"ghost"}
-                className="text-primary hover:text-slate-900 px-4 font-medium"
+                className="text-slate-600 hover:text-slate-900 px-4 font-medium"
               >
                 Careers
               </Button>
@@ -341,7 +341,7 @@ export default function Header() {
             <Link href={""}>
               <Button
                 variant={"ghost"}
-                className="text-primary hover:text-slate-900 px-4 font-medium"
+                className="text-slate-600 hover:text-slate-900 px-4 font-medium"
               >
                 Community
               </Button>

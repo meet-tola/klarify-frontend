@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Briefcase, Search, ChevronRight, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { slugify } from "@/lib/slugify";
 
 const roles = [
   {
@@ -185,7 +186,7 @@ export default function CareerSimulatorPage() {
             >
               {filteredRoles.map((role) => (
                 <motion.div key={role.id} variants={item}>
-                  <Link href={`/tools/career-simulator/${role.id}`}>
+                  <Link href={`/tools/career-simulator/${slugify(role.title)}`}>
                     <div className="group border border-slate-200 hover:border-slate-300 rounded-xl p-4 transition-all duration-200 hover:shadow-md">
                       <div className="flex items-start gap-3">
                         <div className={`${role.color} p-2 rounded-full`}>
