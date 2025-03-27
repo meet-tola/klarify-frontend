@@ -1,5 +1,5 @@
 {
-  "1": {
+  "frontend-developer": {
     "title": "Frontend Developer",
     "description": "Frontend developers build the user interfaces and interactive elements of websites and web applications.",
     "scenarios": [
@@ -77,23 +77,1336 @@
             "feedback": "This approach can be demoralizing. Code reviews should be constructive and respectful."
           }
         ]
+      },
+      {
+        "id": 4,
+        "title": "Performance Optimization",
+        "description": "Your application is running slowly on mobile devices. What's your first step?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Profile the application using browser dev tools to identify bottlenecks.",
+            "isCorrect": true,
+            "feedback": "Correct! Always measure performance before optimizing to focus your efforts where they'll have the most impact."
+          },
+          {
+            "id": "b",
+            "text": "Start optimizing all JavaScript code you suspect might be slow.",
+            "isCorrect": false,
+            "feedback": "Optimizing without measuring first can lead to wasted effort on non-critical paths."
+          },
+          {
+            "id": "c",
+            "text": "Tell users to upgrade their phones for better performance.",
+            "isCorrect": false,
+            "feedback": "Not a good solution! Web applications should work well across a range of devices."
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Accessibility Issue",
+        "description": "During testing, you discover your app isn't fully accessible. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "File accessibility issues and work with the team to prioritize fixes.",
+            "isCorrect": true,
+            "feedback": "Great approach! Accessibility should be treated with the same importance as other quality aspects."
+          },
+          {
+            "id": "b",
+            "text": "Ignore it since most users won't notice.",
+            "isCorrect": false,
+            "feedback": "Accessibility is crucial for inclusive design and may be legally required in many cases."
+          },
+          {
+            "id": "c",
+            "text": "Quickly add ARIA tags without proper testing.",
+            "isCorrect": false,
+            "feedback": "Improper use of ARIA can actually make accessibility worse. Proper testing is needed."
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Framework Update",
+        "description": "A new major version of your framework is released. How do you approach upgrading?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Read the migration guide, test in a staging environment, and plan the upgrade carefully.",
+            "isCorrect": true,
+            "feedback": "Perfect! Major updates should be approached methodically to avoid breaking changes."
+          },
+          {
+            "id": "b",
+            "text": "Immediately update all dependencies to the latest versions.",
+            "isCorrect": false,
+            "feedback": "This could introduce breaking changes and should be done more carefully."
+          },
+          {
+            "id": "c",
+            "text": "Ignore the update since the current version works fine.",
+            "isCorrect": false,
+            "feedback": "While you shouldn't rush updates, staying too far behind can lead to security issues and missing improvements."
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Design Conflict",
+        "description": "A designer proposes an interaction that would be very difficult to implement. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Explain the technical challenges and suggest alternative solutions that meet the design goals.",
+            "isCorrect": true,
+            "feedback": "Excellent! Collaboration between designers and developers leads to the best solutions."
+          },
+          {
+            "id": "b",
+            "text": "Implement it exactly as designed regardless of the difficulty.",
+            "isCorrect": false,
+            "feedback": "This might create maintenance headaches and performance issues down the line."
+          },
+          {
+            "id": "c",
+            "text": "Refuse to implement it without offering alternatives.",
+            "isCorrect": false,
+            "feedback": "This approach doesn't foster good collaboration between design and development."
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Cross-Browser Issue",
+        "description": "Your feature works in Chrome but not in Safari. How do you handle this?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Research browser-specific behaviors and implement a solution that works across browsers.",
+            "isCorrect": true,
+            "feedback": "Correct! Cross-browser compatibility is a key responsibility of frontend developers."
+          },
+          {
+            "id": "b",
+            "text": "Tell users to switch to Chrome for the best experience.",
+            "isCorrect": false,
+            "feedback": "Not a good solution! Websites should work across all major browsers."
+          },
+          {
+            "id": "c",
+            "text": "Ignore the issue since most users use Chrome anyway.",
+            "isCorrect": false,
+            "feedback": "Safari has significant market share, especially on iOS devices, so this isn't a good approach."
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "title": "State Management",
+        "description": "Your application's state is becoming complex and hard to manage. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Refactor to use a state management library like Redux or Zustand, but only if truly needed.",
+            "isCorrect": true,
+            "feedback": "Good approach! State management libraries can help, but shouldn't be added unnecessarily."
+          },
+          {
+            "id": "b",
+            "text": "Immediately add Redux because it's the most popular solution.",
+            "isCorrect": false,
+            "feedback": "Redux adds complexity and shouldn't be added without evaluating if it's truly needed."
+          },
+          {
+            "id": "c",
+            "text": "Keep adding state wherever it's convenient in components.",
+            "isCorrect": false,
+            "feedback": "This will lead to an increasingly unmaintainable codebase."
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "Third-Party Library",
+        "description": "You need to add a complex feature and find a library that does exactly what you need. Do you:",
+        "options": [
+          {
+            "id": "a",
+            "text": "Evaluate the library's size, maintenance, and license before deciding to use it.",
+            "isCorrect": true,
+            "feedback": "Correct! Always carefully evaluate dependencies before adding them to your project."
+          },
+          {
+            "id": "b",
+            "text": "Immediately add the library since it solves your problem.",
+            "isCorrect": false,
+            "feedback": "This could lead to bloat or dependency issues down the line."
+          },
+          {
+            "id": "c",
+            "text": "Always build everything from scratch to avoid dependencies.",
+            "isCorrect": false,
+            "feedback": "Reinventing the wheel can waste time and may result in less robust solutions."
+          }
+        ]
       }
     ],
-    "skills": ["HTML/CSS", "JavaScript", "React", "Responsive Design", "Browser DevTools"],
+    "skills": ["HTML/CSS", "JavaScript", "React", "Responsive Design", "Browser DevTools", "Accessibility", "Performance Optimization", "State Management", "Testing", "Build Tools"],
     "dailyTasks": [
       "Implementing UI components",
       "Fixing bugs",
       "Code reviews",
       "Collaborating with designers",
-      "Writing tests"
+      "Writing tests",
+      "Optimizing performance",
+      "Ensuring accessibility",
+      "Browser testing",
+      "Updating dependencies",
+      "Documenting code"
     ],
     "challenges": [
       "Browser compatibility issues",
       "Performance optimization",
       "Accessibility requirements",
-      "Keeping up with framework updates"
+      "Keeping up with framework updates",
+      "State management complexity",
+      "Third-party dependency management",
+      "Mobile responsiveness",
+      "Cross-team communication",
+      "Legacy code maintenance",
+      "Security considerations"
     ],
-    "tools": ["VS Code", "Chrome DevTools", "Git", "Figma", "Jest"]
+    "tools": ["VS Code", "Chrome DevTools", "Git", "Figma", "Jest", "Webpack", "React", "TypeScript", "Postman", "Storybook"]
+  },
+  "digital-marketer": {
+    "title": "Digital Marketer",
+    "description": "Digital marketers promote products and services through digital channels to drive brand awareness and sales.",
+    "scenarios": [
+      {
+        "id": 1,
+        "title": "Campaign Performance",
+        "description": "Your latest ad campaign has a high click-through rate but low conversions. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Analyze the landing page experience and optimize for conversions.",
+            "isCorrect": true,
+            "feedback": "Correct! The issue is likely with what happens after the click, not the ad itself."
+          },
+          {
+            "id": "b",
+            "text": "Increase the ad budget to get more clicks.",
+            "isCorrect": false,
+            "feedback": "More clicks won't solve the conversion problem and will waste budget."
+          },
+          {
+            "id": "c",
+            "text": "Change the ad creative to attract different users.",
+            "isCorrect": false,
+            "feedback": "Since CTR is good, the ad itself isn't the main problem."
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "SEO Strategy",
+        "description": "Your website traffic from organic search has declined. What's your first step?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Check Google Search Console for crawl errors and algorithm updates.",
+            "isCorrect": true,
+            "feedback": "Great first step! Identify potential technical issues or penalties."
+          },
+          {
+            "id": "b",
+            "text": "Immediately start creating more content.",
+            "isCorrect": false,
+            "feedback": "Without diagnosing the problem, more content might not help."
+          },
+          {
+            "id": "c",
+            "text": "Buy backlinks to improve domain authority.",
+            "isCorrect": false,
+            "feedback": "Purchasing links violates Google's guidelines and could make things worse."
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Social Media Crisis",
+        "description": "A customer complaint goes viral on social media. How do you respond?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Acknowledge the issue publicly, take the conversation private to resolve, then share the solution.",
+            "isCorrect": true,
+            "feedback": "Perfect! Shows responsiveness while protecting customer privacy."
+          },
+          {
+            "id": "b",
+            "text": "Delete negative comments to protect brand image.",
+            "isCorrect": false,
+            "feedback": "This often backfires and appears dishonest."
+          },
+          {
+            "id": "c",
+            "text": "Ignore it and hope it blows over.",
+            "isCorrect": false,
+            "feedback": "In the digital age, issues rarely disappear without addressing them."
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Budget Allocation",
+        "description": "You have a limited budget. Where do you focus your digital marketing efforts?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Analyze past performance data to invest in the highest ROI channels.",
+            "isCorrect": true,
+            "feedback": "Data-driven decisions lead to the best results."
+          },
+          {
+            "id": "b",
+            "text": "Split the budget equally across all channels.",
+            "isCorrect": false,
+            "feedback": "This doesn't account for varying effectiveness of different channels."
+          },
+          {
+            "id": "c",
+            "text": "Invest in the newest, trendiest platform.",
+            "isCorrect": false,
+            "feedback": "New doesn't always mean effective for your specific audience."
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Influencer Partnership",
+        "description": "An influencer with many followers wants to partner with your brand. How do you evaluate them?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Check engagement rates, audience demographics, and brand alignment.",
+            "isCorrect": true,
+            "feedback": "Comprehensive evaluation leads to better partnerships."
+          },
+          {
+            "id": "b",
+            "text": "Go by follower count alone.",
+            "isCorrect": false,
+            "feedback": "Follower count can be misleading without considering engagement and relevance."
+          },
+          {
+            "id": "c",
+            "text": "Partner immediately if they're willing to work for free products.",
+            "isCorrect": false,
+            "feedback": "This can lead to poor alignment and ineffective partnerships."
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Email Marketing",
+        "description": "Your email open rates are declining. What changes might help?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Test different subject lines, send times, and segment your audience.",
+            "isCorrect": true,
+            "feedback": "These are all effective strategies to improve open rates."
+          },
+          {
+            "id": "b",
+            "text": "Send more emails to increase visibility.",
+            "isCorrect": false,
+            "feedback": "This could lead to list fatigue and more unsubscribes."
+          },
+          {
+            "id": "c",
+            "text": "Buy additional email lists to expand reach.",
+            "isCorrect": false,
+            "feedback": "Purchased lists often perform poorly and can harm sender reputation."
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Content Strategy",
+        "description": "Your blog content isn't driving traffic. How do you improve it?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Research audience needs, optimize for search intent, and improve content quality.",
+            "isCorrect": true,
+            "feedback": "Addressing user needs and search intent is key to content success."
+          },
+          {
+            "id": "b",
+            "text": "Publish more frequently regardless of quality.",
+            "isCorrect": false,
+            "feedback": "Quantity without quality rarely works in content marketing."
+          },
+          {
+            "id": "c",
+            "text": "Copy successful content from competitors.",
+            "isCorrect": false,
+            "feedback": "Duplicate content won't rank well and could lead to penalties."
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "ROI Measurement",
+        "description": "How do you demonstrate the value of your digital marketing efforts?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Set up proper tracking and report on key metrics tied to business goals.",
+            "isCorrect": true,
+            "feedback": "Connecting marketing metrics to business outcomes shows true value."
+          },
+          {
+            "id": "b",
+            "text": "Focus on vanity metrics like likes and shares.",
+            "isCorrect": false,
+            "feedback": "These don't necessarily translate to business results."
+          },
+          {
+            "id": "c",
+            "text": "Claim credit for all sales during campaign periods.",
+            "isCorrect": false,
+            "feedback": "This doesn't account for other factors influencing sales."
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "title": "Platform Algorithm Change",
+        "description": "A social platform changes its algorithm, reducing your organic reach. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Study the changes, adapt your content strategy, and consider some paid promotion.",
+            "isCorrect": true,
+            "feedback": "Adapting to platform changes is crucial in digital marketing."
+          },
+          {
+            "id": "b",
+            "text": "Complain publicly about the platform.",
+            "isCorrect": false,
+            "feedback": "This won't help and might reflect poorly on your brand."
+          },
+          {
+            "id": "c",
+            "text": "Post more frequently to compensate.",
+            "isCorrect": false,
+            "feedback": "This might lead to audience fatigue without addressing the core issue."
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "Data Privacy",
+        "description": "New data privacy regulations are coming into effect. How do you prepare?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Audit data practices, update privacy policies, and ensure compliance.",
+            "isCorrect": true,
+            "feedback": "Proactive compliance protects both customers and your business."
+          },
+          {
+            "id": "b",
+            "text": "Ignore it until you receive a complaint.",
+            "isCorrect": false,
+            "feedback": "This risky approach could lead to fines and reputational damage."
+          },
+          {
+            "id": "c",
+            "text": "Stop collecting all customer data.",
+            "isCorrect": false,
+            "feedback": "You can still collect data, just need to do it properly and transparently."
+          }
+        ]
+      }
+    ],
+    "skills": ["SEO", "Content Marketing", "Social Media", "PPC Advertising", "Email Marketing", "Analytics", "Conversion Optimization", "CRM", "Marketing Automation", "Data Privacy"],
+    "dailyTasks": [
+      "Analyzing campaign performance",
+      "Creating content calendars",
+      "Optimizing ad campaigns",
+      "Engaging with social media",
+      "Reviewing analytics",
+      "A/B testing",
+      "Coordinating with creative teams",
+      "Researching trends",
+      "Reporting on KPIs",
+      "Managing budgets"
+    ],
+    "challenges": [
+      "Algorithm changes",
+      "Ad fatigue",
+      "Budget constraints",
+      "Measuring ROI",
+      "Data privacy regulations",
+      "Platform competition",
+      "Creative burnout",
+      "Audience fragmentation",
+      "Keeping up with trends",
+      "Attribution modeling"
+    ],
+    "tools": ["Google Analytics", "SEMrush", "Mailchimp", "Hootsuite", "Google Ads", "Facebook Ads Manager", "HubSpot", "Canva", "Hotjar", "Google Data Studio"]
+  },
+  "ux-ui-designer": {
+    "title": "UX/UI Designer",
+    "description": "UX/UI designers create user-centered designs for digital products that are both functional and visually appealing.",
+    "scenarios": [
+      {
+        "id": 1,
+        "title": "User Research",
+        "description": "You're starting a new project. How do you begin understanding user needs?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Conduct user interviews, surveys, and analyze existing data.",
+            "isCorrect": true,
+            "feedback": "Great approach! Multiple research methods provide comprehensive insights."
+          },
+          {
+            "id": "b",
+            "text": "Rely on stakeholder opinions about what users want.",
+            "isCorrect": false,
+            "feedback": "Stakeholders often don't accurately represent actual user needs."
+          },
+          {
+            "id": "c",
+            "text": "Copy designs from popular apps in the same category.",
+            "isCorrect": false,
+            "feedback": "While competitive analysis is useful, it shouldn't replace understanding your specific users."
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Design Feedback",
+        "description": "A stakeholder wants to add many features that would clutter the interface. How do you respond?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Present user research data showing the importance of simplicity, and suggest phased implementation.",
+            "isCorrect": true,
+            "feedback": "Excellent! Data-driven arguments are most persuasive, and compromise shows flexibility."
+          },
+          {
+            "id": "b",
+            "text": "Implement all requested changes without question.",
+            "isCorrect": false,
+            "feedback": "This leads to poor user experience and goes against UX principles."
+          },
+          {
+            "id": "c",
+            "text": "Refuse all changes to protect your design vision.",
+            "isCorrect": false,
+            "feedback": "Being inflexible can damage relationships and isn't collaborative."
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Accessibility",
+        "description": "You're designing a new app. How do you ensure it's accessible?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Follow WCAG guidelines, test with screen readers, and ensure proper color contrast.",
+            "isCorrect": true,
+            "feedback": "Comprehensive approach covering multiple accessibility aspects."
+          },
+          {
+            "id": "b",
+            "text": "Add an accessibility mode that users can turn on if needed.",
+            "isCorrect": false,
+            "feedback": "Accessibility should be built in, not an afterthought or separate mode."
+          },
+          {
+            "id": "c",
+            "text": "Focus on visual design first, then consider accessibility later.",
+            "isCorrect": false,
+            "feedback": "Accessibility should be considered from the beginning, not tacked on later."
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Design System",
+        "description": "Your company's products lack design consistency. What solution do you propose?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Create a design system with reusable components and clear guidelines.",
+            "isCorrect": true,
+            "feedback": "Design systems are excellent for maintaining consistency at scale."
+          },
+          {
+            "id": "b",
+            "text": "Have designers review each other's work more often.",
+            "isCorrect": false,
+            "feedback": "This helps but doesn't provide the systematic solution a design system offers."
+          },
+          {
+            "id": "c",
+            "text": "Standardize on one designer's style for all products.",
+            "isCorrect": false,
+            "feedback": "This doesn't scale and ignores different product needs."
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "User Testing",
+        "description": "User testing reveals unexpected problems with your design. How do you proceed?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Analyze the issues, iterate on the design, and test again.",
+            "isCorrect": true,
+            "feedback": "Iteration based on user feedback is core to UX design."
+          },
+          {
+            "id": "b",
+            "text": "Assume users will learn to use it over time.",
+            "isCorrect": false,
+            "feedback": "Good design shouldn't require training for basic tasks."
+          },
+          {
+            "id": "c",
+            "text": "Blame the test participants for not understanding.",
+            "isCorrect": false,
+            "feedback": "If users don't understand, it's the design's fault, not theirs."
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Mobile Design",
+        "description": "You're adapting a desktop design to mobile. What's your approach?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Redesign for mobile context and constraints, not just shrink the desktop version.",
+            "isCorrect": true,
+            "feedback": "Mobile has different use cases and requires dedicated design thinking."
+          },
+          {
+            "id": "b",
+            "text": "Make everything smaller to fit the screen.",
+            "isCorrect": false,
+            "feedback": "This leads to poor usability on mobile devices."
+          },
+          {
+            "id": "c",
+            "text": "Hide most features behind hamburger menus.",
+            "isCorrect": false,
+            "feedback": "Overusing hamburger menus often hides important functionality."
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Design Handoff",
+        "description": "You're handing off designs to developers. How do you ensure accurate implementation?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Provide detailed specs, design systems, and maintain open communication.",
+            "isCorrect": true,
+            "feedback": "Comprehensive documentation plus collaboration leads to best results."
+          },
+          {
+            "id": "b",
+            "text": "Just send the Figma files and assume they'll figure it out.",
+            "isCorrect": false,
+            "feedback": "This often leads to misinterpretations and implementation issues."
+          },
+          {
+            "id": "c",
+            "text": "Micromanage every pixel during implementation.",
+            "isCorrect": false,
+            "feedback": "This slows down development and damages team relationships."
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Data vs. Intuition",
+        "description": "Analytics show users behaving differently than you expected. How do you proceed?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Investigate further with qualitative research to understand why.",
+            "isCorrect": true,
+            "feedback": "Combining quantitative and qualitative methods provides the full picture."
+          },
+          {
+            "id": "b",
+            "text": "Ignore the data and trust your design intuition.",
+            "isCorrect": false,
+            "feedback": "Data should inform design decisions, not be ignored."
+          },
+          {
+            "id": "c",
+            "text": "Immediately redesign based solely on the analytics.",
+            "isCorrect": false,
+            "feedback": "Understanding the why behind the data is crucial before making changes."
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "title": "Dark Mode",
+        "description": "Users are requesting dark mode. How do you approach this?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Design a complete dark theme with proper contrast and test it thoroughly.",
+            "isCorrect": true,
+            "feedback": "Dark mode requires careful consideration of readability and aesthetics."
+          },
+          {
+            "id": "b",
+            "text": "Just invert the colors of the existing light theme.",
+            "isCorrect": false,
+            "feedback": "Simple inversion often creates poor contrast and visual hierarchy issues."
+          },
+          {
+            "id": "c",
+            "text": "Tell users to adjust their device settings instead.",
+            "isCorrect": false,
+            "feedback": "Native inversion doesn't provide the quality experience of a properly designed dark mode."
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "Design Trends",
+        "description": "A new UI trend is becoming popular. How do you decide whether to adopt it?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Evaluate if it genuinely improves usability for your specific users.",
+            "isCorrect": true,
+            "feedback": "Trends should only be adopted if they serve your users' needs."
+          },
+          {
+            "id": "b",
+            "text": "Immediately implement it to keep the design looking fresh.",
+            "isCorrect": false,
+            "feedback": "Chasing trends can lead to inconsistent and confusing interfaces."
+          },
+          {
+            "id": "c",
+            "text": "Ignore all trends and stick to what you know.",
+            "isCorrect": false,
+            "feedback": "Some trends emerge because they solve real problems - evaluate them critically."
+          }
+        ]
+      }
+    ],
+    "skills": ["User Research", "Wireframing", "Prototyping", "Interaction Design", "Visual Design", "Information Architecture", "Usability Testing", "Design Systems", "Accessibility", "Design Thinking"],
+    "dailyTasks": [
+      "Conducting user research",
+      "Creating wireframes and prototypes",
+      "Running usability tests",
+      "Collaborating with product managers",
+      "Handing off designs to developers",
+      "Iterating based on feedback",
+      "Maintaining design systems",
+      "Creating design documentation",
+      "Staying updated on design trends",
+      "Advocating for user needs"
+    ],
+    "challenges": [
+      "Balancing user needs with business goals",
+      "Working with technical constraints",
+      "Measuring design impact",
+      "Stakeholder disagreements",
+      "Adapting to new design tools",
+      "Designing for diverse users",
+      "Maintaining consistency at scale",
+      "Keeping up with platform guidelines",
+      "Communicating design decisions",
+      "Prioritizing which problems to solve"
+    ],
+    "tools": ["Figma", "Sketch", "Adobe XD", "InVision", "Miro", "UserTesting", "Optimal Workshop", "Hotjar", "Zeplin", "Protopie"]
+  },
+  "devops-engineer": {
+    "title": "DevOps Engineer",
+    "description": "DevOps engineers bridge development and operations, automating infrastructure and deployment processes.",
+    "scenarios": [
+      {
+        "id": 1,
+        "title": "Deployment Failure",
+        "description": "A production deployment fails. What's your first action?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Roll back to the previous stable version and investigate the failure.",
+            "isCorrect": true,
+            "feedback": "Correct! First restore service, then diagnose the problem."
+          },
+          {
+            "id": "b",
+            "text": "Keep trying to deploy until it works.",
+            "isCorrect": false,
+            "feedback": "This risks extended downtime and might compound problems."
+          },
+          {
+            "id": "c",
+            "text": "Start debugging immediately without rolling back.",
+            "isCorrect": false,
+            "feedback": "Service restoration should take priority over debugging."
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Infrastructure as Code",
+        "description": "How do you approach managing cloud infrastructure?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Define all infrastructure in version-controlled configuration files.",
+            "isCorrect": true,
+            "feedback": "Infrastructure as Code provides reproducibility and auditability."
+          },
+          {
+            "id": "b",
+            "text": "Manually configure servers through the cloud provider's UI.",
+            "isCorrect": false,
+            "feedback": "Manual configuration isn't reproducible or scalable."
+          },
+          {
+            "id": "c",
+            "text": "Let each team manage their own infrastructure as they see fit.",
+            "isCorrect": false,
+            "feedback": "This leads to inconsistency and security risks."
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "CI/CD Pipeline",
+        "description": "The development team wants faster deployments. What do you improve?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Automate testing and deployment steps with a robust CI/CD pipeline.",
+            "isCorrect": true,
+            "feedback": "CI/CD is key to rapid, reliable deployments."
+          },
+          {
+            "id": "b",
+            "text": "Remove all tests to make deployments faster.",
+            "isCorrect": false,
+            "feedback": "This would lead to more production issues."
+          },
+          {
+            "id": "c",
+            "text": "Deploy directly to production without staging.",
+            "isCorrect": false,
+            "feedback": "This increases risk of production failures."
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Security Patch",
+        "description": "A critical security vulnerability is announced in a library you use. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Test the patch in staging, then deploy to production with proper monitoring.",
+            "isCorrect": true,
+            "feedback": "Balances urgency with proper change management."
+          },
+          {
+            "id": "b",
+            "text": "Immediately update all production systems.",
+            "isCorrect": false,
+            "feedback": "Could cause unexpected issues without testing."
+          },
+          {
+            "id": "c",
+            "text": "Wait for the next scheduled maintenance window.",
+            "isCorrect": false,
+            "feedback": "Critical security patches should be prioritized."
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Cost Optimization",
+        "description": "Your cloud costs are rising unexpectedly. How do you investigate?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Analyze usage metrics, identify inefficiencies, and right-size resources.",
+            "isCorrect": true,
+            "feedback": "Data-driven approach to cost optimization."
+          },
+          {
+            "id": "b",
+            "text": "Migrate everything to cheaper providers immediately.",
+            "isCorrect": false,
+            "feedback": "Migration is costly and might not address the root causes."
+          },
+          {
+            "id": "c",
+            "text": "Turn off non-production environments.",
+            "isCorrect": false,
+            "feedback": "This hampers development while possibly not solving the main cost issues."
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Monitoring Strategy",
+        "description": "How do you ensure you'll know about production issues before users do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Implement comprehensive monitoring with meaningful alerts and dashboards.",
+            "isCorrect": true,
+            "feedback": "Proactive monitoring is essential for reliability."
+          },
+          {
+            "id": "b",
+            "text": "Rely on users to report problems.",
+            "isCorrect": false,
+            "feedback": "This means you'll always learn about issues too late."
+          },
+          {
+            "id": "c",
+            "text": "Have engineers watch logs continuously.",
+            "isCorrect": false,
+            "feedback": "Not scalable and inefficient use of engineering time."
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Disaster Recovery",
+        "description": "How do you prepare for potential system failures?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Create and regularly test a disaster recovery plan with backups and failover systems.",
+            "isCorrect": true,
+            "feedback": "Being prepared reduces downtime during actual disasters."
+          },
+          {
+            "id": "b",
+            "text": "Assume cloud providers won't fail.",
+            "isCorrect": false,
+            "feedback": "Even cloud providers experience outages - preparation is still needed."
+          },
+          {
+            "id": "c",
+            "text": "Only back up the most critical data.",
+            "isCorrect": false,
+            "feedback": "Non-critical data loss can still have significant business impacts."
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Developer Experience",
+        "description": "Developers complain about slow local environment setup. How do you improve this?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Provide containerized development environments with good documentation.",
+            "isCorrect": true,
+            "feedback": "Containers provide consistency and ease setup."
+          },
+          {
+            "id": "b",
+            "text": "Tell developers to figure it out themselves.",
+            "isCorrect": false,
+            "feedback": "Poor developer experience slows down the entire team."
+          },
+          {
+            "id": "c",
+            "text": "Have everyone develop directly on production servers.",
+            "isCorrect": false,
+            "feedback": "Extremely risky and not a real solution."
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "title": "Configuration Drift",
+        "description": "You notice servers have inconsistent configurations. How do you fix this?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Implement configuration management tools and rebuild servers consistently.",
+            "isCorrect": true,
+            "feedback": "Automated configuration management prevents drift."
+          },
+          {
+            "id": "b",
+            "text": "Manually update each server to match.",
+            "isCorrect": false,
+            "feedback": "This is time-consuming and doesn't prevent future drift."
+          },
+          {
+            "id": "c",
+            "text": "Ignore small differences as long as things work.",
+            "isCorrect": false,
+            "feedback": "Configuration drift leads to unpredictable behavior and bugs."
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "Scaling Challenge",
+        "description": "Your application needs to handle sudden traffic spikes. What's your approach?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Design for horizontal scaling with auto-scaling groups and load balancing.",
+            "isCorrect": true,
+            "feedback": "Horizontal scaling is more flexible for handling variable loads."
+          },
+          {
+            "id": "b",
+            "text": "Use the largest possible instances to handle peak load.",
+            "isCorrect": false,
+            "feedback": "Vertical scaling has limits and is often more expensive."
+          },
+          {
+            "id": "c",
+            "text": "Ask users to come back when traffic is lower.",
+            "isCorrect": false,
+            "feedback": "Not a viable solution for a professional service."
+          }
+        ]
+      }
+    ],
+    "skills": ["Cloud Computing", "CI/CD", "Infrastructure as Code", "Containerization", "Monitoring", "Networking", "Security", "Automation", "Scripting", "System Administration"],
+    "dailyTasks": [
+      "Managing CI/CD pipelines",
+      "Monitoring system health",
+      "Automating infrastructure",
+      "Troubleshooting issues",
+      "Optimizing performance",
+      "Implementing security measures",
+      "Collaborating with developers",
+      "Documenting systems",
+      "Capacity planning",
+      "Cost optimization"
+    ],
+    "challenges": [
+      "Balancing speed and stability",
+      "Managing complex distributed systems",
+      "Security vulnerabilities",
+      "Cost control in cloud environments",
+      "Incident response",
+      "Legacy system modernization",
+      "Toolchain complexity",
+      "Cross-team coordination",
+      "Keeping up with technology changes",
+      "On-call responsibilities"
+    ],
+    "tools": ["AWS/GCP/Azure", "Docker", "Kubernetes", "Terraform", "Ansible", "Jenkins", "GitLab CI", "Prometheus", "Grafana", "ELK Stack"]
+  },
+  "product-manager": {
+    "title": "Product Manager",
+    "description": "Product managers define product vision, prioritize features, and lead cross-functional teams to deliver successful products.",
+    "scenarios": [
+      {
+        "id": 1,
+        "title": "Feature Prioritization",
+        "description": "You have many feature requests from different stakeholders. How do you decide what to build next?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Evaluate based on user impact, business goals, and technical feasibility.",
+            "isCorrect": true,
+            "feedback": "Good product decisions balance multiple important factors."
+          },
+          {
+            "id": "b",
+            "text": "Build whatever the highest-paying customer requests.",
+            "isCorrect": false,
+            "feedback": "This can lead to a fragmented product that doesn't serve most users well."
+          },
+          {
+            "id": "c",
+            "text": "Let the engineering team decide what's easiest to build.",
+            "isCorrect": false,
+            "feedback": "While technical input is important, product strategy shouldn't be driven solely by implementation ease."
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Conflict Resolution",
+        "description": "Design and engineering teams disagree on a feature implementation. How do you handle this?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Facilitate a discussion focused on user needs and technical constraints.",
+            "isCorrect": true,
+            "feedback": "Bringing the focus back to user needs often resolves conflicts."
+          },
+          {
+            "id": "b",
+            "text": "Side with the designers because UX is most important.",
+            "isCorrect": false,
+            "feedback": "Good products balance UX with technical realities - shouldn't automatically favor one side."
+          },
+          {
+            "id": "c",
+            "text": "Let them work it out themselves without getting involved.",
+            "isCorrect": false,
+            "feedback": "Product managers should facilitate cross-functional collaboration."
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Metrics Definition",
+        "description": "How do you determine if your product is successful?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Define clear KPIs aligned with business goals and user needs.",
+            "isCorrect": true,
+            "feedback": "Good metrics reflect both business and user outcomes."
+          },
+          {
+            "id": "b",
+            "text": "Only track revenue and user growth.",
+            "isCorrect": false,
+            "feedback": "These are important but don't capture the full picture of product health."
+          },
+          {
+            "id": "c",
+            "text": "Rely on qualitative feedback alone.",
+            "isCorrect": false,
+            "feedback": "Qualitative feedback is important but should be complemented with quantitative data."
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Roadmap Changes",
+        "description": "Market conditions change, making your current roadmap less relevant. What do you do?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Reassess priorities based on new information and adjust the roadmap.",
+            "isCorrect": true,
+            "feedback": "Roadmaps should be living documents that adapt to change."
+          },
+          {
+            "id": "b",
+            "text": "Stick to the original plan to avoid confusing the team.",
+            "isCorrect": false,
+            "feedback": "Being inflexible can lead to building the wrong things."
+          },
+          {
+            "id": "c",
+            "text": "Scrap all plans and start over from scratch.",
+            "isCorrect": false,
+            "feedback": "This extreme approach wastes previous work and creates instability."
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "User Feedback",
+        "description": "You receive conflicting user feedback about a feature. How do you proceed?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Look for patterns, segment users, and consider the feedback in context.",
+            "isCorrect": true,
+            "feedback": "Different user segments often have different needs - important to analyze carefully."
+          },
+          {
+            "id": "b",
+            "text": "Go with the majority opinion.",
+            "isCorrect": false,
+            "feedback": "Majority isn't always right - important to consider user segments and business goals."
+          },
+          {
+            "id": "c",
+            "text": "Ignore all feedback and trust your instincts.",
+            "isCorrect": false,
+            "feedback": "User feedback is crucial input, though needs to be interpreted carefully."
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Release Planning",
+        "description": "How do you decide what to include in the next release?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Balance strategic priorities with technical constraints to deliver coherent value.",
+            "isCorrect": true,
+            "feedback": "Good releases deliver meaningful value while being technically feasible."
+          },
+          {
+            "id": "b",
+            "text": "Include as many features as possible to impress users.",
+            "isCorrect": false,
+            "feedback": "Quality and coherence are more important than quantity of features."
+          },
+          {
+            "id": "c",
+            "text": "Let engineering decide based on what's ready.",
+            "isCorrect": false,
+            "feedback": "While technical input is important, releases should be driven by product strategy."
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Stakeholder Management",
+        "description": "An executive wants to add a feature that doesn't fit your strategy. How do you respond?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Understand their concerns, explain your strategy, and find alignment.",
+            "isCorrect": true,
+            "feedback": "Balances respect for stakeholders with product vision."
+          },
+          {
+            "id": "b",
+            "text": "Immediately add it to please the executive.",
+            "isCorrect": false,
+            "feedback": "This leads to product fragmentation and loss of strategic direction."
+          },
+          {
+            "id": "c",
+            "text": "Flatly refuse without discussion.",
+            "isCorrect": false,
+            "feedback": "This damages relationships and misses opportunity to understand their perspective."
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Competitive Analysis",
+        "description": "A competitor launches a popular new feature. How do you respond?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Evaluate if it aligns with your users' needs and strategy before deciding to respond.",
+            "isCorrect": true,
+            "feedback": "Not all competitor features are worth matching - stay focused on your vision."
+          },
+          {
+            "id": "b",
+            "text": "Immediately prioritize building the same feature.",
+            "isCorrect": false,
+            "feedback": "This reactive approach can lead you away from your strategic differentiators."
+          },
+          {
+            "id": "c",
+            "text": "Ignore all competitor developments.",
+            "isCorrect": false,
+            "feedback": "While you shouldn't blindly copy, being aware of the competitive landscape is important."
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "title": "Team Motivation",
+        "description": "Your team is frustrated with frequent priority changes. How do you address this?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Explain the rationale for changes while establishing more stable long-term goals.",
+            "isCorrect": true,
+            "feedback": "Balances necessary flexibility with team need for stability."
+          },
+          {
+            "id": "b",
+            "text": "Stop changing priorities even when it's needed.",
+            "isCorrect": false,
+            "feedback": "Some change is necessary - the key is managing it effectively."
+          },
+          {
+            "id": "c",
+            "text": "Tell the team to just deal with it as part of the job.",
+            "isCorrect": false,
+            "feedback": "This approach damages morale and productivity."
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "Product-Market Fit",
+        "description": "Growth has plateaued. How do you determine if you have product-market fit?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Conduct thorough user research and analyze retention/metrics to identify gaps.",
+            "isCorrect": true,
+            "feedback": "Comprehensive approach to understanding product-market fit."
+          },
+          {
+            "id": "b",
+            "text": "Assume you have fit and just need more marketing.",
+            "isCorrect": false,
+            "feedback": "Without verifying, you might be marketing a product that doesn't fully meet needs."
+          },
+          {
+            "id": "c",
+            "text": "Pivot the product completely based on a hunch.",
+            "isCorrect": false,
+            "feedback": "Pivots should be based on evidence, not guesses."
+          }
+        ]
+      }
+    ],
+    "skills": ["Market Research", "Roadmapping", "Prioritization", "Stakeholder Management", "Data Analysis", "User Story Mapping", "Agile Methodologies", "Go-to-Market Strategy", "Metrics Definition", "Competitive Analysis"],
+    "dailyTasks": [
+      "Analyzing user feedback",
+      "Prioritizing features",
+      "Collaborating with cross-functional teams",
+      "Refining product strategy",
+      "Reviewing metrics",
+      "Communicating with stakeholders",
+      "Writing user stories",
+      "Competitive analysis",
+      "Planning releases",
+      "Removing roadblocks"
+    ],
+    "challenges": [
+      "Balancing user needs with business goals",
+      "Managing conflicting stakeholder demands",
+      "Making decisions with incomplete data",
+      "Keeping teams motivated",
+      "Adapting to market changes",
+      "Communicating strategy effectively",
+      "Measuring product success",
+      "Saying no to feature requests",
+      "Technical debt prioritization",
+      "Cross-team coordination"
+    ],
+    "tools": ["Jira", "Productboard", "Amplitude", "Mixpanel", "Google Analytics", "Figma", "Miro", "Confluence", "Hotjar", "SQL"]
   }
 }
-

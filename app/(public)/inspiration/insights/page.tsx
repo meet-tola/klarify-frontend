@@ -101,7 +101,7 @@ export default function DigitalIndustriesTrendsPage() {
   const [selectedTrend, setSelectedTrend] = useState(careerTrends[0])
 
   return (
-    <div className="container py-6 lg:py-10 pl-20">
+    <div className="container py-6 lg:py-10 px-4 pl-20">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Content Area */}
         <div className="lg:col-span-2">
