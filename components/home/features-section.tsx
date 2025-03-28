@@ -9,7 +9,7 @@ export default function FeaturesSection() {
       title: "Skill Discovery Tool",
       description: "Find the perfect digital skill for you – from coding to marketing and beyond.",
       icon: (
-        <div className="h-24 lg:h-26 flex justify-center mb-4 w-full">
+        <div className="h-[145px] flex justify-center mb-4 w-full">
           <Image src="/assets/hands.svg" alt="Skill Discovery Illustration" width={200} height={200} />
         </div>
       ),
@@ -18,7 +18,7 @@ export default function FeaturesSection() {
       title: "Personalized Career Roadmap",
       description: "Get a step-by-step plan tailored to your goals, skills, and interests.",
       icon: (
-        <div className="h-24 lg:h-26 flex justify-center mb-4 w-full">
+        <div className="h-[145px] flex justify-center mb-4 w-full">
           <Image src="/assets/roadmap.svg" alt="Career Roadmap Illustration" width={200} height={200} />
         </div>
       ),
@@ -27,7 +27,7 @@ export default function FeaturesSection() {
       title: "Free Resource Library",
       description: "Access curated courses, e-books, and tools to learn at your own pace.",
       icon: (
-        <div className="h-24 lg:h-26 flex justify-center mb-4 w-full">
+        <div className="h-[145px] flex justify-center mb-4 w-full">
           <Image src="/assets/cards.svg" alt="Resource Library Illustration" width={200} height={200} />
         </div>
       ),
@@ -36,7 +36,7 @@ export default function FeaturesSection() {
       title: "Achieve Success",
       description: "Track your progress and celebrate milestones on your career journey.",
       icon: (
-        <div className="h-24 lg:h-26 flex justify-center mb-4 w-full">
+        <div className="h-[145px] flex justify-center mb-4 w-full">
           <Image src="/assets/rocket.svg" alt="Community Support Illustration" width={200} height={200} />
         </div>
       ),
@@ -44,7 +44,7 @@ export default function FeaturesSection() {
   ]
 
   return (
-    <section className="py-20 md:py-28">
+    <section className="py-20 md:py-28 bg-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

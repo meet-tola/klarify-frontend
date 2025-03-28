@@ -240,7 +240,7 @@ export default function Header() {
               </Button>
             </Link>
 
-            <Link href={""}>
+            <Link href={"/careers"}>
               <Button
                 variant={"ghost"}
                 className="text-slate-600 hover:text-slate-900 px-4 font-medium"
@@ -338,7 +338,7 @@ export default function Header() {
               </AnimatePresence>
             </div>
 
-            <Link href={""}>
+            <Link href={"/community"}>
               <Button
                 variant={"ghost"}
                 className="text-slate-600 hover:text-slate-900 px-4 font-medium"

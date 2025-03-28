@@ -1,30 +1,38 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { ArrowRight, Star, TrendingUp } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, Star, TrendingUp } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 
 export default function Hero() {
   return (
     <section className="relative bg-gradient-to-b from-blue-50/50 to-white py-20 overflow-hidden">
       <div className="container mx-auto px-4 sm:px-6 lg:px-20">
         <div className="grid md:grid-cols-2 gap-12 items-center">
-          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+          >
             <h1 className="text-4xl md:text-5xl font-bold text-primary mb-6 roca-bold">
               Discover Your Path to Tech Success
             </h1>
             <p className="text-lg text-slate-600 mb-8">
-              Assess your skills, explore career paths, and get personalized roadmaps to achieve your tech career goals.
+              Assess your skills, explore career paths, and get personalized
+              roadmaps to achieve your tech career goals.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button className="bg-primary hover:bg-primary/90">
-                Start Skill Assessment
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-              <Button variant="outline">
-                Explore Careers
-              </Button>
+              <Link href="/signup">
+                <Button className="bg-primary hover:bg-primary/90">
+                  Start Skill Assessment
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+              <Link href="/careers" className="w-full">
+                <Button variant="outline">Explore Careers</Button>
+              </Link>
             </div>
           </motion.div>
 
@@ -65,7 +73,9 @@ export default function Hero() {
                   }}
                 >
                   <div className="flex justify-between items-start mb-2">
-                    <Badge className="mb-1" variant={"outline"}>{skill.category}</Badge>
+                    <Badge className="mb-1" variant={"outline"}>
+                      {skill.category}
+                    </Badge>
                     <div className="flex items-center gap-1">
                       {[1, 2, 3, 4, 5].map((star) => (
                         <motion.div
@@ -78,15 +88,23 @@ export default function Hero() {
                           }}
                         >
                           <Star
-                            className={`h-4 w-4 ${star <= Math.floor(skill.level) ? "fill-yellow-400 text-yellow-400" : "text-gray-200"}`}
+                            className={`h-4 w-4 ${
+                              star <= Math.floor(skill.level)
+                                ? "fill-yellow-400 text-yellow-400"
+                                : "text-gray-200"
+                            }`}
                           />
                         </motion.div>
                       ))}
-                      <span className="text-sm ml-1 text-slate-600">{skill.level}</span>
+                      <span className="text-sm ml-1 text-slate-600">
+                        {skill.level}
+                      </span>
                     </div>
                   </div>
 
-                  <h3 className="font-bold text-lg mb-1 roca-bold">{skill.name}</h3>
+                  <h3 className="font-bold text-lg mb-1 roca-bold">
+                    {skill.name}
+                  </h3>
                   <p className="text-slate-600 text-sm">{skill.description}</p>
                   <div className="w-20 h-20 absolute -bottom-6 -right-6 rounded-full bg-blue-50/80 z-0"></div>
                 </motion.div>
@@ -101,7 +119,13 @@ export default function Hero() {
             >
               <div className="flex items-center gap-3">
                 <div className="bg-green-100 p-2 rounded-full">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
                     <path
                       d="M20 6L9 17L4 12"
                       stroke="#10B981"
@@ -130,7 +154,9 @@ export default function Hero() {
                 </div>
                 <div>
                   <p className="font-medium">High Demand</p>
-                  <p className="text-sm text-slate-500">Top 3 trending skills</p>
+                  <p className="text-sm text-slate-500">
+                    Top 3 trending skills
+                  </p>
                 </div>
               </div>
             </motion.div>
@@ -138,6 +164,5 @@ export default function Hero() {
         </div>
       </div>
     </section>
-  )
+  );
 }
-

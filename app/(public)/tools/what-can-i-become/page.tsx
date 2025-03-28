@@ -191,18 +191,18 @@ export default function WhatCanIBecomePage() {
           {/* Header Section */}
           <div className="relative w-full h-[300px] md:h-[400px] overflow-hidden rounded-lg mb-8">
             <Image
-              src="/placeholder.svg?height=800&width=1600"
+              src="/assets/what.jpg"
               alt="Career exploration"
               width={1600}
               height={800}
               className="object-cover w-full h-full"
               priority
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-background/20 flex flex-col justify-end p-6">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 to-background/20 flex flex-col justify-end p-6">
               <div className="space-y-2">
                 <div className="flex gap-2">
-                  <Badge className="bg-primary hover:bg-primary">Career Guidance</Badge>
-                  <Badge variant="outline">Self-Discovery</Badge>
+                  <Badge variant={"secondary"}>Career Guidance</Badge>
+                  <Badge variant={"secondary"}>Self-Discovery</Badge>
                 </div>
                 <h1 className="text-3xl font-bold text-white md:text-4xl">What Can I Become in Tech?</h1>
                 <p className="text-white/80 max-w-2xl">
@@ -225,7 +225,7 @@ export default function WhatCanIBecomePage() {
               </div>
               <div className="flex items-center gap-1">
                 <BookOpen className="h-4 w-4" />
-                <span>Updated March 2023</span>
+                <span>Updated March 2025</span>
               </div>
             </div>
           </div>
@@ -308,7 +308,7 @@ export default function WhatCanIBecomePage() {
                   </div>
                 </div>
                 <div className="flex justify-center mt-6">
-                  <Button className="mt-4">
+                  <Button size={"sm"} className="mt-4">
                     Take the Career Assessment
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
@@ -504,7 +504,7 @@ export default function WhatCanIBecomePage() {
               </CardHeader>
               <CardContent>
                 <TooltipProvider>
-                  <div className="flex justify-between">
+                  <div className="flex gap-6">
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Button variant="outline" size="icon" className="rounded-full">
