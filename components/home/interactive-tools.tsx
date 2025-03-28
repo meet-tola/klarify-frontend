@@ -20,7 +20,7 @@ const tools = [
   },
   {
     id: "skill-comparison",
-    title: "Skill Comparison Tool",
+    title: "Skill Comparison",
     description: "Compare skills based on demand, salary, and difficulty",
     icon: <GitCompare className="h-5 w-5" />,
     href: "/tools/skill-comparison",
@@ -29,12 +29,12 @@ const tools = [
   },
   {
     id: "what-can-i-become",
-    title: "What Can I Become? Tool",
-    description: "Discover careers based on your skills and interests",
+    title: "What Can I Become?",
+    description: "Career guide based on your skills and interests",
     icon: <HelpCircle className="h-5 w-5" />,
     href: "/tools/what-can-i-become",
     preview:
-      "Answer a series of questions about your skills, interests, and preferences to receive personalized career path recommendations.",
+      "Guide on career paths based on your skills and interests to find your perfect fit in the tech industry",
   },
 ]
 
@@ -69,7 +69,7 @@ export default function InteractiveTools() {
                 >
                   <span className="inline-flex">{tool.icon}</span>
                   <span className="hidden lg:inline">{tool.title}</span>
-                  <span className="xs:hidden">{tool.title.split(" ")[0]}</span>
+                  <span className="lg:hidden">{tool.title.split(" ")[0]}</span>
                 </TabsTrigger>
               ))}
             </TabsList>

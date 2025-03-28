@@ -204,7 +204,7 @@ export default function WhatCanIBecomePage() {
                   <Badge variant={"secondary"}>Career Guidance</Badge>
                   <Badge variant={"secondary"}>Self-Discovery</Badge>
                 </div>
-                <h1 className="text-3xl font-bold text-white md:text-4xl">What Can I Become in Tech?</h1>
+                <h1 className="text-3xl font-bold text-white md:text-4xl roca-bold">What Can I Become in Tech?</h1>
                 <p className="text-white/80 max-w-2xl">
                   Discover career paths based on your skills and interests to find your perfect fit in the tech industry
                 </p>

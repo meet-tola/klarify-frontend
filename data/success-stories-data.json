@@ -1,0 +1,114 @@
+{
+    "stories": [
+      {
+        "id": 1,
+        "name": "Ire Aderinokun",
+        "role": "Frontend Engineer & Digital Accessibility Expert",
+        "company": "BuyPower.ng",
+        "image": "/assets/ire-aderinokun.jpg",
+        "story": "Ire started as a self-taught developer in Lagos, documenting her learning journey on her popular blog. She became Nigeria's first female Google Developer Expert and co-founded BuyPower.ng, a platform simplifying electricity payments. Her work in digital accessibility has helped make Nigerian fintech products more inclusive.",
+        "position": "left",
+        "featured": true,
+        "skills": ["JavaScript", "Accessibility", "React"]
+      },
+      {
+        "id": 2,
+        "name": "Shola Akinlade",
+        "role": "Co-founder & CEO",
+        "company": "Paystack",
+        "image": "/assets/shola.png",
+        "story": "Shola co-founded Paystack in 2016 to solve online payments in Africa. The startup grew rapidly, processing over 50% of online transactions in Nigeria before being acquired by Stripe for $200M+ in 2020. His journey from writing code in Yaba to building a pan-African payments giant inspires many Nigerian tech entrepreneurs.",
+        "position": "right",
+        "featured": true,
+        "skills": ["Entrepreneurship", "Fintech", "Payments"]
+      },
+      {
+        "id": 3,
+        "name": "Laurin Hainy",
+        "role": "Co-founder & CEO",
+        "company": "FairMoney",
+        "image": "/assets/Laurin.jpg",
+        "story": "Laurin moved from Austria to Nigeria to build FairMoney, a digital lender providing instant loans via mobile app. Under his leadership, FairMoney became one of Nigeria's fastest growing fintechs, serving millions of underserved customers and raising over $50M in funding.",
+        "position": "left",
+        "featured": false,
+        "skills": ["Fintech", "Lending", "Mobile Banking"]
+      },
+      {
+        "id": 4,
+        "name": "Iyinoluwa Aboyeji",
+        "role": "Co-founder",
+        "company": "Flutterwave",
+        "image": "/assets/iyinoluwa.png",
+        "story": "Iyin co-founded Flutterwave in 2016, building the payments infrastructure that powers African commerce. The company reached unicorn status in 2021. His earlier venture, Andela, trained thousands of African developers. Known as 'E' in tech circles, he's a vocal advocate for African tech talent.",
+        "position": "right",
+        "featured": true,
+        "skills": ["Payments", "Entrepreneurship", "Startups"]
+      },
+      {
+        "id": 5,
+        "name": "Obinna Ukwuani",
+        "role": "Founder & CEO",
+        "company": "Chekkit Technologies",
+        "image": "/obinna-ukwuani.jpg",
+        "story": "After studying at MIT, Obinna returned to Nigeria to build Chekkit, an anti-counterfeiting solution using blockchain and IoT. His work helps combat Nigeria's $4B counterfeit drug problem. He previously founded Nigeria's first coding bootcamp for secondary students.",
+        "position": "left",
+        "featured": false,
+        "skills": ["Blockchain", "IoT", "Supply Chain"]
+      },
+      {
+        "id": 6,
+        "name": "Oluwatosin Olaseinde",
+        "role": "Founder",
+        "company": "MoneyAfrica",
+        "image": "/oluwatosin-olaseinde.jpg",
+        "story": "Tosin left her banking job to start MoneyAfrica, a financial literacy platform educating Nigerians on personal finance. Her workshops and courses have reached over 100,000 people, helping many escape debt cycles and build wealth through proper money management.",
+        "position": "right",
+        "featured": false,
+        "skills": ["Financial Literacy", "Education", "Personal Finance"]
+      },
+      {
+        "id": 7,
+        "name": "Tayo Oviosu",
+        "role": "Founder & CEO",
+        "company": "Paga",
+        "image": "/tayo-oviosu.jpg",
+        "story": "Tayo built Paga into Nigeria's leading mobile payments company, processing billions in transactions annually. A Stanford MBA graduate, he worked at Cisco before returning to Nigeria to solve financial inclusion challenges through technology.",
+        "position": "left",
+        "featured": false,
+        "skills": ["Mobile Payments", "Financial Inclusion", "Entrepreneurship"]
+      },
+      {
+        "id": 8,
+        "name": "Ngozi Dozie",
+        "role": "Co-founder",
+        "company": "Carbon (Paylater)",
+        "image": "/ngozi-dozie.jpg",
+        "story": "Ngozi co-founded Carbon (formerly Paylater), one of Nigeria's first digital lenders. The platform has disbursed millions of loans and expanded to offer full-service digital banking. His work has helped shape Nigeria's alternative credit scoring models.",
+        "position": "right",
+        "featured": false,
+        "skills": ["Digital Lending", "Fintech", "Banking"]
+      },
+      {
+        "id": 9,
+        "name": "Oscar N. Onyema",
+        "role": "CEO",
+        "company": "Nigerian Stock Exchange",
+        "image": "/oscar-onyema.jpg",
+        "story": "Oscar transformed the Nigerian Stock Exchange through technology, introducing electronic trading and modern market infrastructure. His leadership during economic downturns stabilized Nigeria's capital markets and attracted tech companies to list.",
+        "position": "left",
+        "featured": false,
+        "skills": ["Capital Markets", "Financial Technology", "Leadership"]
+      },
+      {
+        "id": 10,
+        "name": "Uche Pedro",
+        "role": "Founder & CEO",
+        "company": "BellaNaija",
+        "image": "/uche-pedro.jpg",
+        "story": "Uche built BellaNaija from a small blog to Nigeria's most influential digital media platform. Her company now hosts major events, runs a successful wedding platform, and has become a cultural force shaping Nigerian entertainment and lifestyle trends.",
+        "position": "right",
+        "featured": false,
+        "skills": ["Digital Media", "Content", "Entrepreneurship"]
+      }
+    ]
+  }

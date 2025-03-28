@@ -9,9 +9,9 @@ export default function Footer() {
     {
       title: "About",
       links: [
-        { name: "Our Story", href: "#" },
-        { name: "Team", href: "#" },
-        { name: "Careers", href: "#" },
+        { name: "Our Story", href: "/#" },
+        { name: "Teams", href: "#" },
+        { name: "Careers", href: "/careers" },
       ],
     },
     {
@@ -19,7 +19,7 @@ export default function Footer() {
       links: [
         { name: "Blog", href: "#" },
         { name: "Guides", href: "#" },
-        { name: "Webinars", href: "#" },
+        { name: "Videos", href: "#" },
       ],
     },
     {
@@ -30,14 +30,6 @@ export default function Footer() {
         { name: "FAQ", href: "#" },
       ],
     },
-    // {
-    //   title: "Legal",
-    //   links: [
-    //     { name: "Privacy Policy", href: "#" },
-    //     { name: "Terms of Service", href: "#" },
-    //     { name: "Cookie Policy", href: "#" },
-    //   ],
-    // },
   ]
 
   const socialLinks = [
@@ -55,7 +47,7 @@ export default function Footer() {
           {/* Company Info */}
           <div className="md:col-span-2">
             <div className="mb-4">
-            <Logo logoType="white" />
+              <Logo logoType="white" />
             </div>
             <p className="mb-4 max-w-md">
               Helping individuals discover and develop their digital skills for the modern workforce. Our platform
@@ -92,12 +84,26 @@ export default function Footer() {
           ))}
         </div>
 
-        <div className="pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center">
-          <p>© {new Date().getFullYear()} Klarity. All rights reserved.</p>
-          <p className="mt-2 md:mt-0">Made with ❤️ for digital explorers</p>
+        <div className="pt-8 border-t border-slate-800">
+          <div className="flex flex-col md:flex-row justify-between items-center mb-4">
+            <p>© {new Date().getFullYear()} Klarity. All rights reserved.</p>
+            <p className="mt-2 md:mt-0">Made with ❤️ for digital explorers</p>
+          </div>
+          
+          {/* Privacy and Terms Links */}
+          <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm">
+            <Link href="/privacy" className="hover:text-white transition-colors">
+              Privacy Policy
+            </Link>
+            <Link href="/terms" className="hover:text-white transition-colors">
+              Terms of Service
+            </Link>
+            <Link href="/cookies" className="hover:text-white transition-colors">
+              Cookie Policy
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
   )
 }
-

@@ -234,7 +234,11 @@ export default function Header() {
             <Link href={"/"}>
               <Button
                 variant={"ghost"}
-                className="text-slate-600 hover:text-slate-900 px-4 font-medium"
+                className={`transition-colors 0 px-4 font-medium ${
+                  isActive("/")
+                    ? "text-primary"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
               >
                 Home
               </Button>
@@ -243,7 +247,11 @@ export default function Header() {
             <Link href={"/careers"}>
               <Button
                 variant={"ghost"}
-                className="text-slate-600 hover:text-slate-900 px-4 font-medium"
+                className={`transition-colors 0 px-4 font-medium ${
+                  isActive("/careers")
+                    ? "text-primary"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
               >
                 Careers
               </Button>
@@ -341,7 +349,11 @@ export default function Header() {
             <Link href={"/community"}>
               <Button
                 variant={"ghost"}
-                className="text-slate-600 hover:text-slate-900 px-4 font-medium"
+                className={`transition-colors 0 px-4 font-medium ${
+                  isActive("/commiunity")
+                    ? "text-primary"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
               >
                 Community
               </Button>
@@ -456,10 +468,7 @@ export default function Header() {
                 <Button variant="outline" size={"md"} asChild>
                   <Link href="/login">Login</Link>
                 </Button>
-                <Button
-                 size={"md"}
-                  asChild
-                >
+                <Button size={"md"} asChild>
                   <Link href="/signup">Get Started</Link>
                 </Button>
               </>
@@ -582,6 +591,30 @@ export default function Header() {
                 </p>
                 <nav className="space-y-2">
                   {/* Mobile Dropdowns */}
+                  <Link href={"/"} className="">
+                    <Button
+                      variant={"ghost"}
+                      className={`flex items-center justify-between w-full px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                        isActive("/")
+                          ? "text-primary"
+                          : "text-slate-600 hover:text-slate-900"
+                      }`}
+                    >
+                      Home
+                    </Button>
+                  </Link>
+                  <Link href={"/career"} className="">
+                    <Button
+                      variant={"ghost"}
+                      className={`flex items-center justify-between w-full px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                        isActive("/careers")
+                          ? "text-primary"
+                          : "text-slate-600 hover:text-slate-900"
+                      }`}
+                    >
+                      Careers
+                    </Button>
+                  </Link>
                   <MobileDropdown
                     title="Tools"
                     items={toolsDropdown}
@@ -592,29 +625,23 @@ export default function Header() {
                     items={resourcesDropdown}
                     isActive={isActive("/resources")}
                   />
-                  <Link href={""} className="">
-                    <Button
-                      variant={"ghost"}
-                      className="flex items-center justify-between w-full px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-primary"
-                    >
-                      Skills
-                    </Button>
-                  </Link>
-
-                  <Link href={""} className="">
-                    <Button
-                      variant={"ghost"}
-                      className="flex items-center justify-between w-full px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-primary"
-                    >
-                      Career
-                    </Button>
-                  </Link>
-
                   <MobileDropdown
                     title="Inspiration"
                     items={inspirationDropdown}
                     isActive={isActive("/inspiration")}
                   />
+                  <Link href={"/community"} className="">
+                    <Button
+                      variant={"ghost"}
+                      className={`flex items-center justify-between w-full px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                        isActive("/community")
+                          ? "text-primary"
+                          : "text-slate-600 hover:text-slate-900"
+                      }`}
+                    >
+                      Community
+                    </Button>
+                  </Link>
                 </nav>
               </div>
 
