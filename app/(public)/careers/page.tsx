@@ -166,6 +166,11 @@ export default function CareersPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [showFilters, setShowFilters] = useState(false)
   const [careers, setCareers] = useState(allCareers)
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   // Filter states
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
@@ -281,7 +286,7 @@ export default function CareersPage() {
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Filters Sidebar */}
             <AnimatePresence>
-              {(showFilters || window.innerWidth >= 1024) && (
+            {(showFilters || (isClient && window.innerWidth >= 1024)) && (
                 <motion.aside
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
