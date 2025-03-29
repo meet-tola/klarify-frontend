@@ -121,6 +121,15 @@ export default function OnboardingPage() {
         return;
       }
 
+      if (
+        !user.user?.pickedSkill &&
+        (!user.user?.skillsAssessment || user.user.skillsAssessment.length === 0) &&
+        (!user.user?.selectedSkills || user.user.selectedSkills.length === 0)
+      ) {
+        router.push("/onboarding?step=one");
+        return;
+      }
+
       // If the user has both pickedSkill and selectedSkills, go to step two
       if (!user.user?.pickedSkill && user.user?.skillsAssessment?.length > 0) {
         router.push("/onboarding?step=two");

@@ -34,7 +34,10 @@ export default function StepTwo({
   const [notInterestedCount, setNotInterestedCount] = useState(0);
   const [showSearchDialog, setShowSearchDialog] = useState(false);
   const [selectedCareer, setSelectedCareer] = useState<string | null>(null);
-  const [suggestedSkills, setSuggestedSkills] = useState<Career[]>([]);
+  const [suggestedSkills, setSuggestedSkills] = useState<{
+    primary: Career[];
+    secondary: Career[];
+  }>({ primary: [], secondary: [] });
   const [displayedSkills, setDisplayedSkills] = useState<Career[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isChangingCareers, setIsChangingCareers] = useState(false);
@@ -46,12 +49,20 @@ export default function StepTwo({
       if (user?.user?._id) {
         try {
           const data = await getSuggestedSkills(user.user._id);
+          console.log("Suggested Skills:", data);
+
           if (data) {
-            setSuggestedSkills(data);
-            setDisplayedSkills(data.slice(0, 4));
+            const allSkills = [...(data.primary || []), ...(data.secondary || [])];
+
+            setSuggestedSkills({
+              primary: data.primary || [],
+              secondary: data.secondary || [],
+            });
+
+            setDisplayedSkills(allSkills.slice(0, 4)); // Show first 4 skills initially
           }
         } catch (error) {
-          router.push("/roadmap")
+          router.push("/roadmap");
           console.error("Failed to fetch suggested skills:", error);
         } finally {
           setIsLoading(false);
@@ -64,34 +75,41 @@ export default function StepTwo({
 
   // Handle "Not Interested" button click
   const handleNotInterested = () => {
-    setNotInterestedCount((prev) => prev + 1);
+    const newCount = notInterestedCount + 1;
+    setNotInterestedCount(newCount);
 
-    if (notInterestedCount >= 2) {
-      // Show all skills after 3 "Not Interested" clicks
-      setDisplayedSkills(suggestedSkills);
+    if (newCount >= 2) {
+      // After 3 clicks (0, 1, 2)
+      // Show all skills (both primary and secondary)
+      setDisplayedSkills([
+        ...suggestedSkills.primary,
+        ...suggestedSkills.secondary,
+      ]);
       setShowSearchDialog(true);
       setNotInterestedCount(0);
     } else {
-      // Hide the current skills before showing the next set
+      // Cycle through skills
       setIsChangingCareers(true);
-      setDisplayedSkills([]); // Clear the displayed skills
-
       setTimeout(() => {
-        const nextIndex = notInterestedCount + 1;
-        const start = nextIndex * 4;
-        const end = start + 4;
-        setDisplayedSkills(suggestedSkills.slice(start, end)); // Show the next set of skills
+        const allSkills = [
+          ...suggestedSkills.primary,
+          ...suggestedSkills.secondary,
+        ];
+        const start = newCount * 4;
+        setDisplayedSkills(allSkills.slice(start, start + 4));
         setIsChangingCareers(false);
-      }, 300); // Adjust the delay to match your animation duration
+      }, 300);
     }
   };
+
+  // Combine all skills for search dialog
+  const allSkills = [...suggestedSkills.primary, ...suggestedSkills.secondary];
 
   // Handle career selection from the search dialog
   const handleCareerSelect = async (career: string) => {
     onOptionSelect("selected-career", career);
     setShowSearchDialog(false);
 
-    // Send the selected skill to the API
     if (user?.user?._id) {
       try {
         await selectSkill(user.user._id, career);
@@ -111,9 +129,8 @@ export default function StepTwo({
     setSelectedCareer(careerId);
     onOptionSelect("selected-career", careerId);
 
-    // Send the selected skill to the API
     if (user?.user?._id) {
-      const selectedCareerData = suggestedSkills.find(
+      const selectedCareerData = allSkills.find(
         (career) => career.id === careerId
       );
       if (selectedCareerData) {
@@ -210,11 +227,14 @@ export default function StepTwo({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h2 className="text-2xl font-bold roca-bold">Matching you to Careers</h2>
+        <h2 className="text-2xl font-bold roca-bold">
+          Matching you to Careers
+        </h2>
         <p className="text-muted-foreground mt-1">
           Based on your answers, we've identified digital careers that might be
           a great fit for you!
         </p>
+        
       </motion.div>
 
       <motion.div
@@ -275,7 +295,7 @@ export default function StepTwo({
         <motion.div
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="w-full sm:w-auto" 
+          className="w-full sm:w-auto"
         >
           <Button
             variant="outline"

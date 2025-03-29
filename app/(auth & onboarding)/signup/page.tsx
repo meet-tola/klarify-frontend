@@ -121,7 +121,7 @@ export default function SignUpPage() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
             >
-              To begin, users must create an account through a simple and
+              To begin, you must create an account through a simple and
               intuitive signup process.
             </motion.p>
           </div>
@@ -134,10 +134,10 @@ export default function SignUpPage() {
             onSubmit={handleSubmit(onSubmit)}
           >
             <div className="space-y-2">
-              <Label htmlFor="name">Name*</Label>
+              <Label htmlFor="name">Full Name*</Label>
               <Input
                 id="name"
-                placeholder="Tola from Klarify"
+                placeholder="Tola"
                 {...formRegister("name")}
                 className={errors.name ? "border-destructive" : ""}
               />

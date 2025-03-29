@@ -189,11 +189,10 @@ export default function GoalsPage() {
   return (
     <div className="container max-w-3xl mx-auto py-8 px-4">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold flex items-center gap-2">
-          <Target className="text-primary" />
+        <h1 className="text-2xl font-bold roca-bold flex items-center gap-2">
           My Learning Goals
         </h1>
-        <Button onClick={() => setIsCreateDialogOpen(true)}>
+        <Button size={"sm"} onClick={() => setIsCreateDialogOpen(true)}>
           <Plus size={16} className="mr-2" /> Create Goal
         </Button>
       </div>
@@ -221,9 +220,7 @@ export default function GoalsPage() {
                       <p className="text-sm text-gray-500">{goal.description}</p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Badge variant={goal.progress.completed ? "default" : "secondary"}>
-                        {goal.skill}
-                      </Badge>
+
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
@@ -270,6 +267,14 @@ export default function GoalsPage() {
                       </DropdownMenu>
                     </div>
                   </div>
+                  <div className="flex items-center gap-2 mb-1">
+                        <span className="text-sm font-medium text-gray-500">
+                          Skill:
+                        </span>
+                        <span className="text-sm font-semibold text-primary">
+                          {goal.skill}
+                        </span>
+                      </div>
 
                   <div className="mb-3">
                     <div className="flex justify-between text-xs text-gray-500 mb-1">

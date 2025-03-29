@@ -27,7 +27,7 @@ export default function JourneyDialog({
   onClose,
   userId,
   title = "Start your journey",
-  description = "Take the first step in shaping your career path. You can start with a career test or explore skills that interest you.",
+  description = "Take the first step in shaping your career path. You can start with a skill assesment test or explore skills that interest you.",
   onStartCareerTest,
   onSelectSkill,
 }: JourneyDialogProps) {
@@ -57,7 +57,7 @@ export default function JourneyDialog({
                 router.push("/onboarding?step=one");
               }}
             >
-              Start a Career Test
+              Start a skill assesment Test
             </Button>
             <Button
               variant="outline"

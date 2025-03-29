@@ -37,6 +37,8 @@ export default function VerifyEmailPage() {
     }
   };
 
+
+
   const handlePaste = (e: React.ClipboardEvent) => {
     e.preventDefault();
     const pastedData = e.clipboardData.getData("text").slice(0, 6);
@@ -55,7 +57,6 @@ export default function VerifyEmailPage() {
       await verifyEmailAPI({ code });
 
       toast.success("Email verified successfully!");
-
       setIsDialogOpen(true);
     } catch (error: any) {
       console.log("error", error);
@@ -89,7 +90,7 @@ export default function VerifyEmailPage() {
         open={isDialogOpen}
         onClose={() => {
           setIsDialogOpen(false);
-          router.push("/roadmap");
+          router.push("/onboarding?step=one");
         }}
       />
 

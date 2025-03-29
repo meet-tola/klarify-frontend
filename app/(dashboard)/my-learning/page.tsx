@@ -136,12 +136,11 @@ export default function DashboardPage() {
     }
   }, [learningPath]);
 
-  // Fetch course progress from localStorage
   useEffect(() => {
     const completedLessons = JSON.parse(
       localStorage.getItem("completedLessons") || "[]"
     ) as string[];
-    const totalLessons = 50; // Adjust this based on your actual total lessons
+    const totalLessons = 50; 
     setCourseProgress(
       Math.round((completedLessons.length / totalLessons) * 100)
     );
@@ -169,7 +168,6 @@ export default function DashboardPage() {
 
         // Only show once per day
         if (lastReminderShown !== today) {
-          // Get reminders from API
           const reminders = await getInAppReminders(user.user._id);
 
           if (reminders.length > 0) {
@@ -180,7 +178,7 @@ export default function DashboardPage() {
             const completedLessons = JSON.parse(
               localStorage.getItem("completedLessons") || "[]"
             ) as string[];
-            const totalLessons = 50; // Adjust based on your actual total
+            const totalLessons = 50; 
             const progress = Math.round(
               (completedLessons.length / totalLessons) * 100
             );
@@ -224,7 +222,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="container py-8 space-y-8 bg-background">
+    <div className="container mx-auto py-8 space-y-8 md:px-8 bg-background">
       {/* Welcome Section */}
       <div>
         <motion.h1
@@ -324,7 +322,7 @@ export default function DashboardPage() {
                 <PopoverTrigger>
                   <Info className="h-4 w-4 text-gray-400 cursor-pointer" />
                 </PopoverTrigger>
-                <PopoverContent>
+                <PopoverContent className="p-2 text-sm text-center">
                   <p>Track your learning goals progress</p>
                 </PopoverContent>
               </Popover>
@@ -489,7 +487,7 @@ export default function DashboardPage() {
                 <PopoverTrigger>
                   <Info className="h-4 w-4 text-gray-400 cursor-pointer" />
                 </PopoverTrigger>
-                <PopoverContent>
+                <PopoverContent className="p-2 text-sm text-center">
                   <p>Helpful tips for getting started</p>
                 </PopoverContent>
               </Popover>

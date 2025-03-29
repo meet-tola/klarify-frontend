@@ -49,6 +49,7 @@ import { useAuthContext } from "@/context/auth-provider";
 import { logout as logoutAPI } from "@/lib/api";
 import { useRouter, usePathname } from "next/navigation";
 import { toast } from "sonner";
+import { slugify } from "@/lib/slugify";
 
 // Dropdown item type
 type DropdownItem = {
@@ -410,7 +411,10 @@ export default function Header() {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href="/my-learning/path" className="cursor-pointer">
+                      <Link
+                        href={`/my-learning/${slugify(user.user.pickedSkill)}`}
+                        className="cursor-pointer"
+                      >
                         <BookOpen className="mr-2 h-4 w-4" />
                         <span>Learning</span>
                       </Link>
@@ -558,7 +562,7 @@ export default function Header() {
                       <span className="font-medium">Dashboard</span>
                     </Link>
                     <Link
-                      href="/my-learning/path"
+                      href={`/my-learning/${slugify(user.user.pickedSkill)}`}
                       className="flex items-center gap-3 py-2 px-3 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors"
                       onClick={toggleMenu}
                     >

@@ -31,12 +31,6 @@ export default function SearchDialog({ isOpen, onClose, onSelect, userId }: Sear
   const [isNextLoading, setIsNextLoading] = useState(false); 
   const router = useRouter();
 
-  // useEffect(() => {
-  //   if (isOpen) {
-  //     router.push("/roadmap?search"); // Update URL to /roadmap?search
-  //   }
-  // }, [isOpen, router]);
-
   useEffect(() => {
     if (isOpen) {
       setIsLoading(true);
@@ -75,7 +69,6 @@ export default function SearchDialog({ isOpen, onClose, onSelect, userId }: Sear
   // Handle dialog close
   const handleClose = () => {
     onClose(); 
-    router.push("/roadmap"); 
   };
 
   return (
