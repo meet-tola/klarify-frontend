@@ -24,8 +24,7 @@ export const register = async (data: { name: string; email: string; password: st
     localStorage.setItem("token", response.data.token);
     return response.data;
   } catch (error) {
-    console.error("Signup failed:", error);
-    throw error;
+    handleError(error);
   }
 };
 
@@ -38,8 +37,15 @@ export const resendVerificationCode = async () => {
   return postRequest("/auth/resend-verification-code");
 };
 
-export const resetPassword = async (data: { newPassword: string }) => {
-  return postRequest("/auth/reset-password", data);
+export const requestPasswordReset = async (data: { email: string }) => {
+  return postRequest("/auth/request-password-reset", data);
+};
+export const validateResetToken = async (token: string) => {
+  return postRequest(`/auth/validate-reset-token/${token}`);
+};
+
+export const completePasswordReset  = async (data: { token: string, newPassword: string }) => {
+  return postRequest("/auth/complete-password-reset", data);
 };
 
 export const login = async (data: { email: string; password: string }) => {
@@ -47,9 +53,8 @@ export const login = async (data: { email: string; password: string }) => {
     const response = await API.post("/auth/login", data);
     localStorage.setItem("token", response.data.token);
     return response.data;
-  } catch (error) {
-    console.error("Login failed:", error);
-    throw error;
+  } catch (error: any) {
+    handleError(error);
   }
 };
 

@@ -23,12 +23,12 @@ import {
 export default function OnboardingNavbar() {
   const { user, setUser } = useAuthContext();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const [buttonSize, setButtonSize] = useState<"icon" | "default" | "md" | "sm" | null>("icon");
+  const [buttonSize, setButtonSize] = useState<
+    "icon" | "default" | "md" | "sm" | null
+  >("icon");
 
   // Always check for user
-  useEffect(() => {
-    console.log("Checking user:", user); 
-  }, [user]);
+  useEffect(() => {}, [user]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -100,7 +100,8 @@ export default function OnboardingNavbar() {
                         Are you sure you want to logout?
                       </AlertDialogTitle>
                       <AlertDialogDescription>
-                        You will be logged out and will need to sign in again next time.
+                        You will be logged out and will need to sign in again
+                        next time.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>

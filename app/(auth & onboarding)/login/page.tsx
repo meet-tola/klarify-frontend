@@ -215,8 +215,8 @@ export default function LoginPage() {
 
       // If all steps are completed, redirect to the dashboard
       router.push("/dashboard");
-    } catch (error) {
-      toast.error("Invalid email or password.");
+    } catch (error: any) {
+      toast.error(error?.message || "Invalid email or password.");
     } finally {
       setIsLoading(false);
     }
@@ -307,7 +307,7 @@ export default function LoginPage() {
 
             <div className="text-sm text-right">
               <Link
-                href="/forgot-password"
+                href="/reset-password"
                 className="text-primary hover:underline"
               >
                 Forgot your password?

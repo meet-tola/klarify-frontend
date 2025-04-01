@@ -49,7 +49,6 @@ export default function StepTwo({
       if (user?.user?._id) {
         try {
           const data = await getSuggestedSkills(user.user._id);
-          console.log("Suggested Skills:", data);
 
           if (data) {
             const allSkills = [...(data.primary || []), ...(data.secondary || [])];
@@ -59,7 +58,7 @@ export default function StepTwo({
               secondary: data.secondary || [],
             });
 
-            setDisplayedSkills(allSkills.slice(0, 4)); // Show first 4 skills initially
+            setDisplayedSkills(allSkills.slice(0, 4)); 
           }
         } catch (error) {
           router.push("/roadmap");
@@ -102,7 +101,6 @@ export default function StepTwo({
     }
   };
 
-  // Combine all skills for search dialog
   const allSkills = [...suggestedSkills.primary, ...suggestedSkills.secondary];
 
   // Handle career selection from the search dialog

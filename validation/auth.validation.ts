@@ -33,3 +33,28 @@ export const verificationSchema = z.object({
 
 export type VerificationFormData = z.infer<typeof verificationSchema>
 
+// request reset form validation schema
+export const requestResetSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+});
+
+export type RequestResetFormData = z.infer<typeof requestResetSchema>;
+
+// reset password form validation schema
+export const resetPasswordSchema = z
+  .object({
+    newPassword: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+        "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+      ),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
+
+export type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;

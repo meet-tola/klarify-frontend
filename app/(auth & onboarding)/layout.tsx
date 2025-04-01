@@ -15,7 +15,7 @@ export default function ProtectedLayout({
   const pathname = usePathname();
 
   useEffect(() => {
-    if (!loading && !user && pathname !== "/signup") {
+    if (!loading && !user && pathname !== "/signup" && pathname !== "/reset-password") {
       router.push("/login");
     }
   }, [user, loading, router]);
