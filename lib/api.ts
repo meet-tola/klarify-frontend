@@ -41,7 +41,12 @@ export const requestPasswordReset = async (data: { email: string }) => {
   return postRequest("/auth/request-password-reset", data);
 };
 export const validateResetToken = async (token: string) => {
-  return postRequest(`/auth/validate-reset-token/${token}`);
+  try {
+    const response = await API.get(`/auth/validate-reset-token/${token}`);
+    return response.data;
+  } catch (error: any) {
+    handleError(error);
+  }
 };
 
 export const completePasswordReset  = async (data: { token: string, newPassword: string }) => {

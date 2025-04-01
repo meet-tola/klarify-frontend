@@ -12,7 +12,6 @@ import { resetPasswordSchema, type ResetPasswordFormData } from "@/validation/au
 import { validateResetToken, completePasswordReset } from "@/lib/api";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-import Image from "next/image";
 
 export default function ResetPasswordPage() {
   const [isLoading, setIsLoading] = useState(true);
@@ -48,9 +47,7 @@ export default function ResetPasswordPage() {
         await validateResetToken(token);
         setIsValidToken(true);
       } catch (error: any) {
-        toast.error("Invalid token", {
-          description: "The reset link is invalid or has expired.",
-        });
+        toast.error("The reset link is invalid or has expired.");
         router.push("/reset-password");
       } finally {
         setIsLoading(false);
@@ -66,14 +63,10 @@ export default function ResetPasswordPage() {
     setIsLoading(true);
     try {
       await completePasswordReset({ token, newPassword: data.newPassword });
-      toast.success("Password reset", {
-        description: "Your password has been updated successfully.",
-      });
+      toast.success("Your password has been updated successfully.");
       router.push("/login");
     } catch (error: any) {
-      toast.error("Error resetting password", {
-        description: error?.message || "Please try again.",
-      });
+      toast.error(error?.message || "Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -88,7 +81,7 @@ export default function ResetPasswordPage() {
   }
 
   if (!isValidToken) {
-    return null; // Already handled by useEffect
+    return null;
   }
 
   return (
@@ -99,14 +92,6 @@ export default function ResetPasswordPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="flex justify-center">
-          <Image
-            src="/assets/key.svg"
-            alt="New Password"
-            width={130}
-            height={34}
-          />
-        </div>
 
         <div className="text-center">
           <motion.h1

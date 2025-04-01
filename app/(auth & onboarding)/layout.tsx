@@ -15,10 +15,15 @@ export default function ProtectedLayout({
   const pathname = usePathname();
 
   useEffect(() => {
-    if (!loading && !user && pathname !== "/signup" && pathname !== "/reset-password") {
+    const isAllowedPath = 
+      pathname === "/signup" || 
+      pathname === "/reset-password" ||
+      pathname.startsWith("/reset-password/"); 
+
+    if (!loading && !user && !isAllowedPath) {
       router.push("/login");
     }
-  }, [user, loading, router]);
+  }, [user, loading, router, pathname]);
 
   if (loading) return <LoadingScreen message={"Loading.."} />;
 

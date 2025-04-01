@@ -19,6 +19,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { HelpDialog } from "../help-dialog";
 
 export default function OnboardingNavbar() {
   const { user, setUser } = useAuthContext();
@@ -68,14 +69,7 @@ export default function OnboardingNavbar() {
 
           <div className="flex items-center space-x-4">
             {/* Help Button */}
-            <Button
-              variant="outline"
-              size={buttonSize}
-              className="rounded-full flex items-center justify-center"
-            >
-              <HelpCircle className="h-4 w-4 sm:mr-2" />
-              <span className="hidden sm:inline">Get Help</span>
-            </Button>
+            <HelpDialog buttonSize={buttonSize} />
 
             {user && (
               <motion.div

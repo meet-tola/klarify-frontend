@@ -58,7 +58,7 @@ export default function RequestResetPage() {
       >
         <div className="flex justify-center">
           <Image
-            src="/assets/lock.svg"
+            src="/assets/reset.png"
             alt="Password Reset"
             width={130}
             height={34}

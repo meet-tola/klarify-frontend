@@ -59,7 +59,6 @@ export default function VerifyEmailPage() {
       toast.success("Email verified successfully!");
       setIsDialogOpen(true);
     } catch (error: any) {
-      console.log("error", error);
       toast.error("Verification failed", {
         description: error?.message || "Please check your code and try again.",
       });
