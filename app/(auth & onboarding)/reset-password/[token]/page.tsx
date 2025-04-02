@@ -8,7 +8,10 @@ import { Label } from "@/components/ui/label";
 import { Loader2, EyeIcon, EyeOffIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { resetPasswordSchema, type ResetPasswordFormData } from "@/validation/auth.validation";
+import {
+  resetPasswordSchema,
+  type ResetPasswordFormData,
+} from "@/validation/auth.validation";
 import { validateResetToken, completePasswordReset } from "@/lib/api";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
@@ -92,7 +95,6 @@ export default function ResetPasswordPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-
         <div className="text-center">
           <motion.h1
             className="text-3xl font-bold roca-bold"
@@ -128,7 +130,11 @@ export default function ResetPasswordPage() {
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? <EyeOffIcon size={18} /> : <EyeIcon size={18} />}
+                {showPassword ? (
+                  <EyeOffIcon size={18} />
+                ) : (
+                  <EyeIcon size={18} />
+                )}
               </button>
             </div>
             {errors.newPassword && (
@@ -153,7 +159,11 @@ export default function ResetPasswordPage() {
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
-                {showConfirmPassword ? <EyeOffIcon size={18} /> : <EyeIcon size={18} />}
+                {showConfirmPassword ? (
+                  <EyeOffIcon size={18} />
+                ) : (
+                  <EyeIcon size={18} />
+                )}
               </button>
             </div>
             {errors.confirmPassword && (
@@ -164,7 +174,11 @@ export default function ResetPasswordPage() {
           </div>
 
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? <Loader2 className="animate-spin" /> : "Reset Password"}
+            {isLoading ? (
+              <Loader2 className="animate-spin" />
+            ) : (
+              "Reset Password"
+            )}
           </Button>
         </form>
 

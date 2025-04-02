@@ -91,8 +91,8 @@ export default function LoginPage() {
         return;
       }
 
-      // If all steps are completed, redirect to the dashboard
-      router.push("/my-learning");
+      // If all steps are completed, redirect to the roadmap
+      router.push("/roadmap");
     }
   }, [user, router]);
 
@@ -138,10 +138,10 @@ export default function LoginPage() {
           loggedInUser.user.careerAssessment.length === 0) &&
         (!loggedInUser.user?.learningPath ||
           loggedInUser.user.learningPath.length === 0) &&
-        loggedInUser.user?.pickedSkill; // pickedSkill is set
+        loggedInUser.user?.pickedSkill;
 
       if (isAllNullExceptPickedSkill) {
-        router.push("/roadmap"); // Redirect to roadmap
+        router.push("/roadmap");
         return;
       }
 
@@ -170,7 +170,9 @@ export default function LoginPage() {
       if (
         loggedInUser.user?.pickedSkill &&
         (!loggedInUser.user?.selectedSkills ||
-          loggedInUser.user.selectedSkills.length === 0)
+          loggedInUser.user.selectedSkills.length === 0) &&
+        (!loggedInUser.user?.learningPath ||
+          loggedInUser.user.learningPath.length === 0)
       ) {
         router.push("/roadmap");
         return;
@@ -213,8 +215,7 @@ export default function LoginPage() {
         return;
       }
 
-      // If all steps are completed, redirect to the dashboard
-      router.push("/dashboard");
+      router.push("/roadmap");
     } catch (error: any) {
       toast.error(error?.message || "Invalid email or password.");
     } finally {
@@ -228,7 +229,7 @@ export default function LoginPage() {
         open={isDialogOpen}
         onClose={() => {
           setIsDialogOpen(false);
-          // router.push("/roadmap");
+          router.push("/roadmap");
         }}
         userId={userId}
       />
