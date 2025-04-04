@@ -46,14 +46,26 @@ interface LessonContentProps {
           description: string;
         };
         sections: {
-          type: string;
-          content: string;
-          metadata: {
-            bold?: boolean;
-            bullets?: string[];
-            imageLink?: string;
-            alignment?: string;
-            language?: string;
+          sectionTitle: string;
+          sectionType: string;
+          content: {
+            heading: {
+              text: string;
+              metadata?: string[];
+            };
+            description: {
+              text: string;
+              metadata?: string[];
+            }[];
+            examples?: {
+              type: string;
+              content: string;
+              metadata?: string[];
+            }[];
+          }[];
+          keyPoints: {
+            metadata?: string[];
+            items: string[];
           };
         }[];
       }[];
@@ -248,68 +260,74 @@ export default function LessonContent({
   };
 
   // Render lesson sections based on type and metadata
-  const renderSection = (section: any) => {
-    switch (section.type) {
-      case "heading":
-        return (
-          <h2
-            className={cn(
-              "text-2xl font-bold mt-6 mb-4",
-              section.metadata.bold ? "font-bold" : "font-semibold"
-            )}
-          >
-            {section.content}
-          </h2>
-        );
-      case "description":
-        return (
-          <p
-            className={cn(
-              "text-muted-foreground mb-4",
-              section.metadata.bold ? "font-bold" : ""
-            )}
-          >
-            {section.content}
+  const renderContentItem = (contentItem: any) => {
+    return (
+      <div className="mb-6">
+        <h3 className="text-xl font-bold mb-2">{contentItem.heading.text}</h3>
+
+        {contentItem.description.map((desc: any, idx: number) => (
+          <p key={idx} className="text-muted-foreground mb-2">
+            {desc.text}
           </p>
-        );
-      case "bullets":
-        return (
-          <ul className="list-disc pl-6 mb-4">
-            {section.metadata.bullets?.map((bullet: any, index: any) => (
-              <li key={index} className="text-muted-foreground">
-                {bullet}
-              </li>
-            ))}
-          </ul>
-        );
-      case "code":
-        return (
-          <div className="my-4">
-            <SyntaxHighlighter
-              language={section.metadata.language || "text"}
-              style={atomOneDark}
-              customStyle={{ borderRadius: "8px", padding: "16px" }}
-            >
-              {section.content}
-            </SyntaxHighlighter>
+        ))}
+
+        {contentItem.examples?.map((example: any, idx: number) => {
+          if (example.type === "code") {
+            return (
+              <div key={idx} className="my-4">
+                <SyntaxHighlighter
+                  language={
+                    example.metadata
+                      ?.find((m: string) => m.startsWith("language:"))
+                      ?.split(":")[1] || "text"
+                  }
+                  style={atomOneDark}
+                  customStyle={{ borderRadius: "8px", padding: "16px" }}
+                >
+                  {example.content}
+                </SyntaxHighlighter>
+              </div>
+            );
+          } else if (example.type === "image") {
+            return (
+              <div key={idx} className="my-4 flex justify-center">
+                <img
+                  src={example.content}
+                  alt="Example"
+                  className="rounded-lg max-w-full"
+                />
+              </div>
+            );
+          }
+          return null;
+        })}
+      </div>
+    );
+  };
+
+  const renderSection = (section: any) => {
+    return (
+      <div key={section.sectionTitle} className="mb-8">
+        <h2 className="text-2xl font-bold mb-4">{section.sectionTitle}</h2>
+
+        {section.content.map((contentItem: any, idx: number) => (
+          <div key={idx}>{renderContentItem(contentItem)}</div>
+        ))}
+
+        {section.keyPoints.items.length > 0 && (
+          <div className="mt-4">
+            <h4 className="font-bold mb-2">Key Points:</h4>
+            <ul className="list-disc pl-6">
+              {section.keyPoints.items.map((point: string, idx: number) => (
+                <li key={idx} className="text-muted-foreground mb-1">
+                  {point}
+                </li>
+              ))}
+            </ul>
           </div>
-        );
-      case "image":
-        return (
-          <div className="my-4 flex justify-center">
-            <img
-              src={section.metadata.imageLink}
-              alt="Lesson Image"
-              className={cn(
-                "rounded-lg",
-                section.metadata.alignment === "center" ? "mx-auto" : ""
-              )}
-            />
-          </div>
-        );
-      default:
-        return null;
-    }
+        )}
+      </div>
+    );
   };
 
   return (

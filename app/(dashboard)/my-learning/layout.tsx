@@ -26,6 +26,10 @@ export default function DashboardLayout({
     if (!loading && !user) {
       router.push("/login");
     }
+
+    if (!loading && !user?.user?.learningPath || user?.user.learningPath.length === 0) {
+      router.push("/roadmap");
+    }
   }, [user, loading, router]);
 
   if (loading) return <LoadingScreen message={"Loading.."} />;

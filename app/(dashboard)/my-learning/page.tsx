@@ -251,7 +251,7 @@ export default function DashboardPage() {
         <Link
           href={
             user?.user.pickedSkill
-              ? `/my-learning/${slugify(user.user.pickedSkill)}`
+              ? `/my-learning/${slugify(user.user.pickedSkill)}/content`
               : "#"
           }
           className="block p-6 border rounded-lg hover:border-primary bg-white hover:bg-muted"
@@ -263,7 +263,7 @@ export default function DashboardPage() {
             <div className="flex-1">
               <h3 className="font-semibold mb-1">Continue Learning</h3>
               <p className="text-sm text-muted-foreground">
-                Resume your current milestone or task
+                Resume your current tutorial or course
               </p>
             </div>
             <ArrowRight className="h-5 w-5 text-muted-foreground" />
@@ -271,7 +271,11 @@ export default function DashboardPage() {
         </Link>
 
         <Link
-          href="/projects"
+          href={
+            user?.user.pickedSkill
+              ? `/my-learning/${slugify(user.user.pickedSkill)}/projects`
+              : "#"
+          }
           className="block p-6 border rounded-lg hover:border-primary bg-white hover:bg-muted"
         >
           <div className="flex items-start gap-4">
@@ -289,7 +293,11 @@ export default function DashboardPage() {
         </Link>
 
         <Link
-          href="/resources"
+          href={
+            user?.user.pickedSkill
+              ? `/my-learning/${slugify(user.user.pickedSkill)}`
+              : "#"
+          }
           className="block p-6 border rounded-lg hover:border-primary bg-white hover:bg-muted"
         >
           <div className="flex items-start gap-4">
@@ -299,7 +307,7 @@ export default function DashboardPage() {
             <div className="flex-1">
               <h3 className="font-semibold mb-1">Explore Resources</h3>
               <p className="text-sm text-muted-foreground">
-                Discover curated tutorials and ebooks
+                Discover curated tutorials, articles and videos
               </p>
             </div>
             <ArrowRight className="h-5 w-5 text-muted-foreground" />
