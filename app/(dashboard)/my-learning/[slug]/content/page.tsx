@@ -186,6 +186,7 @@ export default function CoursePage() {
                 setActiveTab={setActiveTab}
                 learningPath={learningPath}
                 roadmap={roadmap}
+                onStartLesson={handleStartLesson}
               />
             )}
           </div>

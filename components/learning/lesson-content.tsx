@@ -76,6 +76,7 @@ interface LessonContentProps {
 export default function LessonContent({
   lessonId,
   onBack,
+  onStartLesson,
   activeTab,
   learningPath,
   roadmap,
@@ -235,7 +236,6 @@ export default function LessonContent({
     }
   };
 
-  // Calculate overall progress
   const calculateProgress = () => {
     const completedLessons = JSON.parse(
       localStorage.getItem("completedLessons") || "[]"
@@ -247,13 +247,27 @@ export default function LessonContent({
   };
 
   const handlePreviousLesson = () => {
-    // Logic to navigate to previous lesson
-    console.log("Navigate to previous lesson");
+    if (!currentLesson) return;
+    
+    const allLessons = roadmap.phases.flatMap((phase) => phase.lessons);
+    const currentIndex = allLessons.findIndex((lesson) => lesson._id === currentLesson._id);
+    
+    if (currentIndex > 0) {
+      const previousLesson = allLessons[currentIndex - 1];
+      onStartLesson(previousLesson._id); 
+    }
   };
 
   const handleNextLesson = () => {
-    // Logic to navigate to next lesson
-    console.log("Navigate to next lesson");
+    if (!currentLesson) return;
+    
+    const allLessons = roadmap.phases.flatMap((phase) => phase.lessons);
+    const currentIndex = allLessons.findIndex((lesson) => lesson._id === currentLesson._id);
+    
+    if (currentIndex < allLessons.length - 1) {
+      const nextLesson = allLessons[currentIndex + 1];
+      onStartLesson(nextLesson._id); 
+    }
   };
 
   // Render lesson sections based on type and metadata
