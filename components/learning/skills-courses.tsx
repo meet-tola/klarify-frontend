@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { MoreVertical, Search } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
+import Link from "next/link";
 
 interface Course {
   id: number;
@@ -62,13 +63,13 @@ export default function YourCourses({ previousCourses, isLoading }: YourCoursesP
         <div className="space-y-4">
           {previousCourses.map((course) => (
             <div key={course.id} className="bg-white rounded-lg p-6 shadow-sm border relative group">
-              <a
+              <Link
                 href={`/courses/${course.id}`}
                 className="block absolute inset-0 z-10"
                 aria-label={`View ${course.title} course`}
               >
                 <span className="sr-only">Go to course</span>
-              </a>
+              </Link>
 
               <div className="text-sm text-blue-500">{course.level}</div>
               <h3 className="text-xl font-semibold mt-1 mb-2">{course.title}</h3>

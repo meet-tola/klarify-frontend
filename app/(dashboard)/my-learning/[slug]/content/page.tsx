@@ -176,6 +176,7 @@ export default function CoursePage() {
                 roadmap={roadmap}
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
+                userId={user?.user?._id}
               />
             ) : (
               <LessonContent

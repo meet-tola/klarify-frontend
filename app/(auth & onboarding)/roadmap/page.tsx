@@ -11,7 +11,12 @@ import {
 } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
 import { useAuthContext } from "@/context/auth-provider";
-import { selectedSearchSkill, getRoadmap, clearUserSkills } from "@/lib/api";
+import {
+  selectedSearchSkill,
+  getRoadmap,
+  clearUserSkills,
+  generateRoadmapSectionContent,
+} from "@/lib/api";
 import JourneyDialog from "@/components/journey-dialog";
 import AnalyzingScreen from "@/components/analyzing-screen";
 import { motion, AnimatePresence } from "framer-motion";
@@ -48,13 +53,14 @@ export default function RoadmapPage() {
   const [expandedPhase, setExpandedPhase] = useState<number>(1);
   const [phases, setPhases] = useState<Phase[]>([]);
   const [isSearchDialogOpen, setIsSearchDialogOpen] = useState(false);
+  const [isFetchingContent, setIsFetchingContent] = useState(false);
 
   const router = useRouter();
 
   const userId = user?.user._id;
 
   useEffect(() => {
-    let isMounted = true; // Track if the component is mounted
+    let isMounted = true;
 
     if (!loading && !user) {
       router.push("/login");
@@ -129,6 +135,34 @@ export default function RoadmapPage() {
           handleGetRoadmap();
         }}
         userId={userId as string}
+      />
+    );
+  }
+
+  const handleStartLearning = async () => {
+    if (!user?.user.learningPath?.[0]?.roadmap) return;
+
+    setIsFetchingContent(true);
+
+    try {
+      // Get the roadmap to check if sections need to be generated
+      const roadmap = await getRoadmap(userId as string);
+        await generateRoadmapSectionContent(userId as string, roadmap._id as string, 0);
+
+      // Navigate after all sections are generated
+      router.push(`/my-learning/${slugify(user.user.pickedSkill)}/content`);
+    } catch (error: any) {
+      toast.error(error?.message || "Failed to generate content");
+    } finally {
+      setIsFetchingContent(false);
+    }
+  };
+
+  // Update your LoadingScreen check
+  if (isLoading || isFetchingContent) {
+    return (
+      <LoadingScreen
+        message={isFetchingContent ? "Fetching Content..." : "Loading..."}
       />
     );
   }
@@ -313,13 +347,7 @@ export default function RoadmapPage() {
                     <Button variant="outline">Go to dashboard</Button>
                   </Link>
 
-                  <Link
-                    href={`/my-learning/${slugify(
-                      user?.user.pickedSkill
-                    )}/content`}
-                  >
-                    <Button>Start learning</Button>
-                  </Link>
+                  <Button onClick={handleStartLearning}>Start learning</Button>
                 </div>
               </motion.div>
             )}

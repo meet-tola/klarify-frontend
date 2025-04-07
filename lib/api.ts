@@ -199,6 +199,18 @@ export const generateRoadmapContent = async (userId: string) => {
   }
 };
 
+export const generateRoadmapSectionContent = async (userId: string, roadmapId: string, phaseIndex: number = 0) => {
+  try {
+    const response = await API.post(`/roadmap/${userId}/sections`, {
+      roadmapId,
+      phaseIndex
+    });
+    return response.data;
+  } catch (error: any) {
+    handleError(error);
+  }
+};
+
 export const getRoadmapContent = async (userId: string, pickedSkill: string) => {
   try {
     const response = await API.post(`/roadmap/${userId}/learning-path`, {

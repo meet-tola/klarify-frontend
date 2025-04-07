@@ -432,7 +432,7 @@ export default function DashboardPage() {
 
       {/* Guides Section */}
       <section>
-        <h2 className="text-2xl font-bold roca-bold mb-6">Guides</h2>
+        <h2 className="text-2xl font-bold roca-bold mb-6">Quick Guides</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Left Column - One YouTube Video and One Article */}
           <div className="space-y-6">

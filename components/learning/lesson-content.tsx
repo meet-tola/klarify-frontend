@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { atomOneDark } from "react-syntax-highlighter/dist/esm/styles/hljs";
-import { cn } from "@/lib/utils";
 import CourseMaterials from "./course-materials";
 import { useAuthContext } from "@/context/auth-provider";
 import { getUserGoals, updateGoalProgress } from "@/lib/api";
@@ -16,6 +15,7 @@ interface LessonContentProps {
   onBack: () => void;
   setActiveTab: (tab: "content" | "materials") => void;
   activeTab: "content" | "materials";
+  onStartLesson: (lessonId: string) => void; 
   learningPath: {
     youtubeVideos: {
       title: string;
@@ -83,9 +83,6 @@ export default function LessonContent({
   const { user } = useAuthContext();
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isLessonCompleted, setIsLessonCompleted] = useState(false);
-  const [lastProgressUpdate, setLastProgressUpdate] = useState<Date | null>(
-    null
-  );
   const [relatedGoals, setRelatedGoals] = useState<any[]>([]);
   const [isLoadingGoals, setIsLoadingGoals] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
