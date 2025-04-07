@@ -7,6 +7,7 @@ import Header from "@/components/header";
 import { useAuthContext } from "@/context/auth-provider";
 import { useEffect } from "react";
 import LoadingScreen from "@/components/loading-screen";
+import CommunityBanner from "@/components/community-banner";
 
 export default function DashboardLayout({
   children,
@@ -38,6 +39,7 @@ export default function DashboardLayout({
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1 px-6 md:px-12">{children}</main>
+      <CommunityBanner />
       <Footer />
     </div>
   );

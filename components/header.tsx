@@ -347,7 +347,7 @@ export default function Header() {
               </AnimatePresence>
             </div>
 
-            <Link href={"/community"}>
+            <Link href={"/#community"}>
               <Button
                 variant={"ghost"}
                 className={`transition-colors 0 px-4 font-medium ${
@@ -634,11 +634,11 @@ export default function Header() {
                     items={inspirationDropdown}
                     isActive={isActive("/inspiration")}
                   />
-                  <Link href={"/community"} className="">
+                  <Link href={"/#community"} className="">
                     <Button
                       variant={"ghost"}
                       className={`flex items-center justify-between w-full px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                        isActive("/community")
+                        isActive("/#community")
                           ? "text-primary"
                           : "text-slate-600 hover:text-slate-900"
                       }`}

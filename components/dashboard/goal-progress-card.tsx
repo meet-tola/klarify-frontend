@@ -55,7 +55,7 @@ export function GoalsProgressCard() {
           <PopoverTrigger>
             <Info className="h-4 w-4 text-gray-400 cursor-pointer" />
           </PopoverTrigger>
-          <PopoverContent className="p-2 text-sm text-center">
+          <PopoverContent side="top" className="p-2 text-sm text-center">
             <p>Track your learning goals progress</p>
           </PopoverContent>
         </Popover>

@@ -77,45 +77,53 @@ export default function StreakTracker() {
   }, []);
 
   // Update streak when the user visits the page
+  const isYesterday = (last: string, today: string) => {
+    const lastDate = new Date(last);
+    const todayDate = new Date(today);
+    const diff = todayDate.getTime() - lastDate.getTime();
+    return diff === 86400000; 
+  };
+  
   useEffect(() => {
     const today = new Date().toISOString().split("T")[0];
     const lastVisit = localStorage.getItem("lastVisit");
-
+  
     if (lastVisit !== today) {
-      const newStreakHistory = [...streakHistory];
-      const isConsecutive =
-        lastVisit &&
-        new Date(today).getTime() - new Date(lastVisit).getTime() === 86400000;
-
-      if (isConsecutive) {
-        setCurrentStreak((prev) => prev + 1);
-        newStreakHistory.push(true);
-      } else {
-        setCurrentStreak(1);
-        newStreakHistory.push(true);
+      const saved = localStorage.getItem("streak");
+      let newStreak = 1;
+      let newLongest = 1;
+      let newHistory = [true];
+  
+      if (saved) {
+        const { currentStreak, longestStreak, streakHistory } =
+          JSON.parse(saved);
+  
+        if (isYesterday(lastVisit || "", today)) {
+          newStreak = currentStreak + 1;
+          newLongest = Math.max(longestStreak, newStreak);
+          newHistory = [...streakHistory, true];
+        } else {
+          newStreak = 1;
+          newHistory = [...streakHistory, false, true];
+        }
       }
-
-      if (currentStreak + 1 > longestStreak) {
-        setLongestStreak(currentStreak + 1);
-      }
-
-      setStreakHistory(newStreakHistory);
-
+  
+      setCurrentStreak(newStreak);
+      setLongestStreak(newLongest);
+      setStreakHistory(newHistory);
+  
       localStorage.setItem(
         "streak",
         JSON.stringify({
-          currentStreak: isConsecutive ? currentStreak + 1 : 1,
-          longestStreak: Math.max(
-            longestStreak,
-            isConsecutive ? currentStreak + 1 : 1
-          ),
-          streakHistory: newStreakHistory,
+          currentStreak: newStreak,
+          longestStreak: newLongest,
+          streakHistory: newHistory,
         })
       );
-
+  
       localStorage.setItem("lastVisit", today);
     }
-  }, [streakHistory, currentStreak, longestStreak]);
+  }, []);
 
   // Calculate days remaining for a goal
   const calculateDaysRemaining = (endDate: string) => {
@@ -157,58 +165,64 @@ export default function StreakTracker() {
           </DialogTitle>
         </DialogHeader>
 
-        {/* Goals Container */}
-        <div className="bg-white p-4 rounded-lg mb-4 border">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold flex items-center gap-2">
-              <Target size={18} className="text-primary" />
-              My Goals
+        {/* Goals Section */}
+        <div className="space-y-1">
+          <div className="flex justify-between items-center mb-3">
+            <h3 className="text-sm font-medium text-muted-foreground flex items-center gap-1">
+              <Target size={14} />
+              Goals
             </h3>
             {goals.length > 0 && (
-              <Button size="sm" variant="outline" onClick={handleCreateGoal}>
-                <Plus size={16} className="mr-1" /> New Goal
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={handleCreateGoal}
+                className="h-7 px-2"
+              >
+                <Plus size={14} className="mr-1" /> Add
               </Button>
             )}
           </div>
 
           {isLoading ? (
-            <div className="text-center py-6">
+            <div className="py-8 text-center text-muted-foreground">
               <p>Loading goals...</p>
             </div>
           ) : goals.length === 0 ? (
-            <div className="text-center py-6">
-              <p className="text-gray-500 mb-4">
-                You haven't set any learning goals yet.
+            <div className="py-8 text-center">
+              <p className="text-muted-foreground mb-3 text-sm">
+                No learning goals yet
               </p>
-              <Button onClick={handleCreateGoal}>
-                <Plus size={16} className="mr-2" /> Create Your First Goal
+              <Button onClick={handleCreateGoal} size="sm" variant="outline">
+                <Plus size={14} className="mr-1" /> Create Goal
               </Button>
             </div>
           ) : (
             <>
               <div className="space-y-3">
                 {goals.map((goal, index) => (
-                  <Card key={goal.id || index} className="overflow-hidden">
+                  <Card
+                    key={goal.id || index}
+                    className="overflow-hidden border-0 shadow-sm"
+                  >
                     <CardContent className="p-3">
                       <div className="flex justify-between items-start mb-2">
                         <div>
-                          <h4 className="font-medium">{goal.title}</h4>
-                          <p className="text-sm text-gray-500">
+                          <h4 className="font-medium text-sm">{goal.title}</h4>
+                          <p className="text-xs text-muted-foreground line-clamp-1">
                             {goal.description}
                           </p>
                         </div>
-                        <Badge
-                          variant={
-                            goal.progress.completed ? "default" : "secondary"
-                          }
-                        >
+                        <Badge variant="secondary" className="text-xs">
                           {goal.skill}
                         </Badge>
                       </div>
 
                       <div className="mb-2">
-                        <div className="flex justify-between text-xs text-gray-500 mb-1">
-                          <span>Progress</span>
+                        <div className="flex justify-between text-xs text-muted-foreground mb-1">
+                          <span>
+                            {goal.progress.current}/{goal.progress.target}
+                          </span>
                           <span>
                             {calculateProgress(
                               goal.progress.current,
@@ -222,32 +236,21 @@ export default function StreakTracker() {
                             goal.progress.current,
                             goal.progress.target
                           )}
-                          className="h-2"
+                          className="h-1"
                         />
                       </div>
 
-                      <div className="flex justify-between text-xs mt-3">
-                        <div className="flex items-center gap-1 text-gray-600">
-                          <Calendar size={14} />
+                      <div className="flex text-xs mt-2 text-muted-foreground">
+                        <div className="flex items-center gap-1 mr-3">
+                          <Clock size={12} />
                           <span>
-                            {new Date(goal.startDate).toLocaleDateString()} -{" "}
-                            {new Date(goal.endDate).toLocaleDateString()}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1 text-gray-600">
-                          <Clock size={14} />
-                          <span>
-                            {calculateDaysRemaining(goal.endDate)} days left
+                            {calculateDaysRemaining(goal.endDate)}d left
                           </span>
                         </div>
                         {goal.repeat !== "none" && (
-                          <div className="flex items-center gap-1 text-gray-600">
-                            <Bell size={14} />
-                            <span>
-                              {goal.repeat === "daily" && "Daily"}
-                              {goal.repeat === "weekly" && "Weekly"}
-                              {goal.repeat === "weekend" && "Weekends"}
-                            </span>
+                          <div className="flex items-center gap-1">
+                            <Bell size={12} />
+                            <span>{goal.repeat}</span>
                           </div>
                         )}
                       </div>
@@ -255,12 +258,12 @@ export default function StreakTracker() {
                   </Card>
                 ))}
               </div>
-              <div className="mt-4 text-center">
+              <div className="mt-6 text-center">
                 <Link
                   href="/my-learning/goals"
-                  className="text-sm text-primary hover:underline flex items-center justify-center gap-1"
+                  className="text-xs text-primary hover:underline flex items-center justify-center gap-1"
                 >
-                  View all goals <ArrowRight size={16} />
+                  View all <ArrowRight size={14} />
                 </Link>
               </div>
             </>
@@ -289,7 +292,7 @@ export default function StreakTracker() {
                   <div key={dayNumber} className="flex flex-col items-center">
                     <div
                       className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                        completed ? "bg-yellow-200" : "bg-gray-200"
+                        completed ? "bg-yellow-100" : "bg-gray-100"
                       }`}
                     >
                       <span className="text-xl">{completed ? "⚡" : ""}</span>

@@ -5,6 +5,7 @@ import InteractiveTools from "@/components/home/interactive-tools";
 import SuccessStories from "@/components/home/success-stories";
 import CTASection from "@/components/home/cta-section";
 import Footer from "@/components/footer";
+import CommunityBanner from "@/components/community-banner";
 
 export default function Home() {
   return (
@@ -15,6 +16,7 @@ export default function Home() {
       <InteractiveTools />
       <SuccessStories />
       <CTASection />
+      <CommunityBanner />
       <Footer />
     </div>
   );
