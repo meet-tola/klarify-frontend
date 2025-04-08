@@ -37,8 +37,6 @@ export default function VerifyEmailPage() {
     }
   };
 
-
-
   const handlePaste = (e: React.ClipboardEvent) => {
     e.preventDefault();
     const pastedData = e.clipboardData.getData("text").slice(0, 6);
@@ -55,13 +53,11 @@ export default function VerifyEmailPage() {
       verificationSchema.parse({ code });
       setIsLoading(true);
       await verifyEmailAPI({ code });
-
+      window.location.reload();
       toast.success("Email verified successfully!");
       setIsDialogOpen(true);
     } catch (error: any) {
-      toast.error("Verification failed", {
-        description: error?.message || "Please check your code and try again.",
-      });
+      toast.error(error?.message || "Please check your code and try again.");
     } finally {
       setIsLoading(false);
     }

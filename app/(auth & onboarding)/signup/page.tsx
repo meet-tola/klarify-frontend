@@ -30,6 +30,14 @@ export default function SignUpPage() {
 
   useEffect(() => {
     if (user) {
+      if (
+        user.user?.verificationCode &&
+        !isNaN(Number(user.user?.verificationCode))
+      ) {
+        router.push("/verify-email");
+        return;
+      }
+
       // If the user hasn't selected any skills, show the dialog
       if (!user.user?.selectedSkills || user.user.selectedSkills.length === 0) {
         setIsDialogOpen(true);
@@ -73,16 +81,10 @@ export default function SignUpPage() {
 
     try {
       await register(data);
-
-      toast.success("Account created", {
-        description: "We've sent you a verification email.",
-      });
-
-      router.push("/verify-email");
+      toast.success("Account created, check you mail.");
+      window.location.href = '/verify-email';
     } catch (error: any) {
-      toast.error("Registration failed", {
-        description: error?.message || "An unexpected error occurred.",
-      });
+      toast.error(error?.message || "An unexpected error occurred.");
     } finally {
       setIsLoading(false);
     }

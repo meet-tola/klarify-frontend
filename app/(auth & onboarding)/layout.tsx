@@ -15,10 +15,10 @@ export default function ProtectedLayout({
   const pathname = usePathname();
 
   useEffect(() => {
-    const isAllowedPath = 
-      pathname === "/signup" || 
+    const isAllowedPath =
+      pathname === "/signup" ||
       pathname === "/reset-password" ||
-      pathname.startsWith("/reset-password/"); 
+      pathname.startsWith("/reset-password/");
 
     if (!loading && !user && !isAllowedPath) {
       router.push("/login");

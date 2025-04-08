@@ -27,6 +27,15 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (user) {
+
+      if (
+        user.user?.verificationCode &&
+        !isNaN(Number(user.user?.verificationCode))
+      ) {
+        router.push("/verify-email");
+        return;
+      }
+
       // Check if all fields are null or empty except pickedSkill
       const isAllNullExceptPickedSkill =
         (!user.user?.skillsAssessment ||
