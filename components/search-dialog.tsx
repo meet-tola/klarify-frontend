@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
-import { searchSkills, selectSkillFromSearch } from "@/lib/api"; 
+import { searchSkills, selectSkillFromSearch } from "@/lib/api";
 
 interface SearchDialogProps {
   isOpen: boolean;
@@ -17,18 +17,83 @@ interface SearchDialogProps {
 }
 
 const suggestions = [
-  { category: "Tech & Programming", color: "bg-blue-100" },
-  { category: "Design & UX", color: "bg-purple-100" },
-  { category: "Marketing & SEO", color: "bg-green-100" },
-  { category: "AI & Data Science", color: "bg-orange-100" },
+  {
+    name: "Tech & Programming",
+    color: "bg-blue-100",
+    skills: [
+      "Web Development",
+      "Backend Development",
+      "Full-Stack Development",
+      "Mobile App Development",
+      "Game Development",
+      "Database Management",
+      "Blockchain & Smart Contracts(Web3)",
+    ],
+  },
+  {
+    name: "Design & Creative",
+    color: "bg-purple-100",
+    skills: [
+      "UI/UX Design",
+      "Graphic Design",
+      "Motion Graphics & Animation",
+      "3D Modeling & Rendering",
+      "Game Art & Concept Design",
+      "Branding & Visual Identity",
+      "Digital Illustration & Digital Art",
+    ],
+  },
+  {
+    name: "Marketing & Business",
+    color: "bg-green-100",
+    skills: [
+      "Digital Marketing",
+      "Social Media Management",
+      "Influencer Marketing",
+      "Copywriting",
+      "Affiliate Marketing",
+      "Product Management",
+      "E-commerce",
+    ],
+  },
+  {
+    name: "Content",
+    color: "bg-red-100",
+    skills: [
+      "Content Writing",
+      "Technical Writing",
+      "Scriptwriting",
+      "Copywriting",
+      "Social Media Content Creation",
+      "UX Writing",
+      "Content Strategy",
+    ],
+  },
+  {
+    name: "AI & Data Science",
+    color: "bg-orange-100",
+    skills: [
+      "Data Analysis",
+      "Machine Learning",
+      "Deep Learning",
+      "Generative AI & LLMs",
+    ],
+  },
 ];
 
-export default function SearchDialog({ isOpen, onClose, onSelect, userId }: SearchDialogProps) {
+export default function SearchDialog({
+  isOpen,
+  onClose,
+  onSelect,
+  userId,
+}: SearchDialogProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<{ category: string; description: string }[]>([]);
+  const [searchResults, setSearchResults] = useState<
+    { category: string; description: string }[]
+  >([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedSkill, setSelectedSkill] = useState<string | null>(null); 
-  const [isNextLoading, setIsNextLoading] = useState(false); 
+  const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
+  const [isNextLoading, setIsNextLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -47,6 +112,33 @@ export default function SearchDialog({ isOpen, onClose, onSelect, userId }: Sear
     }
   }, [searchQuery, isOpen]);
 
+  // At the top of your component
+  const handleSuggestionClick = async (skills: string[]) => {
+    setIsLoading(true);
+    setSearchQuery(""); // Clear input
+
+    const allResults: { category: string; description: string }[] = [];
+
+    for (const skill of skills) {
+      try {
+        const result = await searchSkills(skill);
+        allResults.push(...result);
+      } catch (error) {
+        console.error(`Error fetching skill "${skill}":`, error);
+      }
+    }
+
+    // Deduplicate by combining category + description
+    const uniqueResults = Array.from(
+      new Map(
+        allResults.map((item) => [`${item.category}-${item.description}`, item])
+      ).values()
+    );
+
+    setSearchResults(uniqueResults);
+    setIsLoading(false);
+  };
+
   // Handle "Next" button click
   const handleNext = async () => {
     if (!selectedSkill || !userId) {
@@ -55,7 +147,7 @@ export default function SearchDialog({ isOpen, onClose, onSelect, userId }: Sear
 
     setIsNextLoading(true);
 
-    try {      
+    try {
       await selectSkillFromSearch(userId, selectedSkill);
 
       router.push("/roadmap");
@@ -68,7 +160,7 @@ export default function SearchDialog({ isOpen, onClose, onSelect, userId }: Sear
 
   // Handle dialog close
   const handleClose = () => {
-    onClose(); 
+    onClose();
   };
 
   return (
@@ -91,7 +183,12 @@ export default function SearchDialog({ isOpen, onClose, onSelect, userId }: Sear
           >
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold">Search for Skill</h2>
-              <Button variant="ghost" size="icon" className="rounded-full" onClick={handleClose}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full"
+                onClick={handleClose}
+              >
                 <X className="h-4 w-4" />
               </Button>
             </div>
@@ -112,12 +209,12 @@ export default function SearchDialog({ isOpen, onClose, onSelect, userId }: Sear
                 <div className="flex flex-wrap gap-2">
                   {suggestions.map((suggestion) => (
                     <Badge
-                      key={suggestion.category}
+                      key={suggestion.name}
                       variant="secondary"
                       className={`cursor-pointer ${suggestion.color}`}
-                      onClick={() => setSearchQuery(suggestion.category)}
+                      onClick={() => handleSuggestionClick(suggestion.skills)}
                     >
-                      {suggestion.category}
+                      {suggestion.name}
                     </Badge>
                   ))}
                 </div>
@@ -133,7 +230,7 @@ export default function SearchDialog({ isOpen, onClose, onSelect, userId }: Sear
                   ) : searchResults.length > 0 ? (
                     searchResults.map((result) => (
                       <motion.div
-                        key={result.category}
+                        key={`${result.category}-${result.description}`}
                         className={`p-3 rounded-lg hover:bg-accent cursor-pointer ${
                           selectedSkill === result.category ? "bg-accent" : ""
                         }`}
@@ -142,12 +239,16 @@ export default function SearchDialog({ isOpen, onClose, onSelect, userId }: Sear
                         whileTap={{ scale: 0.98 }}
                       >
                         <h4 className="font-medium">{result.category}</h4>
-                        <p className="text-sm text-muted-foreground">{result.description}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {result.description}
+                        </p>
                       </motion.div>
                     ))
                   ) : (
                     <div className="flex items-center justify-center p-6">
-                      <p className="text-sm text-muted-foreground">No results found.</p>
+                      <p className="text-sm text-muted-foreground">
+                        No results found.
+                      </p>
                     </div>
                   )}
                 </div>
@@ -160,7 +261,7 @@ export default function SearchDialog({ isOpen, onClose, onSelect, userId }: Sear
               </Button>
               <Button
                 onClick={handleNext}
-                disabled={!selectedSkill || isNextLoading} 
+                disabled={!selectedSkill || isNextLoading}
               >
                 {isNextLoading ? (
                   <Loader2 className="h-4 w-4 animate-spin" />

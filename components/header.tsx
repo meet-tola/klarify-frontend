@@ -403,14 +403,23 @@ export default function Header() {
                     </DropdownMenuLabel>
                     {/* User Nav Items */}
                     <DropdownMenuItem asChild>
-                      <Link href="/my-learning" className="cursor-pointer">
+                      <Link
+                        href={
+                          user?.user?.pickedSkill ? "my-learning" : "/roadmap"
+                        }
+                        className="cursor-pointer"
+                      >
                         <BookOpenText className="mr-2 h-4 w-4" />
                         <span>Dashboard</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link
-                        href={`/my-learning/${slugify(user.user.pickedSkill)}`}
+                        href={
+                          user?.user?.pickedSkill
+                            ? `/my-learning/${slugify(user.user.pickedSkill)}`
+                            : "/roadmap"
+                        }
                         className="cursor-pointer"
                       >
                         <BookOpen className="mr-2 h-4 w-4" />
@@ -419,19 +428,23 @@ export default function Header() {
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link
-                        href="/my-learning/skills"
+                        href={
+                          user?.user?.pickedSkill
+                            ? "my-learning/skills"
+                            : "/roadmap"
+                        }
                         className="cursor-pointer"
                       >
                         <Map className="mr-2 h-4 w-4" />
                         <span>Skills</span>
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
+                    {/* <DropdownMenuItem asChild>
                       <Link href="/networking" className="cursor-pointer">
                         <UserRound className="mr-2 h-4 w-4" />
                         <span>Networking</span>
                       </Link>
-                    </DropdownMenuItem>
+                    </DropdownMenuItem> */}
                     <DropdownMenuSeparator />
                     <div className="relative">
                       <AlertDialog>
@@ -552,7 +565,9 @@ export default function Header() {
                   </p>
                   <nav className="space-y-2">
                     <Link
-                      href="/my-learning"
+                      href={
+                        user?.user?.pickedSkill ? "my-learning" : "/roadmap"
+                      }
                       className="flex items-center gap-3 py-2 px-3 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors"
                       onClick={toggleMenu}
                     >
@@ -560,7 +575,11 @@ export default function Header() {
                       <span className="font-medium">Dashboard</span>
                     </Link>
                     <Link
-                      href={`/my-learning/${slugify(user.user.pickedSkill)}`}
+                      href={
+                        user?.user?.pickedSkill
+                          ? `/my-learning/${slugify(user.user.pickedSkill)}`
+                          : "/roadmap"
+                      }
                       className="flex items-center gap-3 py-2 px-3 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors"
                       onClick={toggleMenu}
                     >
@@ -568,21 +587,25 @@ export default function Header() {
                       <span className="font-medium">Learning</span>
                     </Link>
                     <Link
-                      href="/my-learning/skills"
+                      href={
+                        user?.user?.pickedSkill
+                          ? "my-learning/skills"
+                          : "/roadmap"
+                      }
                       className="flex items-center gap-3 py-2 px-3 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors"
                       onClick={toggleMenu}
                     >
                       <Map className="h-5 w-5" />
                       <span className="font-medium">Skills</span>
                     </Link>
-                    <Link
+                    {/* <Link
                       href="/networking"
                       className="flex items-center gap-3 py-2 px-3 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors"
                       onClick={toggleMenu}
                     >
                       <UserRound className="h-5 w-5" />
                       <span className="font-medium">Networking</span>
-                    </Link>
+                    </Link> */}
                   </nav>
                 </div>
               )}
