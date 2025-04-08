@@ -10,6 +10,7 @@ import { getSuggestedSkills, selectSkill } from "@/lib/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { slugify } from "@/lib/slugify";
 
 interface Career {
   id: string;
@@ -51,14 +52,17 @@ export default function StepTwo({
           const data = await getSuggestedSkills(user.user._id);
 
           if (data) {
-            const allSkills = [...(data.primary || []), ...(data.secondary || [])];
+            const allSkills = [
+              ...(data.primary || []),
+              ...(data.secondary || []),
+            ];
 
             setSuggestedSkills({
               primary: data.primary || [],
               secondary: data.secondary || [],
             });
 
-            setDisplayedSkills(allSkills.slice(0, 4)); 
+            setDisplayedSkills(allSkills.slice(0, 4));
           }
         } catch (error) {
           router.push("/roadmap");
@@ -232,7 +236,6 @@ export default function StepTwo({
           Based on your answers, we've identified digital careers that might be
           a great fit for you!
         </p>
-        
       </motion.div>
 
       <motion.div
@@ -309,6 +312,14 @@ export default function StepTwo({
             <Button
               variant="outline"
               disabled={!selectedCareer}
+              onClick={() => {
+                const selected = allSkills.find(
+                  (career) => career.id === selectedCareer
+                );
+                if (selected) {
+                  router.push(`/careers/${slugify(selected.title)}`);
+                }
+              }}
               className="w-full"
             >
               Learn More

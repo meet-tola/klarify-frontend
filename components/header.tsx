@@ -192,9 +192,7 @@ export default function Header() {
       await logoutAPI();
       setUser(null);
 
-      toast.success("Logged out successfully", {
-        description: "Redirecting to login page...",
-      });
+      toast.success("Byee. See you soon");
 
       router.push("/login");
     } catch (error) {

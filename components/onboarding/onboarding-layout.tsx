@@ -63,28 +63,37 @@ export default function OnboardingLayout({
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
-              {steps.map(
-                (step, index) =>
-                  index !== currentStep && (
-                    <motion.div
-                      key={step.id}
-                      className="flex items-start pl-2 py-2"
-                      initial={{ x: -20, opacity: 0 }}
-                      animate={{ x: 0, opacity: 1 }}
-                      transition={{ delay: index * 0.1 }}
+              {steps.map((step, index) => (
+                <motion.div
+                  key={step.id}
+                  className="flex items-start pl-2 py-2"
+                  initial={{ x: -20, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 ${
+                      index === currentStep
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground"
+                    }`}
+                  >
+                    {step.id < 10 ? `0${step.id}` : step.id}
+                  </div>
+                  <div>
+                    <h3
+                      className={`font-semibold ${
+                        index === currentStep ? "text-primary" : ""
+                      }`}
                     >
-                      <div className="w-8 h-8 rounded-full flex items-center justify-center mr-3 bg-muted text-muted-foreground">
-                        {step.id < 10 ? `0${step.id}` : step.id}
-                      </div>
-                      <div>
-                        <h3 className="font-semibold">{step.title}</h3>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {step.description}
-                        </p>
-                      </div>
-                    </motion.div>
-                  )
-              )}
+                      {step.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {step.description}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
             </motion.div>
           )}
         </AnimatePresence>

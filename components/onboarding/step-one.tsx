@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { useAuthContext } from "@/context/auth-provider";
 import { getSkillQuestions, saveSkillsAssessment } from "@/lib/api";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Loader2 } from "lucide-react";
 
 export type Option = string;
 
@@ -34,6 +35,7 @@ export default function StepOne({
   const [questions, setQuestions] = useState<Question[]>([]);
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const progress = ((activeQuestionIndex + 1) / questions.length) * 100;
 
@@ -61,29 +63,33 @@ export default function StepOne({
   }, [user]);
 
   const handleNextQuestion = async () => {
-    if (isLastQuestion) {
+    if (!selectedOptions[activeQuestion.id]) return;
 
-      // Validate answers before sending
-      const answers = Object.entries(selectedOptions).map(
-        ([questionId, answer]) => {
-          if (!questionId) {
-            throw new Error(`Missing questionId for answer: ${answer}`);
+    setIsSubmitting(true);
+    try {
+      if (isLastQuestion) {
+        const answers = Object.entries(selectedOptions).map(
+          ([questionId, answer]) => {
+            if (!questionId) {
+              throw new Error(`Missing questionId for answer: ${answer}`);
+            }
+            return {
+              questionId,
+              answer,
+            };
           }
-          return {
-            questionId,
-            answer,
-          };
+        );
+
+        if (user?.user?._id) {
+          await saveSkillsAssessment(user.user._id, answers);
         }
-      );
 
-      if (user?.user?._id) {
-        await saveSkillsAssessment(user.user._id, answers);
+        onNextStep();
+      } else {
+        setActiveQuestionIndex((prev) => prev + 1);
       }
-
-      // Move to the next step
-      onNextStep();
-    } else {
-      setActiveQuestionIndex(activeQuestionIndex + 1);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -105,17 +111,17 @@ export default function StepOne({
 
         {/* Skeleton for the question */}
         <div className="space-y-4">
-          <Skeleton className="h-6 w-[250px]" /> 
+          <Skeleton className="h-6 w-[250px]" />
           <div className="space-y-3">
             {[1, 2, 3, 4].map((index) => (
-              <Skeleton key={index} className="h-12 w-full" /> 
+              <Skeleton key={index} className="h-12 w-full" />
             ))}
           </div>
         </div>
 
         {/* Skeleton for the buttons */}
         <div className="flex justify-between mt-12">
-          <Skeleton className="h-10 w-24" /> 
+          <Skeleton className="h-10 w-24" />
           <div className="flex gap-3">
             <Skeleton className="h-10 w-24" />
             <Skeleton className="h-10 w-24" />
@@ -140,7 +146,9 @@ export default function StepOne({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h2 className="text-2xl font-bold roca-bold">Discover your interests.</h2>
+        <h2 className="text-2xl font-bold roca-bold">
+          Discover your interests.
+        </h2>
         <p className="text-muted-foreground mt-1">
           Let's find out what you're naturally good at and what interests you!
         </p>
@@ -163,7 +171,9 @@ export default function StepOne({
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.3 }}
         >
-          <h3 className="text-lg font-semibold">{activeQuestion.questionText}</h3>
+          <h3 className="text-lg font-semibold">
+            {activeQuestion.questionText}
+          </h3>
           <div className="space-y-3">
             {activeQuestion.options.map((option, optionIndex) => (
               <motion.div
@@ -231,9 +241,16 @@ export default function StepOne({
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Button
               onClick={handleNextQuestion}
-              disabled={!selectedOptions[activeQuestion.id]}
+              disabled={!selectedOptions[activeQuestion.id] || isSubmitting}
             >
-              {isLastQuestion ? "Next Step" : "Next Question"}
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Loading...
+                </>
+              ) : (
+                <>{isLastQuestion ? "Next Step" : "Next Question"}</>
+              )}
             </Button>
           </motion.div>
         </div>

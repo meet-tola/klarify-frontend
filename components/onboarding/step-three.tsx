@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthContext } from "@/context/auth-provider";
 import { getCareerQuestions, evaluateCareerAnswers } from "@/lib/api";
+import { Loader2 } from "lucide-react";
 
 export type Option = {
   id: string;
@@ -26,15 +27,20 @@ interface StepThreeProps {
   onNextStep: () => void;
 }
 
-export default function StepThree({ selectedOptions, onOptionSelect, onNextStep }: StepThreeProps) {
+export default function StepThree({
+  selectedOptions,
+  onOptionSelect,
+  onNextStep,
+}: StepThreeProps) {
   const { user } = useAuthContext();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
 
   const progress = ((activeQuestionIndex + 1) / questions.length) * 100;
 
-  // Fetch career questions 
+  // Fetch career questions
   useEffect(() => {
     const fetchQuestions = async () => {
       if (user?.user?._id) {
@@ -44,14 +50,18 @@ export default function StepThree({ selectedOptions, onOptionSelect, onNextStep 
           // Check if the response is an array and has at least one element
           if (Array.isArray(data) && data.length > 0 && data[0].questions) {
             // Transform the backend data to match the frontend's expected structure
-            const transformedQuestions = data[0].questions.map((question: any, index: number) => ({
-              id: question._id, // Use the original question ID
-              text: question.question,
-              options: question.answers.map((answer: string, answerIndex: number) => ({
-                id: answer, // Use the actual answer text as the ID
-                text: answer,
-              })),
-            }));
+            const transformedQuestions = data[0].questions.map(
+              (question: any, index: number) => ({
+                id: question._id, // Use the original question ID
+                text: question.question,
+                options: question.answers.map(
+                  (answer: string, answerIndex: number) => ({
+                    id: answer, // Use the actual answer text as the ID
+                    text: answer,
+                  })
+                ),
+              })
+            );
 
             setQuestions(transformedQuestions);
           } else {
@@ -69,24 +79,25 @@ export default function StepThree({ selectedOptions, onOptionSelect, onNextStep 
   }, [user]);
 
   const handleNextQuestion = async () => {
+    setIsButtonLoading(true);
+
     if (isLastQuestion) {
-      // Prepare the answers for evaluation
-      const answers = Object.entries(selectedOptions).map(([questionId, answerId]) => {
-        const question = questions.find(q => q.id === questionId);
-        const answerText = question?.options.find(opt => opt.id === answerId)?.text || "";
+      const answers = Object.entries(selectedOptions).map(
+        ([questionId, answerId]) => {
+          const question = questions.find((q) => q.id === questionId);
+          const answerText =
+            question?.options.find((opt) => opt.id === answerId)?.text || "";
 
-        return {
-          questionId, // Use the original question ID
-          answer: answerText, // Use the actual answer text
-        };
-      });
-
-      console.log("Answers being sent to the backend:", answers);
+          return {
+            questionId,
+            answer: answerText,
+          };
+        }
+      );
 
       if (user?.user?._id) {
         try {
-          const result = await evaluateCareerAnswers(user.user._id, answers);
-          console.log("Evaluation Result:", result);
+          await evaluateCareerAnswers(user.user._id, answers);
         } catch (error) {
           console.error("Failed to evaluate answers:", error);
         }
@@ -96,6 +107,8 @@ export default function StepThree({ selectedOptions, onOptionSelect, onNextStep 
     } else {
       setActiveQuestionIndex(activeQuestionIndex + 1);
     }
+
+    setIsButtonLoading(false);
   };
 
   const handleBack = () => {
@@ -109,27 +122,27 @@ export default function StepThree({ selectedOptions, onOptionSelect, onNextStep 
       <div className="space-y-8">
         {/* Skeleton for the header */}
         <div className="mb-8">
-          <Skeleton className="h-8 w-[200px] mb-2" /> 
-          <Skeleton className="h-4 w-[300px]" /> 
-          <Skeleton className="h-2 w-full mt-4" /> 
+          <Skeleton className="h-8 w-[200px] mb-2" />
+          <Skeleton className="h-4 w-[300px]" />
+          <Skeleton className="h-2 w-full mt-4" />
         </div>
 
         {/* Skeleton for the question */}
         <div className="space-y-4">
-          <Skeleton className="h-6 w-[250px]" /> 
+          <Skeleton className="h-6 w-[250px]" />
           <div className="space-y-3">
             {[1, 2, 3, 4].map((index) => (
-              <Skeleton key={index} className="h-12 w-full" /> 
+              <Skeleton key={index} className="h-12 w-full" />
             ))}
           </div>
         </div>
 
         {/* Skeleton for the buttons */}
         <div className="flex justify-between mt-12">
-          <Skeleton className="h-10 w-24" /> 
+          <Skeleton className="h-10 w-24" />
           <div className="flex gap-3">
             <Skeleton className="h-10 w-24" />
-            <Skeleton className="h-10 w-24" /> 
+            <Skeleton className="h-10 w-24" />
           </div>
         </div>
       </div>
@@ -195,10 +208,15 @@ export default function StepThree({ selectedOptions, onOptionSelect, onNextStep 
                   <Checkbox
                     id={`${activeQuestion.id}-${option.id}`}
                     checked={selectedOptions[activeQuestion.id] === option.id}
-                    onCheckedChange={() => onOptionSelect(activeQuestion.id, option.id)}
+                    onCheckedChange={() =>
+                      onOptionSelect(activeQuestion.id, option.id)
+                    }
                     className="mr-2"
                   />
-                  <label htmlFor={`${activeQuestion.id}-${option.id}`} className="cursor-pointer flex-1">
+                  <label
+                    htmlFor={`${activeQuestion.id}-${option.id}`}
+                    className="cursor-pointer flex-1"
+                  >
                     {option.text}
                   </label>
                 </div>
@@ -216,20 +234,39 @@ export default function StepThree({ selectedOptions, onOptionSelect, onNextStep 
       >
         <div>
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button variant="outline" onClick={() => (window.location.href = "/roadmap")}>
+            <Button
+              variant="outline"
+              onClick={() => (window.location.href = "/roadmap")}
+            >
               cancel
             </Button>
           </motion.div>
         </div>
         <div className="flex gap-3">
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button variant="outline" onClick={handleBack} disabled={activeQuestionIndex === 0}>
+            <Button
+              variant="outline"
+              onClick={handleBack}
+              disabled={activeQuestionIndex === 0}
+            >
               Back
             </Button>
           </motion.div>
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button onClick={handleNextQuestion} disabled={!selectedOptions[activeQuestion.id]}>
-              {isLastQuestion ? "Next Step" : "Next Question"}
+            <Button
+              onClick={handleNextQuestion}
+              disabled={!selectedOptions[activeQuestion.id] || isButtonLoading}
+            >
+              {isButtonLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Loading...
+                </>
+              ) : isLastQuestion ? (
+                "Next Step"
+              ) : (
+                "Next Question"
+              )}
             </Button>
           </motion.div>
         </div>

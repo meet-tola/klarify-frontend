@@ -2,8 +2,6 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import Navbar from "@/components/onboarding/onboarding-navbar";
-import LoadingScreen from "@/components/loading-screen";
 import { verificationSchema } from "@/validation/auth.validation";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
@@ -15,6 +13,7 @@ import JourneyDialog from "@/components/journey-dialog";
 import Image from "next/image";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { useAuthContext } from "@/context/auth-provider";
 
 export default function VerifyEmailPage() {
   const [verificationCode, setVerificationCode] = useState<string[]>(
@@ -22,9 +21,13 @@ export default function VerifyEmailPage() {
   );
   const [isLoading, setIsLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { user } = useAuthContext();
   const router = useRouter();
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [isResending, setIsResending] = useState(false);
+
+  const userId = user?.user._id;
+
 
   const handleChange = (index: number, value: string) => {
     if (!/^\d*$/.test(value)) return;
@@ -84,8 +87,9 @@ export default function VerifyEmailPage() {
         open={isDialogOpen}
         onClose={() => {
           setIsDialogOpen(false);
-          router.push("/onboarding?step=one");
+          router.push("/roadmap");
         }}
+        userId={userId}
       />
 
       <main className="flex-1 flex items-center justify-center p-6">
