@@ -53,7 +53,6 @@ export default function VerifyEmailPage() {
       verificationSchema.parse({ code });
       setIsLoading(true);
       await verifyEmailAPI({ code });
-      window.location.reload();
       toast.success("Email verified successfully!");
       setIsDialogOpen(true);
     } catch (error: any) {
