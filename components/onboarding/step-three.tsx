@@ -176,6 +176,16 @@ export default function StepThree({
         >
           <Progress value={progress} className="h-2 mt-4" />
         </motion.div>
+        {user?.user?.pickedSkill && (
+          <motion.div
+            className="mt-4 inline-block bg-primary/10 text-primary px-4 py-1.5 rounded-full text-sm font-medium"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.5 }}
+          >
+            {user.user.pickedSkill}
+          </motion.div>
+        )}
       </motion.div>
 
       <AnimatePresence mode="wait">
