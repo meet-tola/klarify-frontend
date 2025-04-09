@@ -1,5 +1,3 @@
-import Link from "next/link";
-import Image from "next/image";
 import { Clock, Linkedin, Twitter, Instagram } from "lucide-react";
 import CommunityBanner from "@/components/community-banner";
 

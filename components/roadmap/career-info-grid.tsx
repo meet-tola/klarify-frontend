@@ -32,28 +32,28 @@ export default function CareerInfoGrid() {
         <h3 className="text-lg font-semibold mb-4">Popular Career Paths</h3>
         <div className="space-y-3">
           <Link
-            href="/roadmap?skill=ui-ux"
+            href="/careers/ui-ux-design"
             className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-md"
           >
             <span>UI/UX Design</span>
             <ArrowRight className="h-4 w-4" />
           </Link>
           <Link
-            href="/roadmap?skill=web-dev"
+            href="/careers/web-development"
             className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-md"
           >
             <span>Web Development</span>
             <ArrowRight className="h-4 w-4" />
           </Link>
           <Link
-            href="/roadmap?skill=data-science"
+            href="/careers/data-science"
             className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-md"
           >
             <span>Data Science</span>
             <ArrowRight className="h-4 w-4" />
           </Link>
           <Link
-            href="/roadmap?skill=digital-marketing"
+            href="/careers/digital-marketing"
             className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-md"
           >
             <span>Digital Marketing</span>

@@ -112,7 +112,7 @@ export default function SearchDialog({
     }
   }, [searchQuery, isOpen]);
 
-  // At the top of your component
+  // Handle suggestion click
   const handleSuggestionClick = async (skills: string[]) => {
     setIsLoading(true);
     setSearchQuery(""); // Clear input
@@ -149,7 +149,6 @@ export default function SearchDialog({
 
     try {
       await selectSkillFromSearch(userId, selectedSkill);
-
       router.push("/roadmap");
     } catch (error) {
       console.error("Error selecting skill:", error);
@@ -163,10 +162,16 @@ export default function SearchDialog({
     onClose();
   };
 
+  // Clear search and go back to suggestions
+  const handleClearSearch = () => {
+    setSearchQuery("");
+    setSearchResults([]);
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 z-50 flex items-start justify-center sm:items-center">
           <motion.div
             className="fixed inset-0 bg-background/80 backdrop-blur-sm"
             initial={{ opacity: 0 }}
@@ -175,13 +180,14 @@ export default function SearchDialog({
             onClick={handleClose}
           />
           <motion.div
-            className="z-50 w-full max-w-lg bg-background p-6 shadow-lg border rounded-lg"
+            className="z-50 w-full h-[90vh] sm:h-auto max-h-[90vh] sm:max-h-[85vh] max-w-lg bg-background shadow-lg border rounded-lg flex flex-col overflow-hidden"
             initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ duration: 0.2 }}
           >
-            <div className="flex items-center justify-between mb-4">
+            {/* Header */}
+            <div className="flex items-center justify-between p-4 border-b">
               <h2 className="text-lg font-semibold">Search for Skill</h2>
               <Button
                 variant="ghost"
@@ -193,8 +199,9 @@ export default function SearchDialog({
               </Button>
             </div>
 
-            <div className="relative mb-4">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+            {/* Search input */}
+            <div className="relative p-4 border-b">
+              <Search className="absolute left-7 top-7 h-4 w-4 text-muted-foreground" />
               <Input
                 className="pl-9"
                 placeholder="What are you looking for?"
@@ -203,7 +210,9 @@ export default function SearchDialog({
               />
             </div>
 
-            <div className="space-y-4">
+            {/* Content area - scrollable */}
+            <div className="flex-1 overflow-y-auto p-4">
+              {/* Suggestions */}
               <div>
                 <h3 className="text-sm font-medium mb-2">Suggestions</h3>
                 <div className="flex flex-wrap gap-2">
@@ -220,42 +229,65 @@ export default function SearchDialog({
                 </div>
               </div>
 
-              <div>
-                <h3 className="text-sm font-medium mb-2">Search Results</h3>
-                <div className="space-y-2 max-h-60 overflow-y-auto">
+              {/* Search Results */}
+              <div className="space-y-3 mt-6">
+                {(searchResults.length > 0 || searchQuery) && (
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-sm font-medium">
+                        {searchQuery
+                          ? `Search results for "${searchQuery}"`
+                          : "Search Results"}
+                      </h3>
+                    </div>
+                    {searchResults.length > 0 && (
+                      <span className="text-xs text-muted-foreground">
+                        {searchResults.length} results
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                <div className="space-y-2">
                   {isLoading ? (
-                    <div className="flex items-center justify-center p-6">
+                    <div className="flex items-center justify-center p-8">
                       <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
                     </div>
                   ) : searchResults.length > 0 ? (
                     searchResults.map((result) => (
                       <motion.div
                         key={`${result.category}-${result.description}`}
-                        className={`p-3 rounded-lg hover:bg-accent cursor-pointer ${
-                          selectedSkill === result.category ? "bg-accent" : ""
+                        className={`p-4 rounded-lg hover:bg-accent cursor-pointer border ${
+                          selectedSkill === result.category
+                            ? "bg-accent border-primary/20"
+                            : "border-transparent"
                         }`}
                         onClick={() => setSelectedSkill(result.category)}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
+                        whileHover={{ scale: 1.01 }}
+                        whileTap={{ scale: 0.99 }}
                       >
                         <h4 className="font-medium">{result.category}</h4>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm text-muted-foreground mt-1">
                           {result.description}
                         </p>
                       </motion.div>
                     ))
-                  ) : (
-                    <div className="flex items-center justify-center p-6">
+                  ) : searchQuery ? (
+                    <div className="flex flex-col items-center justify-center p-8 text-center">
                       <p className="text-sm text-muted-foreground">
-                        No results found.
+                        No results found for "{searchQuery}"
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Try a different search term or browse suggestions
                       </p>
                     </div>
-                  )}
+                  ) : null}
                 </div>
               </div>
             </div>
 
-            <div className="flex justify-end gap-3 mt-4">
+            {/* Footer with buttons */}
+            <div className="flex justify-end gap-3 p-4 border-t">
               <Button variant="outline" onClick={handleClose}>
                 Cancel
               </Button>
@@ -264,10 +296,9 @@ export default function SearchDialog({
                 disabled={!selectedSkill || isNextLoading}
               >
                 {isNextLoading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  "Next"
-                )}
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                ) : null}
+                Next
               </Button>
             </div>
           </motion.div>

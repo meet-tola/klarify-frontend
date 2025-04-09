@@ -3,7 +3,9 @@
 import { useState, useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import LoadingScreen from "@/components/loading-screen";
-import OnboardingLayout, { type Step } from "@/components/onboarding/onboarding-layout";
+import OnboardingLayout, {
+  type Step,
+} from "@/components/onboarding/onboarding-layout";
 import StepOne from "@/components/onboarding/step-one";
 import StepTwo from "@/components/onboarding/step-two";
 import StepThree from "@/components/onboarding/step-three";
@@ -22,7 +24,9 @@ export default function OnboardingPage() {
   }, [user, loading, router]);
 
   const [currentStep, setCurrentStep] = useState(0);
-  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
+  const [selectedOptions, setSelectedOptions] = useState<
+    Record<string, string>
+  >({});
   const [isLoading, setIsLoading] = useState(true);
   const [isChangingStep, setIsChangingStep] = useState(false);
 
@@ -114,24 +118,22 @@ export default function OnboardingPage() {
       // If no pickedSkill and skillsAssessment and careerAssessment is empty, open dialog
       if (
         !user.user?.pickedSkill &&
-        (!user.user?.skillsAssessment || user.user.skillsAssessment.length === 0) &&
-        (!user.user?.careerAssessment || user.user.careerAssessment.length === 0)
+        (!user.user?.skillsAssessment ||
+          user.user.skillsAssessment.length === 0) &&
+        (!user.user?.selectedSkills || user.user.selectedSkills.length === 0) &&
+        (!user.user?.careerAssessment ||
+          user.user.careerAssessment.length === 0)
       ) {
         router.push("/onboarding?step=one");
         return;
       }
 
+      // If the user has both skill Assesment and selectedSkills, go to step two
       if (
         !user.user?.pickedSkill &&
-        (!user.user?.skillsAssessment || user.user.skillsAssessment.length === 0) &&
-        (!user.user?.selectedSkills || user.user.selectedSkills.length === 0)
+        user.user?.skillsAssessment?.length > 0 &&
+        user.user?.selectedSkills?.length > 0
       ) {
-        router.push("/onboarding?step=one");
-        return;
-      }
-
-      // If the user has both pickedSkill and selectedSkills, go to step two
-      if (!user.user?.pickedSkill && user.user?.skillsAssessment?.length > 0) {
         router.push("/onboarding?step=two");
         return;
       }
@@ -180,7 +182,7 @@ export default function OnboardingPage() {
   }
 
   if (!user) {
-    return null; 
+    return null;
   }
 
   const userId = user.user?._id;

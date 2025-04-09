@@ -1,36 +1,31 @@
-"use client";
+"use client"
 
-import type React from "react";
+import type React from "react"
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown } from "lucide-react";
-import OnboardingNavbar from "./onboarding-navbar";
+import { useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { ChevronDown } from "lucide-react"
 
 export type Step = {
-  id: number;
-  title: string;
-  description: string;
-  slug: string;
-};
-
-interface OnboardingLayoutProps {
-  steps: Step[];
-  currentStep: number;
-  children: React.ReactNode;
+  id: number
+  title: string
+  description: string
+  slug: string
 }
 
-export default function OnboardingLayout({
-  steps,
-  currentStep,
-  children,
-}: OnboardingLayoutProps) {
-  const [showSteps, setShowSteps] = useState(false);
+interface OnboardingLayoutProps {
+  steps: Step[]
+  currentStep: number
+  children: React.ReactNode
+}
+
+export default function OnboardingLayout({ steps, currentStep, children }: OnboardingLayoutProps) {
+  const [showSteps, setShowSteps] = useState(false)
 
   return (
     <div className="flex flex-col lg:flex-row flex-1">
       {/* Mobile Steps Dropdown */}
-      <div className="lg:hidden bg-slate-50 p-4">
+      <div className="lg:hidden bg-slate-50 p-4 relative">
         <motion.div
           className="flex justify-between items-center cursor-pointer p-2"
           onClick={() => setShowSteps(!showSteps)}
@@ -38,18 +33,13 @@ export default function OnboardingLayout({
         >
           <div className="flex items-center">
             <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center mr-3">
-              {steps[currentStep].id < 10
-                ? `0${steps[currentStep].id}`
-                : steps[currentStep].id}
+              {steps[currentStep].id < 10 ? `0${steps[currentStep].id}` : steps[currentStep].id}
             </div>
             <div>
               <h3 className="font-semibold">{steps[currentStep].title}</h3>
             </div>
           </div>
-          <motion.div
-            animate={{ rotate: showSteps ? 180 : 0 }}
-            transition={{ duration: 0.3 }}
-          >
+          <motion.div animate={{ rotate: showSteps ? 180 : 0 }} transition={{ duration: 0.3 }}>
             <ChevronDown size={20} />
           </motion.div>
         </motion.div>
@@ -57,7 +47,7 @@ export default function OnboardingLayout({
         <AnimatePresence>
           {showSteps && (
             <motion.div
-              className="mt-2 space-y-4 pl-2"
+              className="absolute top-full left-0 right-0 bg-slate-50 shadow-md z-10 p-4"
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
@@ -66,7 +56,7 @@ export default function OnboardingLayout({
               {steps.map((step, index) => (
                 <motion.div
                   key={step.id}
-                  className="flex items-start pl-2 py-2"
+                  className="flex items-start py-3 border-b border-slate-200 last:border-0"
                   initial={{ x: -20, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ delay: index * 0.1 }}
@@ -74,23 +64,17 @@ export default function OnboardingLayout({
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 ${
                       index === currentStep
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted text-muted-foreground"
+                        ? "bg-muted text-muted-foreground"
+                        : index < currentStep
+                          ? "bg-primary/20 text-primary"
+                          : "bg-muted text-muted-foreground"
                     }`}
                   >
                     {step.id < 10 ? `0${step.id}` : step.id}
                   </div>
                   <div>
-                    <h3
-                      className={`font-semibold ${
-                        index === currentStep ? "text-primary" : ""
-                      }`}
-                    >
-                      {step.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {step.description}
-                    </p>
+                    <h3 className={`font-semibold ${index === currentStep ? "text-primary" : ""}`}>{step.title}</h3>
+                    <p className="text-sm text-muted-foreground mt-1">{step.description}</p>
                   </div>
                 </motion.div>
               ))}
@@ -116,8 +100,8 @@ export default function OnboardingLayout({
                     index < currentStep
                       ? "bg-primary text-primary-foreground"
                       : index === currentStep
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-muted-foreground"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground"
                   }`}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
@@ -135,9 +119,7 @@ export default function OnboardingLayout({
               </div>
               <div>
                 <h3 className="font-semibold">{step.title}</h3>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {step.description}
-                </p>
+                <p className="text-sm text-muted-foreground mt-1">{step.description}</p>
               </div>
             </motion.div>
           ))}
@@ -162,5 +144,5 @@ export default function OnboardingLayout({
         </div>
       </div>
     </div>
-  );
+  )
 }
