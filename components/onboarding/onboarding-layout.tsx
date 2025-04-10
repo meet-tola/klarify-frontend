@@ -66,7 +66,7 @@ export default function OnboardingLayout({ steps, currentStep, children }: Onboa
                       index === currentStep
                         ? "bg-muted text-muted-foreground"
                         : index < currentStep
-                          ? "bg-primary/20 text-primary"
+                          ? "text-primary"
                           : "bg-muted text-muted-foreground"
                     }`}
                   >

@@ -99,7 +99,7 @@ export default function OnboardingPage() {
       // Update URL with next step
       const nextStep = steps[currentStep + 1].slug;
       setTimeout(() => {
-        router.push(`/onboarding?step=${nextStep}`);
+        window.location.href = `/onboarding?step=${nextStep}`;
         setCurrentStep((prev) => prev + 1);
         setIsChangingStep(false);
       }, 800);
@@ -107,7 +107,7 @@ export default function OnboardingPage() {
       // Handle completion of all steps
       setIsChangingStep(true);
       setTimeout(() => {
-        window.location.href = "/dashboard";
+        window.location.href = "/roadmap";
       }, 800);
     }
   };

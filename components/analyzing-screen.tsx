@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Progress } from "@/components/ui/progress";
 import { generateRoadmapContent } from "@/lib/api";
 import { useAuthContext } from "@/context/auth-provider";
-import { Sparkles } from "lucide-react";
+import { Loader2, Sparkles } from "lucide-react";
 
 interface AnalyzingScreenProps {
   onComplete?: () => void;
@@ -26,183 +26,148 @@ const facts = [
   "Full-stack developers have 27% more career mobility across industries.",
   "Data literacy is now required in 82% of mid to senior-level positions.",
   "Cloud computing expertise can increase salary potential by up to 25%.",
-  "Cybersecurity professionals are among the most in-demand, with a 0% unemployment rate.",
+  "Digital transformation initiatives accelerated by 7 years due to COVID-19.",
 ];
 
-const generationSteps = [
-  "Analyzing your assessment responses...",
-  "Identifying your key strengths and interests...",
-  "Mapping skill gaps to industry demands...",
-  "Curating personalized learning resources...",
-  "Generating your custom career roadmap...",
-  "Finalizing your personalized learning journey...",
+const titles = [
+  {
+    title: "Analyzing your assessment",
+    description:
+      "We're processing your responses to provide personalized insights",
+  },
+  {
+    title: "Generating content",
+    description: "Creating tailored materials based on your profile",
+  },
+  {
+    title: "Please wait a moment",
+    description: "Your personalized results are almost ready",
+  },
+  {
+    title: "Processing your data",
+    description: "Applying advanced algorithms to your information",
+  },
 ];
 
 export default function AnalyzingScreen({
   onComplete,
   userId,
 }: AnalyzingScreenProps) {
-  const [progress, setProgress] = useState(0);
-  const [currentFact, setCurrentFact] = useState(0);
-  const [currentStep, setCurrentStep] = useState(0);
-  const [isGenerating, setIsGenerating] = useState(true);
+  const [factIndex, setFactIndex] = useState(0);
+  const [titleIndex, setTitleIndex] = useState(0);
   const { user } = useAuthContext();
   const hasGenerated = useRef(false);
 
   useEffect(() => {
     if (hasGenerated.current) return;
     hasGenerated.current = true;
-    if (user?.user?.learningPath && user?.user?.learningPath?.length > 0) {
-      setIsGenerating(false);
-      setProgress(100);
-      if (onComplete) {
-        setTimeout(onComplete, 1500);
-      }
-      return;
-    }
-
-    // Initial progress animation to 30%
-    const initialProgressTimer = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 30) {
-          clearInterval(initialProgressTimer);
-          return 30;
-        }
-        return prev + 1;
-      });
-    }, 40);
-
-    // Cycle through the generation steps
-    const stepTimer = setInterval(() => {
-      setCurrentStep((prev) => (prev + 1) % generationSteps.length);
-    }, 3000);
 
     // Start generating the roadmap content
     const generateRoadmap = async () => {
       try {
-        // Progress to 60% while waiting for API
-        const midProgressTimer = setInterval(() => {
-          setProgress((prev) => {
-            if (prev >= 60) {
-              clearInterval(midProgressTimer);
-              return 60;
-            }
-            return prev + 0.5;
-          });
-        }, 100);
-
         // Call the API
         await generateRoadmapContent(userId);
-
-        clearInterval(midProgressTimer);
-
-        // Complete progress after API returns
-        const finalProgressTimer = setInterval(() => {
-          setProgress((prev) => {
-            if (prev >= 100) {
-              clearInterval(finalProgressTimer);
-              setIsGenerating(false);
-              if (onComplete) {
-                setTimeout(onComplete, 1500);
-              }
-              return 100;
-            }
-            return prev + 2;
-          });
-        }, 30);
+        if (onComplete) {
+          setTimeout(onComplete, 2000);
+        }
       } catch (error) {
         console.log("Failed to generate roadmap:", error);
-        setIsGenerating(false);
-        setProgress(100);
+        if (onComplete) {
+          setTimeout(onComplete, 2000);
+        }
       }
     };
 
     generateRoadmap();
 
-    const factTimer = setInterval(() => {
-      setCurrentFact((prev) => (prev + 1) % facts.length);
-    }, 4000);
+    // Change facts every 8 seconds
+    const factInterval = setInterval(() => {
+      setFactIndex((prevIndex) => (prevIndex + 1) % facts.length);
+    }, 8000);
 
-    return () => {
-      clearInterval(initialProgressTimer);
-      clearInterval(stepTimer);
-      clearInterval(factTimer);
-    };
+    // Change title every 12 seconds
+    const titleInterval = setInterval(() => {
+      setTitleIndex((prevIndex) => (prevIndex + 1) % titles.length);
+    }, 12000);
   }, [onComplete, userId, user]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-b from-background to-background/95">
-      <div className="w-full max-w-2xl text-center space-y-10">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4">
+      <div className="max-w-md w-full mx-auto text-center space-y-10">
+        {/* Loading animation above title */}
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="space-y-4"
+          className="flex justify-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.7 }}
         >
-          {isGenerating ? (
-            <AnimatePresence mode="wait">
-              <motion.h1
-                key={currentStep}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.4 }}
-                className="text-3xl font-bold roca-bold"
-              >
-                {generationSteps[currentStep]}
-              </motion.h1>
-            </AnimatePresence>
-          ) : (
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              className="flex flex-col items-center space-y-2"
-            >
-              <div className="bg-primary/10 p-3 rounded-full mb-2">
-                <Sparkles className="h-8 w-8 text-primary" />
-              </div>
-              <h1 className="text-3xl font-bold roca-bold">
-                Your Digital Journey Awaits!
-              </h1>
-            </motion.div>
-          )}
-
-          <p className="text-lg text-muted-foreground max-w-lg mx-auto">
-            {isGenerating
-              ? "We're crafting a personalized roadmap based on your unique profile, industry trends, and in-demand skills."
-              : "Your custom career roadmap is ready! Discover the perfect learning path tailored to your goals and strengths."}
-          </p>
+          <motion.div
+            animate={{
+              scale: [1, 1.05, 1],
+            }}
+            transition={{
+              duration: 1.5,
+              repeat: Number.POSITIVE_INFINITY,
+              ease: "easeInOut",
+            }}
+          >
+            <Loader2 className="h-10 w-10 text-primary animate-spin" />
+          </motion.div>
         </motion.div>
 
-        <div className="space-y-6">
-          <div className="relative">
-            <Progress value={progress} className="h-2.5 rounded-full" />
-            {progress < 100 && (
-              <motion.div
-                className="absolute top-0 left-0 h-full bg-primary/20 rounded-full"
-                initial={{ width: "0%" }}
-                animate={{ width: `${Math.min(progress + 15, 100)}%` }}
-                transition={{ duration: 0.8, ease: "easeInOut" }}
-              />
-            )}
-          </div>
+        {/* Title and description */}
+        <div className="space-y-3">
+          <AnimatePresence mode="wait">
+            <motion.h1
+              key={`title-${titleIndex}`}
+              className="text-2xl font-medium tracking-tight roca-bold"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+            >
+              {titles[titleIndex].title}
+            </motion.h1>
+          </AnimatePresence>
 
           <AnimatePresence mode="wait">
-            <motion.div
-              key={currentFact}
-              initial={{ opacity: 0, y: 20 }}
+            <motion.p
+              key={`desc-${titleIndex}`}
+              className="text-sm text-muted-foreground"
+              initial={{ opacity: 0, y: 5 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5 }}
-              className="h-20 flex items-center justify-center"
+              exit={{ opacity: 0, y: -5 }}
+              transition={{ duration: 0.3, delay: 0.1 }}
             >
-              <p className="text-sm md:text-base text-primary rounded-full bg-primary/10 px-6 py-3 shadow-sm">
-                {facts[currentFact]}
-              </p>
+              {titles[titleIndex].description}
+            </motion.p>
+          </AnimatePresence>
+        </div>
+
+        {/* Facts section */}
+        <div className="h-24 flex items-center justify-center">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={factIndex}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.4 }}
+              className="bg-card/50 backdrop-blur-sm rounded-lg p-5 shadow-sm border border-border/30"
+            >
+              <p className="text-sm text-foreground/80">{facts[factIndex]}</p>
             </motion.div>
           </AnimatePresence>
         </div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.6 }}
+          transition={{ delay: 1, duration: 1 }}
+          className="text-xs text-muted-foreground/70 tracking-wide uppercase font-light"
+        >
+          This will only take a moment
+        </motion.div>
       </div>
     </div>
   );
