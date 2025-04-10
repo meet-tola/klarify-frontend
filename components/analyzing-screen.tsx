@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { generateRoadmapContent } from "@/lib/api";
 import { useAuthContext } from "@/context/auth-provider";
 import { Loader2, Sparkles } from "lucide-react";
+import { toast } from "sonner";
 
 interface AnalyzingScreenProps {
   onComplete?: () => void;
@@ -65,16 +66,11 @@ export default function AnalyzingScreen({
     // Start generating the roadmap content
     const generateRoadmap = async () => {
       try {
-        // Call the API
         await generateRoadmapContent(userId);
-        if (onComplete) {
-          setTimeout(onComplete, 2000);
-        }
-      } catch (error) {
-        console.log("Failed to generate roadmap:", error);
-        if (onComplete) {
-          setTimeout(onComplete, 2000);
-        }
+        onComplete?.();
+      } catch (error: any) {
+        toast.error(error?.message || "Failed to generate roadmap");
+        onComplete?.();
       }
     };
 
@@ -116,7 +112,7 @@ export default function AnalyzingScreen({
         </motion.div>
 
         {/* Title and description */}
-        <div className="space-y-3">
+        <div className="space-y-2">
           <AnimatePresence mode="wait">
             <motion.h1
               key={`title-${titleIndex}`}

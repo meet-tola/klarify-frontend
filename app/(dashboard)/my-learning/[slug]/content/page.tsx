@@ -100,9 +100,8 @@ export default function CoursePage() {
     if (activeView === "lesson") {
       setActiveView("outline");
       setActiveLessonId(null);
-      // router.push(`/my-learning/${slugify(user.user.pickedSkill)}`);
     } else if (activeView === "outline") {
-      router.push("/my-learning");
+      window.location.href = "/my-learning";
     }
   };
 

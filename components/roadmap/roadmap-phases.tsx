@@ -37,7 +37,7 @@ export default function RoadmapPhases({ phases, onStartLearning }: RoadmapPhases
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <h2 className="text-2xl font-bold mb-4">Your Personalized Roadmap</h2>
+      <h2 className="text-2xl font-bold mb-4 roca-bold">Your Personalized Roadmap</h2>
       <motion.div
         className="space-y-4 w-full"
         initial={{ opacity: 0, y: 20 }}

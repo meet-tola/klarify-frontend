@@ -104,7 +104,7 @@ export default function RoadmapPage() {
     try {
       const roadmap = await getRoadmap(userId as string)
       await generateRoadmapSectionContent(userId as string, roadmap._id as string, 0)
-      router.push(`/my-learning/${slugify(user.user.pickedSkill)}/content`)
+      window.location.href = `/my-learning/${slugify(user.user.pickedSkill)}/content`;
     } catch (error: any) {
       toast.error(error?.message || "Failed to generate content")
     } finally {
