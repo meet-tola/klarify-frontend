@@ -20,7 +20,7 @@ export default function VerifyEmailPage() {
     Array(6).fill("")
   );
   const [isLoading, setIsLoading] = useState(false);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  // const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { user } = useAuthContext();
   const router = useRouter();
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -57,7 +57,8 @@ export default function VerifyEmailPage() {
       setIsLoading(true);
       await verifyEmailAPI({ code });
       toast.success("Email verified successfully!");
-      setIsDialogOpen(true);
+      // setIsDialogOpen(true);
+      router.push("/roadmap");
     } catch (error: any) {
       toast.error(error?.message || "Please check your code and try again.");
     } finally {
@@ -83,14 +84,14 @@ export default function VerifyEmailPage() {
 
   return (
     <>
-      <JourneyDialog
+      {/* <JourneyDialog
         open={isDialogOpen}
         onClose={() => {
           setIsDialogOpen(false);
           router.push("/roadmap");
         }}
         userId={userId}
-      />
+      /> */}
 
       <main className="flex-1 flex items-center justify-center p-6">
         <div className="w-full max-w-sm space-y-8 bg-white p-6 rounded-lg">

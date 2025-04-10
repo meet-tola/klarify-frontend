@@ -21,7 +21,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const { user, setUser } = useAuthContext();
   const router = useRouter();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  // const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const userId = user?.user._id;
 
@@ -59,7 +59,8 @@ export default function LoginPage() {
         (!user.user?.careerAssessment ||
           user.user.careerAssessment.length === 0)
       ) {
-        setIsDialogOpen(true);
+        // setIsDialogOpen(true);
+        router.push("/roadmap");
         return;
       }
 
@@ -162,7 +163,8 @@ export default function LoginPage() {
         (!loggedInUser.user?.careerAssessment ||
           loggedInUser.user.careerAssessment.length === 0)
       ) {
-        setIsDialogOpen(true);
+        // setIsDialogOpen(true);
+        router.push("/roadmap");
         return;
       }
 
@@ -234,14 +236,14 @@ export default function LoginPage() {
 
   return (
     <>
-      <JourneyDialog
+      {/* <JourneyDialog
         open={isDialogOpen}
         onClose={() => {
           setIsDialogOpen(false);
           router.push("/roadmap");
         }}
         userId={userId}
-      />
+      /> */}
 
       <main className="flex-1 flex items-center justify-center p-6">
         <motion.div
