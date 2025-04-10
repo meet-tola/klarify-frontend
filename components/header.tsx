@@ -403,15 +403,18 @@ export default function Header() {
                     </DropdownMenuLabel>
                     {/* User Nav Items */}
                     <DropdownMenuItem asChild>
-                      <Link
-                        href={
-                          user?.user?.pickedSkill ? "my-learning" : "/roadmap"
-                        }
-                        className="cursor-pointer"
+                      <div
+                        onClick={() => {
+                          const path = user?.user?.pickedSkill
+                            ? "/my-learning"
+                            : "/roadmap";
+                          window.location.href = path;
+                        }}
+                        className="cursor-pointer flex items-center"
                       >
                         <BookOpenText className="mr-2 h-4 w-4" />
                         <span>Dashboard</span>
-                      </Link>
+                      </div>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link
@@ -564,16 +567,19 @@ export default function Header() {
                     Your Learning
                   </p>
                   <nav className="space-y-2">
-                    <Link
-                      href={
-                        user?.user?.pickedSkill ? "my-learning" : "/roadmap"
-                      }
+                    <div
+                      onClick={() => {
+                        toggleMenu();
+                        const path = user?.user?.pickedSkill
+                          ? "/my-learning"
+                          : "/roadmap";
+                        window.location.href = path;
+                      }}
                       className="flex items-center gap-3 py-2 px-3 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors"
-                      onClick={toggleMenu}
                     >
                       <BookOpenText className="h-5 w-5" />
                       <span className="font-medium">Dashboard</span>
-                    </Link>
+                    </div>
                     <Link
                       href={
                         user?.user?.pickedSkill

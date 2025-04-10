@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useAuthContext } from "@/context/auth-provider";
-import { useRouter } from "next/navigation";
 import LoadingScreen from "@/components/loading-screen";
 import { getRoadmapContent } from "@/lib/api";
 import { WelcomeSection } from "@/components/dashboard/welcome-section";
@@ -10,14 +9,19 @@ import { ActionCards } from "@/components/dashboard/action-card";
 import { GoalsProgressCard } from "@/components/dashboard/goal-progress-card";
 import { CourseProgressCard } from "@/components/dashboard/course-progress-card";
 import { QuickGuidesSection } from "@/components/dashboard/quick-guide";
+import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
   const { user, loading } = useAuthContext();
   const [roadmap, setRoadmap] = useState<any>(null);
   const [learningPath, setLearningPath] = useState<any>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchRoadmapContent = async () => {
+      if (!user?.user?.learningPath || user?.user.learningPath.length === 0) {
+        router.push("/roadmap");
+      }
       if (user?.user?.pickedSkill) {
         try {
           const data = await getRoadmapContent(

@@ -2,9 +2,18 @@
 
 import { motion } from "framer-motion";
 import { useAuthContext } from "@/context/auth-provider";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export function WelcomeSection() {
   const { user } = useAuthContext();
+  const router = useRouter();
+  
+  useEffect(() => {
+    if (!user?.user?.learningPath || user?.user.learningPath.length === 0) {
+      router.push("/roadmap");
+    }
+  }, [user, router]);
 
   return (
     <div>
@@ -14,7 +23,7 @@ export function WelcomeSection() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
       >
-        Welcome back, {user?.user.name}
+        Welcome, {user?.user.name}
         <span role="img" aria-label="waving">
           👋
         </span>

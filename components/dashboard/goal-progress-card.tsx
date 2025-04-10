@@ -2,10 +2,15 @@
 
 import { useState, useEffect } from "react";
 import { Target, Info } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { useAuthContext } from "@/context/auth-provider";
 import { getUserGoals } from "@/lib/api";
 import StreakTracker from "@/components/learning/streak-tracker";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function GoalsProgressCard() {
   const { user } = useAuthContext();
@@ -39,10 +44,34 @@ export function GoalsProgressCard() {
 
     fetchGoalProgress();
 
-    // Fetch longest streak from localStorage
     const streakData = JSON.parse(localStorage.getItem("streak") || "{}");
     setLongestStreak(streakData.longestStreak || 0);
   }, [user]);
+
+  if (isLoadingGoals) {
+    return (
+      <div className="bg-white rounded-lg border flex flex-col p-6 items-start">
+        <div className="flex items-center gap-2 mb-4">
+          <Skeleton className="h-5 w-5 rounded-full" />
+          <Skeleton className="h-5 w-24" />
+          <Skeleton className="h-4 w-4 rounded-full" />
+        </div>
+        <div className="flex items-center justify-center gap-6 w-full">
+          <div className="relative w-24 h-24 mx-auto">
+            <Skeleton className="w-full h-full rounded-full" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Skeleton className="h-8 w-12" />
+            </div>
+          </div>
+          <div className="mt-2 text-center space-y-1 pr-4">
+            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-4 w-40" />
+            <Skeleton className="h-4 w-24 mx-auto" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-lg border flex flex-col p-6 items-start">
@@ -62,8 +91,18 @@ export function GoalsProgressCard() {
       </div>
       <div className="flex items-center justify-center gap-6 w-full">
         <div className="relative w-24 h-24 mx-auto">
-          <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="45" fill="none" stroke="#F4F4F5" strokeWidth="10" />
+          <svg
+            className="w-full h-full transform -rotate-90"
+            viewBox="0 0 100 100"
+          >
+            <circle
+              cx="50"
+              cy="50"
+              r="45"
+              fill="none"
+              stroke="#F4F4F5"
+              strokeWidth="10"
+            />
             <circle
               cx="50"
               cy="50"
@@ -88,7 +127,9 @@ export function GoalsProgressCard() {
           </p>
           <p className="text-gray-600">
             Longest streak:{" "}
-            <span className="font-medium text-primary">{longestStreak} Days</span>
+            <span className="font-medium text-primary">
+              {longestStreak} Days
+            </span>
           </p>
           <StreakTracker />
         </div>

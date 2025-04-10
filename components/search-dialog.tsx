@@ -149,7 +149,11 @@ export default function SearchDialog({
 
     try {
       await selectSkillFromSearch(userId, selectedSkill);
-      router.push("/roadmap");
+      onClose();
+
+      setTimeout(() => {
+        router.push("/roadmap");
+      }, 300);
     } catch (error) {
       console.error("Error selecting skill:", error);
     } finally {

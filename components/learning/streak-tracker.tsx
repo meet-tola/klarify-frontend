@@ -160,7 +160,7 @@ export default function StreakTracker() {
       </DialogTrigger>
       <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold">
+          <DialogTitle className="text-xl font-bold roca-bold">
             Your Learning Journey
           </DialogTitle>
         </DialogHeader>
