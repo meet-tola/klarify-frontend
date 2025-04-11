@@ -392,7 +392,7 @@ export default function Header() {
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link href="/profile" className="cursor-pointer">
+                      <Link href="/account" className="cursor-pointer">
                         <User className="mr-2 h-4 w-4" />
                         <span>Visit Profile</span>
                       </Link>
@@ -553,7 +553,7 @@ export default function Header() {
                     className="w-full rounded-full"
                     asChild
                   >
-                    <Link href="/profile">
+                    <Link href="/account">
                       <User className="mr-2 h-4 w-4" />
                       Visit Profile
                     </Link>
