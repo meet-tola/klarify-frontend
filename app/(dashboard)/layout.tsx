@@ -28,7 +28,10 @@ export default function DashboardLayout({
       router.push("/login");
     }
 
-    if (!loading && !user?.user?.learningPath || user?.user.learningPath.length === 0) {
+    if (
+      (!loading && !user?.user?.learningPath) ||
+      user?.user.learningPath.length === 0
+    ) {
       router.push("/roadmap");
     }
   }, [user, loading, router]);
@@ -38,9 +41,7 @@ export default function DashboardLayout({
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-1 px-6 md:px-12">{children}</main>
-      <CommunityBanner />
-      <Footer />
+      {children}
     </div>
   );
 }

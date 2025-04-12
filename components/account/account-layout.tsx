@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { ChevronDown, User, Award, BarChart, CreditCard, Settings } from "lucide-react"
+import Footer from "../footer"
 
 interface AccountLayoutProps {
   children: React.ReactNode

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import {
   Card,
   CardContent,
@@ -33,7 +33,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 export default function SettingsPage() {
-  const { user, loading } = useAuthContext();
+  const { user, loading, setUser } = useAuthContext();
   const [emailData, setEmailData] = useState({
     email: "",
   });
@@ -62,6 +62,8 @@ export default function SettingsPage() {
     setIsDeleting(true);
     try {
       await deleteUser();
+      setUser(null);
+
       toast.success("Account deleted successfully!");
       router.push("/signup");
     } catch (error) {
