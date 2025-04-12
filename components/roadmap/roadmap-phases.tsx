@@ -5,6 +5,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuthContext } from "@/context/auth-provider";
+import { slugify } from "@/lib/slugify";
 
 interface Lesson {
   id: number;
@@ -20,14 +22,15 @@ interface Phase {
 
 interface RoadmapPhasesProps {
   phases: Phase[];
-  onStartLearning: () => void;
+  // onStartLearning: () => void;
 }
 
 export default function RoadmapPhases({
   phases,
-  onStartLearning,
-}: RoadmapPhasesProps) {
+}: // onStartLearning,
+RoadmapPhasesProps) {
   const [expandedPhase, setExpandedPhase] = useState<number>(1);
+  const { user } = useAuthContext();
 
   const togglePhase = (phaseId: number) => {
     setExpandedPhase(expandedPhase === phaseId ? 0 : phaseId);
@@ -113,7 +116,9 @@ export default function RoadmapPhases({
           Go to dashboard
         </Button>
 
-        <Button onClick={onStartLearning}>Start learning</Button>
+        <Button onClick={() => (window.location.href = `/my-learning/${slugify(user?.user?.pickedSkill)}`)}>
+          Start learning
+        </Button>
       </div>
     </motion.div>
   );

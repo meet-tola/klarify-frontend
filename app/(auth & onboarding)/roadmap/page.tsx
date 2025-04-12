@@ -103,17 +103,17 @@ export default function RoadmapPage() {
     setIsAnalyzing(true);
   };
 
-  const handleStartLearning = async () => {
-    setIsFetchingContent(true);
+  // const handleStartLearning = async () => {
+  //   setIsFetchingContent(true);
 
-    try {
-      if (!user?.user.learningPath?.[0]?.roadmap) return;
-    } catch (error: any) {
-      toast.error(error?.message || "Failed to load content");
-    } finally {
-      setIsFetchingContent(false);
-    }
-  };
+  //   try {
+  //     if (!user?.user.learningPath?.[0]?.roadmap) return;
+  //   } catch (error: any) {
+  //     toast.error(error?.message || "Failed to load content");
+  //   } finally {
+  //     setIsFetchingContent(false);
+  //   }
+  // };
 
   const handleSelectSkill = async () => {
     try {
@@ -169,7 +169,7 @@ export default function RoadmapPage() {
             {showRoadmap && (
               <RoadmapPhases
                 phases={phases}
-                onStartLearning={handleStartLearning}
+                // onStartLearning={handleStartLearning}
               />
             )}
           </>
