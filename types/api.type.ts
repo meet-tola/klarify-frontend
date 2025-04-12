@@ -63,7 +63,8 @@ export type CurrentUserResponseType = {
     _id: string;
     name: string;
     email: string;
-    profileImage: string;
+    profilePicture?: string;
+    bio?: string;
     isActive: boolean;
     lastLogin: Date | null;
     verificationCode?: string;

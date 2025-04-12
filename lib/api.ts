@@ -49,7 +49,7 @@ export const validateResetToken = async (token: string) => {
   }
 };
 
-export const completePasswordReset  = async (data: { token: string, newPassword: string }) => {
+export const completePasswordReset = async (data: { token: string, newPassword: string }) => {
   return postRequest("/auth/complete-password-reset", data);
 };
 
@@ -68,10 +68,36 @@ export const logout = async () => {
   return postRequest("/auth/logout");
 };
 
-
+// USER INFO
 export const getCurrentUser = async (): Promise<CurrentUserResponseType | undefined> => {
   try {
     const response = await API.get(`/user/current`, { withCredentials: true });
+    return response.data;
+  } catch (error: any) {
+    handleError(error);
+    return undefined;
+  }
+};
+
+export const updateUser = async (data: {
+  name?: string;
+  email?: string;
+  bio?: string;
+  profilePicture?: string;
+}): Promise<CurrentUserResponseType | undefined> => {
+  try {
+    const response = await API.patch(`/user/update`, data, { withCredentials: true });
+    return response.data;
+  } catch (error: any) {
+    handleError(error);
+    return undefined;
+  }
+};
+
+export const deleteUser = async (): Promise<{ message: string } | undefined> => {
+  try {
+    const response = await API.delete(`/user/delete`, { withCredentials: true });
+    localStorage.removeItem("token");
     return response.data;
   } catch (error: any) {
     handleError(error);

@@ -19,9 +19,6 @@ import {
   BookOpenText,
   UserRound,
   HelpCircle,
-  BarChart2,
-  Code,
-  Palette,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -373,7 +370,7 @@ export default function Header() {
                       <div className="flex items-center space-x-3">
                         <Avatar className="h-8 w-8">
                           <AvatarImage
-                            src={user?.user?.profileImage || ""}
+                            src={user?.user?.profilePicture || ""}
                             alt={user?.user?.name || "User"}
                           />
                           <AvatarFallback className="bg-slate-800 text-white text-xs">
@@ -532,7 +529,7 @@ export default function Header() {
                   <div className="flex items-center space-x-3 mb-4">
                     <Avatar>
                       <AvatarImage
-                        src={user?.user?.profileImage || ""}
+                        src={user?.user?.profilePicture || ""}
                         alt={user?.user?.name || "User"}
                       />
                       <AvatarFallback className="bg-slate-800 text-white">

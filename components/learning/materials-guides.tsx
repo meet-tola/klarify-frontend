@@ -16,10 +16,7 @@ export default function MaterialsGuidesSection() {
         {/* View Roadmap Card */}
         <Card className="hover:shadow-sm transition-shadow duration-200">
           <CardHeader className="pb-2">
-            <div className="flex gap-2 items-center">
-              <CardTitle className="text-lg">View your roadmap</CardTitle>
-              <Info className="h-5 w-5 text-muted-foreground" />
-            </div>
+            <CardTitle className="text-lg">View your roadmap</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground mb-4">
@@ -41,10 +38,7 @@ export default function MaterialsGuidesSection() {
         {/* View Projects Card */}
         <Card className="hover:shadow-sm transition-shadow duration-200">
           <CardHeader className="pb-2">
-            <div className="flex gap-2 items-center">
-              <CardTitle className="text-lg">View Project</CardTitle>
-              <Info className="h-5 w-5 text-muted-foreground" />
-            </div>
+            <CardTitle className="text-lg">View Project</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground mb-4">
@@ -66,10 +60,7 @@ export default function MaterialsGuidesSection() {
         {/* View Video/Article Card */}
         <Card className="hover:shadow-sm transition-shadow duration-200">
           <CardHeader className="pb-2">
-            <div className="flex gap-2 items-center">
-              <CardTitle className="text-lg">View Videos/Articles</CardTitle>
-              <Info className="h-5 w-5 text-muted-foreground" />
-            </div>
+            <CardTitle className="text-lg">View Videos/Articles</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground mb-4">

@@ -1,5 +1,5 @@
+import ComingSoonPage from "@/components/coming-soon";
+
 export default function Page() {
-    return (
-        <div>Page</div>
-    );
+  return <ComingSoonPage />;
 }

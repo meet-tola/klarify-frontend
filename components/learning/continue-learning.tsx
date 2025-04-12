@@ -1,14 +1,16 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { getLevelColor } from "@/lib/get-level-color"
+import Link from "next/link";
+import { getLevelColor } from "@/lib/get-level-color";
+import { Progress } from "../ui/progress";
+import { Button } from "../ui/button";
 
 interface ContinueLearningProps {
-  skill: string
-  level: string
-  totalLessons: number
-  courseProgress: number
-  slug: string
+  skill: string;
+  level: string;
+  totalLessons: number;
+  courseProgress: number;
+  slug: string;
 }
 
 export default function ContinueLearningSection({
@@ -21,23 +23,30 @@ export default function ContinueLearningSection({
   return (
     <section>
       <h1 className="text-3xl font-bold roca-bold mb-2">Continue Learning</h1>
-      <p className="text-muted-foreground mb-6">Resume where you left off in your learning path.</p>
+      <p className="text-muted-foreground mb-6">
+        Resume where you left off in your learning path.
+      </p>
 
-      <div className="bg-white rounded-lg border shadow-sm hover:shadow-md transition-shadow duration-200 px-6 py-5 relative group">
-        <Link
-          href={`/my-learning/${slug}/content`}
-          className="block absolute inset-0 z-10"
-          aria-label={`View ${skill} content`}
-        >
-          <span className="sr-only">Go to content</span>
-        </Link>
-        <div className={`text-sm font-medium ${getLevelColor(level)} py-1`}>{level}</div>
-        <h3 className="text-xl font-semibold mt-1 mb-3">{skill}</h3>
-        <div className="flex items-center justify-between relative z-20 pointer-events-none">
-          <div className="flex items-center text-gray-600">
+      <div className="bg-white rounded-lg border px-6 py-4 md:col-span-2">
+        <div className="h-full flex flex-col">
+          <p className={`text-sm font-medium ${getLevelColor(level)} py-1`}>
+            {level}
+          </p>
+          <h3 className="text-xl font-semibold mb-auto">{skill}</h3>
+          
+          <div className="space-y-4 mt-4">
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-600">Progress:</span>
+                <span className="text-gray-600">{courseProgress}%</span>
+              </div>
+              <Progress value={courseProgress} className="h-2 bg-gray-100" />
+            </div>
+            <div className="flex justify-between items-center">
+            <div className="flex items-center text-gray-500">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 mr-1"
+              className="h-5 w-5 mr-2"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -51,19 +60,15 @@ export default function ContinueLearningSection({
             </svg>
             {totalLessons} lessons
           </div>
-
-          <div className="flex items-center gap-2">
-            <div className="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-primary rounded-full transition-all duration-500 ease-out"
-                style={{ width: `${courseProgress}%` }}
-              ></div>
+              <Link href={`/my-learning/${slug}/content`}>
+                <Button variant="outline" disabled={!skill}>
+                  Continue
+                </Button>
+              </Link>
             </div>
-            <span className="text-sm font-medium">{courseProgress}%</span>
           </div>
         </div>
       </div>
     </section>
-  )
+  );
 }
-

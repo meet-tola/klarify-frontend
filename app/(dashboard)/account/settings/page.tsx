@@ -1,41 +1,111 @@
-import type { Metadata } from "next"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Separator } from "@/components/ui/separator"
-import { AlertCircle } from "lucide-react"
-
-export const metadata: Metadata = {
-  title: "Settings",
-  description: "Manage your account settings and preferences.",
-}
+"use client"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Separator } from "@/components/ui/separator";
+import { AlertCircle } from "lucide-react";
+import { useAuthContext } from "@/context/auth-provider";
+import { useEffect, useState } from "react";
+import LoadingScreen from "@/components/loading-screen";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { deleteUser } from "@/lib/api";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function SettingsPage() {
+  const { user, loading } = useAuthContext();
+  const [emailData, setEmailData] = useState({
+    email: "",
+  });
+  const [isDeleting, setIsDeleting] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      setEmailData({
+        email: user.user.email || "",
+      });
+    }
+  }, [user]);
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { id, value } = e.target;
+    setEmailData((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
+
+  const handleDeleteAccount = async () => {
+    setIsDeleting(true);
+    try {
+      await deleteUser();
+      toast.success("Account deleted successfully!");
+      router.push("/signup");
+    } catch (error) {
+      toast.error("Failed to delete account. Please try again.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  if (loading) {
+    return <LoadingScreen message="Loading your profile..." />;
+  }
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-        <p className="text-muted-foreground">Manage your account settings and preferences.</p>
+        <p className="text-muted-foreground">
+          Manage your account settings and preferences.
+        </p>
       </div>
       <Tabs defaultValue="account" className="space-y-4">
         <TabsList>
           <TabsTrigger value="account">Account</TabsTrigger>
-          <TabsTrigger value="notifications">Notifications</TabsTrigger>
           <TabsTrigger value="privacy">Privacy</TabsTrigger>
         </TabsList>
         <TabsContent value="account" className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle>Account Information</CardTitle>
-              <CardDescription>Update your account email and password.</CardDescription>
+              <CardDescription>
+                Update your account email and password.
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" defaultValue="john.doe@example.com" />
+                <Input
+                  id="email"
+                  type="email"
+                  value={emailData.email}
+                  onChange={handleInputChange}
+                  disabled
+                />
               </div>
               <Separator className="my-4" />
               <div className="space-y-4">
@@ -61,99 +131,54 @@ export default function SettingsPage() {
           <Card>
             <CardHeader>
               <CardTitle>Delete Account</CardTitle>
-              <CardDescription>Permanently delete your account and all of your data.</CardDescription>
+              <CardDescription>
+                Permanently delete your account and all of your data.
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-4">
                 <div className="flex items-start gap-3">
                   <AlertCircle className="mt-0.5 h-5 w-5 text-destructive" />
                   <div>
-                    <h4 className="font-medium text-destructive">Warning: This action cannot be undone</h4>
+                    <h4 className="font-medium text-destructive">
+                      Warning: This action cannot be undone
+                    </h4>
                     <p className="text-sm text-muted-foreground">
-                      Once you delete your account, all of your data will be permanently removed. This includes your
-                      profile, assessment results, learning progress, and achievements.
+                      Once you delete your account, all of your data will be
+                      permanently removed. This includes your profile,
+                      assessment results, learning progress, and achievements.
                     </p>
                   </div>
                 </div>
               </div>
             </CardContent>
             <CardFooter>
-              <Button variant="destructive">Delete Account</Button>
-            </CardFooter>
-          </Card>
-        </TabsContent>
-        <TabsContent value="notifications" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Notification Preferences</CardTitle>
-              <CardDescription>Choose how and when you want to be notified.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <h3 className="font-medium">Email Notifications</h3>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label htmlFor="email-learning">Learning Reminders</Label>
-                      <p className="text-sm text-muted-foreground">
-                        Receive reminders about your learning goals and streaks
-                      </p>
-                    </div>
-                    <Switch id="email-learning" defaultChecked />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label htmlFor="email-achievements">Achievement Notifications</Label>
-                      <p className="text-sm text-muted-foreground">
-                        Get notified when you earn new badges or complete milestones
-                      </p>
-                    </div>
-                    <Switch id="email-achievements" defaultChecked />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label htmlFor="email-recommendations">Personalized Recommendations</Label>
-                      <p className="text-sm text-muted-foreground">
-                        Receive tailored career and learning recommendations
-                      </p>
-                    </div>
-                    <Switch id="email-recommendations" defaultChecked />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label htmlFor="email-newsletter">Newsletter</Label>
-                      <p className="text-sm text-muted-foreground">
-                        Receive our monthly newsletter with career tips and platform updates
-                      </p>
-                    </div>
-                    <Switch id="email-newsletter" />
-                  </div>
-                </div>
-              </div>
-              <div className="space-y-4">
-                <h3 className="font-medium">Push Notifications</h3>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label htmlFor="push-learning">Learning Reminders</Label>
-                      <p className="text-sm text-muted-foreground">Receive daily reminders to continue your learning</p>
-                    </div>
-                    <Switch id="push-learning" defaultChecked />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label htmlFor="push-achievements">Achievement Notifications</Label>
-                      <p className="text-sm text-muted-foreground">
-                        Get notified when you earn new badges or complete milestones
-                      </p>
-                    </div>
-                    <Switch id="push-achievements" defaultChecked />
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button>Save Preferences</Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive">Delete Account</Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Are you sure you want to delete your account?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete
+                      your account and all of your data.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleDeleteAccount}
+                      disabled={isDeleting}
+                      className="bg-destructive hover:bg-destructive/90"
+                    >
+                      {isDeleting ? "Deleting..." : "Delete Account"}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </CardFooter>
           </Card>
         </TabsContent>
@@ -161,7 +186,9 @@ export default function SettingsPage() {
           <Card>
             <CardHeader>
               <CardTitle>Privacy Settings</CardTitle>
-              <CardDescription>Manage how your data is used and shared.</CardDescription>
+              <CardDescription>
+                Manage how your data is used and shared.
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
@@ -171,7 +198,8 @@ export default function SettingsPage() {
                     <div className="space-y-0.5">
                       <Label htmlFor="analytics">Analytics</Label>
                       <p className="text-sm text-muted-foreground">
-                        Allow us to collect anonymous usage data to improve our platform
+                        Allow us to collect anonymous usage data to improve our
+                        platform
                       </p>
                     </div>
                     <Switch id="analytics" defaultChecked />
@@ -201,9 +229,12 @@ export default function SettingsPage() {
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
-                      <Label htmlFor="show-achievements">Show Achievements</Label>
+                      <Label htmlFor="show-achievements">
+                        Show Achievements
+                      </Label>
                       <p className="text-sm text-muted-foreground">
-                        Display your badges and achievements on your public profile
+                        Display your badges and achievements on your public
+                        profile
                       </p>
                     </div>
                     <Switch id="show-achievements" />
@@ -225,5 +256,5 @@ export default function SettingsPage() {
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }
