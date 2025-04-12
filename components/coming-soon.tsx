@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function ComingSoonPage() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-slate-50 gap-8">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background gap-8">
 
       <div className="w-full max-w-md space-y-8 text-center">
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 border shadow-sm">

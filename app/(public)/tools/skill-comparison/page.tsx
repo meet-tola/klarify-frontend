@@ -709,7 +709,7 @@ export default function SkillComparisonPage() {
                         </div>
                       </div>
 
-                      <Link href={`/skills/${skillData1.id}`}>
+                      <Link href={`/careers/${skillData1.id}`}>
                         <Button variant="outline" className="w-full mt-4">
                           Learn More About {skillData1.name}
                         </Button>
@@ -738,7 +738,7 @@ export default function SkillComparisonPage() {
                         </div>
                       </div>
 
-                      <Link href={`/skills/${skillData2.id}`}>
+                      <Link href={`/careers/${skillData2.id}`}>
                         <Button variant="outline" className="w-full mt-4">
                           Learn More About {skillData2.name}
                         </Button>
@@ -854,7 +854,7 @@ export default function SkillComparisonPage() {
                     </div>
                   </div>
 
-                  <Link href={`/skills/${skillData1.id}`}>
+                  <Link href={`/careers/${skillData1.id}`}>
                     <Button variant="outline" className="w-full mt-4">
                       Learn More About {skillData1.name}
                     </Button>
@@ -887,7 +887,7 @@ export default function SkillComparisonPage() {
                     </div>
                   </div>
 
-                  <Link href={`/skills/${skillData2.id}`}>
+                  <Link href={`/careers/${skillData2.id}`}>
                     <Button variant="outline" className="w-full mt-4">
                       Learn More About {skillData2.name}
                     </Button>

@@ -66,7 +66,7 @@ export default function SuccessStories() {
   }
 
   return (
-    <section className="py-12 md:py-20 bg-white">
+    <section className="py-12 md:py-20 bg-background">
       <div className="container px-4 mx-auto">
         {/* Header */}
         <motion.div

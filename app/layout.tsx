@@ -42,7 +42,7 @@ const roca = localFont({
 export const metadata: Metadata = {
   title: "Klarify",
   description:
-    "Klarify is a career assessment tool that helps you find your dream job.",
+    "Learn with Clarity. Move from Confusion to Crystal Clear..",
 };
 
 export default function RootLayout({

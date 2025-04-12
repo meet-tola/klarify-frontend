@@ -162,7 +162,7 @@ export default function CareerSimulatorPage() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8 mb-8"
           >
-            <h2 className="text-2xl font-bold mb-6">Find a Role to Simulate</h2>
+            <h2 className="text-2xl font-bold mb-6 roca-bold">Find a Role to Simulate</h2>
 
             <div className="relative mb-8">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400" />
@@ -213,9 +213,9 @@ export default function CareerSimulatorPage() {
             className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden"
           >
             <div className="p-6 md:p-8">
-              <h2 className="text-xl font-bold mb-6">What You'll Learn</h2>
+              <h2 className="text-2xl font-bold mb-6 roca-bold">What You'll Learn</h2>
               <div className="grid md:grid-cols-2 gap-4">
-                {[
+                {[ 
                   "Daily responsibilities and tasks of the role",
                   "Required skills and knowledge",
                   "Common challenges and how to overcome them",

@@ -27,7 +27,6 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (user) {
-
       if (
         user.user?.verificationCode &&
         !isNaN(Number(user.user?.verificationCode))
@@ -214,12 +213,6 @@ export default function LoginPage() {
 
       if (
         loggedInUser.user?.pickedSkill &&
-        (!loggedInUser.user?.skillsAssessment ||
-          loggedInUser.user.skillsAssessment.length === 0) &&
-        (!loggedInUser.user?.selectedSkills ||
-          loggedInUser.user.selectedSkills.length === 0) &&
-        (!loggedInUser.user?.careerAssessment ||
-          loggedInUser.user.careerAssessment.length === 0) &&
         loggedInUser.user?.learningPath.length > 0
       ) {
         router.push("/my-learning");

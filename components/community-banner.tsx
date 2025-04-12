@@ -19,7 +19,7 @@ export default function CommunityBanner() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 min-[400px]:gap-6">
-            <Link href="/community">
+            <Link href="https://chat.whatsapp.com/EI3hdPCTkxD9WIazjdZqgr" target="_blank" rel="noopener noreferrer">
               <Button>
                 Join Our Community
               </Button>
