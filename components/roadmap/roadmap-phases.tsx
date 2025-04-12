@@ -116,7 +116,7 @@ RoadmapPhasesProps) {
           Go to dashboard
         </Button>
 
-        <Button onClick={() => (window.location.href = `/my-learning/${slugify(user?.user?.pickedSkill)}`)}>
+        <Button onClick={() => (window.location.href = `/my-learning/${slugify(user?.user?.pickedSkill)}/content`)}>
           Start learning
         </Button>
       </div>

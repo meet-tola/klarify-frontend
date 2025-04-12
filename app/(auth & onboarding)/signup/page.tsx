@@ -38,27 +38,73 @@ export default function SignUpPage() {
         return;
       }
 
-      // If the user hasn't selected any skills, show the dialog
-      if (!user.user?.selectedSkills || user.user.selectedSkills.length === 0) {
-        setIsDialogOpen(true);
+      // Check if all fields are null or empty except pickedSkill
+      const isAllNullExceptPickedSkill =
+        (!user.user?.skillsAssessment ||
+          user.user.skillsAssessment.length === 0) &&
+        (!user.user?.selectedSkills || user.user.selectedSkills.length === 0) &&
+        (!user.user?.careerAssessment ||
+          user.user.careerAssessment.length === 0) &&
+        (!user.user?.learningPath || user.user.learningPath.length === 0) &&
+        user.user?.pickedSkill;
+
+      if (isAllNullExceptPickedSkill) {
+        router.push("/roadmap");
         return;
       }
 
-      // If the user has selected skills but hasn't picked a specific skill, redirect to step two
-      if (user.user.selectedSkills.length > 0 && !user.user?.pickedSkill) {
+      // If no pickedSkill and skillsAssessment and careerAssessment is empty, open dialog
+      if (
+        !user.user?.pickedSkill &&
+        (!user.user?.skillsAssessment ||
+          user.user.skillsAssessment.length === 0) &&
+        (!user.user?.careerAssessment ||
+          user.user.careerAssessment.length === 0)
+      ) {
+        // setIsDialogOpen(true);
+        router.push("/roadmap");
+        return;
+      }
+
+      // If the user no pickedSkill and skills Assessment, go to step two
+      if (!user.user?.pickedSkill && user.user?.skillsAssessment?.length > 0) {
         router.push("/onboarding?step=two");
+        return;
+      }
+
+      // If the user has pickedSkill but no selectedSkills, go to roadmap
+      if (
+        user.user?.pickedSkill &&
+        (!user.user?.selectedSkills || user.user.selectedSkills.length === 0)
+      ) {
+        router.push("/roadmap");
         return;
       }
 
       // If the user has picked a skill but hasn't completed the career assessment, redirect to step three
       if (
-        !user.user?.careerAssessment ||
-        user.user.careerAssessment.length === 0
+        user.user?.pickedSkill &&
+        user.user?.selectedSkills?.length > 0 &&
+        (!user.user?.careerAssessment ||
+          user.user.careerAssessment.length === 0)
       ) {
         router.push("/onboarding?step=three");
         return;
       }
-      router.push("/dashboard");
+
+      // If the user has completed the career assessment but hasn't set up a learning path, redirect to step four
+      if (
+        user.user?.pickedSkill &&
+        user.user?.selectedSkills?.length > 0 &&
+        user.user?.careerAssessment?.length > 0 &&
+        (!user.user?.learningPath || user.user.learningPath.length === 0)
+      ) {
+        router.push("/onboarding?step=four");
+        return;
+      }
+
+      // If all steps are completed, redirect to the roadmap
+      router.push("/my-learning");
     }
   }, [user, router]);
 
@@ -93,13 +139,13 @@ export default function SignUpPage() {
   return (
     <>
       {/* Dialog for skill selection */}
-      <JourneyDialog
+      {/* <JourneyDialog
         open={isDialogOpen}
         onClose={() => {
           setIsDialogOpen(false);
           router.push("/onboarding?step=one");
         }}
-      />
+      /> */}
 
       <div className="flex-1 flex items-center justify-center p-6">
         <motion.div

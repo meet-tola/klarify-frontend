@@ -101,7 +101,7 @@ export default function LoginPage() {
       }
 
       // If all steps are completed, redirect to the roadmap
-      router.push("/roadmap");
+      router.push("/my-learning");
     }
   }, [user, router]);
 
