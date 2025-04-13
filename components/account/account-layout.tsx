@@ -10,7 +10,6 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { ChevronDown, User, Award, BarChart, CreditCard, Settings } from "lucide-react"
-import Footer from "../footer"
 
 interface AccountLayoutProps {
   children: React.ReactNode
@@ -50,7 +49,7 @@ export default function AccountLayoutClient({ children }: AccountLayoutProps) {
         </div>
       )}
 
-      <div className="flex flex-1">
+      <div className="flex flex-1 px-4 md:px-12">
         {/* Desktop sidebar - only visible on medium screens and up */}
         {shouldShowNav && (
           <aside className="hidden border-r md:block md:w-64">
@@ -62,7 +61,7 @@ export default function AccountLayoutClient({ children }: AccountLayoutProps) {
           </aside>
         )}
 
-        <main className={cn("flex-1 p-4 md:p-6", !shouldShowNav && "md:container md:mx-auto")}>{children}</main>
+        <main className={cn("flex-1 py-4 md:p-6", !shouldShowNav && "md:container md:mx-auto")}>{children}</main>
       </div>
     </div>
   )

@@ -3,10 +3,15 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Progress } from "@/components/ui/progress";
-import { generateRoadmapContent, generateRoadmapSectionContent, getRoadmap } from "@/lib/api";
+import {
+  generateRoadmapContent,
+  generateRoadmapSectionContent,
+  getRoadmap,
+} from "@/lib/api";
 import { useAuthContext } from "@/context/auth-provider";
 import { Loader2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface AnalyzingScreenProps {
   onComplete?: () => void;
@@ -57,22 +62,23 @@ export default function AnalyzingScreen({
   const [factIndex, setFactIndex] = useState(0);
   const [titleIndex, setTitleIndex] = useState(0);
   const { user } = useAuthContext();
+  const router = useRouter();
   const hasGenerated = useRef(false);
 
   useEffect(() => {
     if (hasGenerated.current) return;
     hasGenerated.current = true;
+    if (user?.user.learningPath && user.user.learningPath.length > 0) {
+      toast.message("You already have a generated roadmap");
+      router.push("/roadmap");
+      return;
+    }
 
     // Start generating the roadmap content
     const generateRoadmap = async () => {
       try {
         await generateRoadmapContent(userId);
-        const roadmap = await getRoadmap(userId);
-        await generateRoadmapSectionContent(
-          userId as string,
-          roadmap._id as string,
-          0
-        );
+
         onComplete?.();
       } catch (error: any) {
         toast.error(error?.message || "Failed to generate roadmap");

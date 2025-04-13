@@ -16,6 +16,7 @@ interface MobileTabsProps {
 }
 
 export default function MobileTabs({ activeTab, setActiveTab, courseProgress, className }: MobileTabsProps) {
+  
   return (
     <div className={className}>
       {/* Course Progress Bar */}

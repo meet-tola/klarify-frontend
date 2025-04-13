@@ -9,6 +9,7 @@ import {
   getRoadmap,
   clearUserSkills,
   generateRoadmapSectionContent,
+  checkSectionsStatus,
 } from "@/lib/api";
 import { slugify } from "@/lib/slugify";
 
@@ -76,9 +77,13 @@ export default function RoadmapPage() {
 
   const handleGetRoadmap = async () => {
     try {
-      const roadmap = await getRoadmap(userId as string);
-      if (roadmap && roadmap.phases) {
-        const transformedPhases = roadmap.phases.map(
+      if (!user?.user?.pickedSkill) {
+        throw new Error("Picked skill is not defined");
+      }
+
+      const roadmap = await getRoadmap(userId as string, user.user.pickedSkill);
+      if (roadmap && roadmap.roadmap.phases) {
+        const transformedPhases = roadmap.roadmap.phases.map(
           (phase: any, index: number) => ({
             id: index + 1,
             title: phase.phaseTitle,
@@ -103,17 +108,36 @@ export default function RoadmapPage() {
     setIsAnalyzing(true);
   };
 
-  // const handleStartLearning = async () => {
-  //   setIsFetchingContent(true);
+  const handleStartLearning = async () => {
+    if (!user?.user.learningPath?.[0]?.roadmap) return;
 
-  //   try {
-  //     if (!user?.user.learningPath?.[0]?.roadmap) return;
-  //   } catch (error: any) {
-  //     toast.error(error?.message || "Failed to load content");
-  //   } finally {
-  //     setIsFetchingContent(false);
-  //   }
-  // };
+    setIsFetchingContent(true);
+    if (!user.user.pickedSkill) {
+      throw new Error("Picked skill is not defined");
+    }
+
+    const pollForSections = async () => {
+      try {
+        const roadmap = await getRoadmap(
+          userId as string,
+          user.user.pickedSkill ?? ""
+        );
+        const roadmapId = roadmap?.roadmap?._id;
+        const check = await checkSectionsStatus(userId as string, roadmapId);
+
+        if (check.sectionsGenerated) {
+          router.push(`/my-learning/${slugify(user.user.pickedSkill)}/content`);
+        } else {
+          setTimeout(pollForSections, 5000);
+        }
+      } catch (error: any) {
+        toast.error(error || "Error checking lesson readiness");
+        setIsFetchingContent(false);
+      }
+    };
+
+    pollForSections();
+  };
 
   const handleSelectSkill = async () => {
     try {
@@ -169,7 +193,8 @@ export default function RoadmapPage() {
             {showRoadmap && (
               <RoadmapPhases
                 phases={phases}
-                // onStartLearning={handleStartLearning}
+                onStartLearning={handleStartLearning}
+                onCloseRoadmap={() => setShowRoadmap(false)}
               />
             )}
           </>

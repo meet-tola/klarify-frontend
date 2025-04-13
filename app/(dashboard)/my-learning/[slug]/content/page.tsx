@@ -14,6 +14,7 @@ import { useParams, useRouter } from "next/navigation";
 import { slugify } from "@/lib/slugify";
 import { getRoadmapContent } from "@/lib/api";
 import LoadingScreen from "@/components/loading-screen";
+import { set } from "date-fns";
 
 export default function CoursePage() {
   const [showSidebar, setShowSidebar] = useState(false);
@@ -25,6 +26,7 @@ export default function CoursePage() {
   const [learningPath, setLearningPath] = useState<any>(null);
   const [roadmap, setRoadmap] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [completedLessons, setCompletedLessons] = useState<string[]>([]);
   const { slug } = useParams();
   const { user } = useAuthContext();
   const router = useRouter();
@@ -69,6 +71,31 @@ export default function CoursePage() {
     fetchLearningPath();
   }, [user]);
 
+  useEffect(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem("completedLessons") || "[]");
+      if (Array.isArray(stored)) {
+        setCompletedLessons(stored.filter((id) => typeof id === "string"));
+      }
+    } catch (err) {
+      console.error("Error reading completedLessons from localStorage:", err);
+    }
+  }, []);
+
+  // Calculate progress
+  const totalLessons = roadmap?.phases?.flatMap((phase: any) => phase.lessons).length || 0;
+  const completedCount = completedLessons.length;
+  const completionPercentage = totalLessons > 0 
+    ? Math.round((completedCount / totalLessons) * 100) 
+    : 0;
+
+  const courseProgress = {
+    completed: completedCount,
+    total: totalLessons,
+    percentage: completionPercentage,
+  };
+
+
   if (!user || slugify(user.user.pickedSkill) !== slug) {
     return null;
   }
@@ -101,20 +128,13 @@ export default function CoursePage() {
       setActiveView("outline");
       setActiveLessonId(null);
     } else if (activeView === "outline") {
+      setActiveView("outline");
       window.location.href = "/my-learning";
     }
   };
 
-  // Mock data for course progress
-  const courseProgress = {
-    completed: 8,
-    total: 42,
-    percentage: 19,
-  };
-
   const totalPhases = roadmap?.phases?.length || 0;
-  const totalLessons =
-    roadmap?.phases?.flatMap((phase: any) => phase.lessons).length || 0;
+
 
   return (
     <div className="flex flex-col h-screen bg-[#FDFDFF]">
@@ -204,6 +224,7 @@ export default function CoursePage() {
             showSidebar={showSidebar}
             setShowSidebar={setShowSidebar}
             onSelectLesson={handleStartLesson}
+            courseProgress={courseProgress}
             activeView={activeView}
             learningPath={learningPath}
             roadmap={roadmap}

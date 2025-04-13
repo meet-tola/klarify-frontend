@@ -173,10 +173,10 @@ export default function GoalsPage() {
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <Target className="text-primary" />
-            My Learning Goals
+            My Goals
           </h1>
           <Button disabled>
-            <Plus size={16} className="mr-2" /> Create Goal
+            <Plus className="mr-2" /> Create Goal
           </Button>
         </div>
         <div className="text-center py-12">

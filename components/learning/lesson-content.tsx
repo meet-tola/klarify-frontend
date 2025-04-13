@@ -15,7 +15,7 @@ interface LessonContentProps {
   onBack: () => void;
   setActiveTab: (tab: "content" | "materials") => void;
   activeTab: "content" | "materials";
-  onStartLesson: (lessonId: string) => void; 
+  onStartLesson: (lessonId: string) => void;
   learningPath: {
     youtubeVideos: {
       title: string;
@@ -82,53 +82,23 @@ export default function LessonContent({
   roadmap,
 }: LessonContentProps) {
   const { user } = useAuthContext();
-  const [scrollProgress, setScrollProgress] = useState(0);
   const [isLessonCompleted, setIsLessonCompleted] = useState(false);
   const [relatedGoals, setRelatedGoals] = useState<any[]>([]);
   const [isLoadingGoals, setIsLoadingGoals] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
   // Find the current lesson based on lessonId
-  const currentLesson = roadmap.phases
-    .flatMap((phase) => phase.lessons)
-    .find((lesson) => lesson._id === lessonId);
+  const currentPhase = roadmap.phases.find((phase) =>
+    phase.lessons.some((lesson) => lesson._id === lessonId)
+  );
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!contentRef.current) return;
-
-      const scrollHeight = contentRef.current.scrollHeight;
-      const scrollTop = contentRef.current.scrollTop;
-      const clientHeight = contentRef.current.clientHeight;
-
-      // Calculate scroll percentage
-      const scrolled = Math.min(
-        100,
-        Math.round((scrollTop / (scrollHeight - clientHeight)) * 100)
-      );
-      setScrollProgress(isNaN(scrolled) ? 0 : scrolled);
-
-      // Mark as completed when scrolled to 90%
-      if (scrolled >= 90) {
-        setIsLessonCompleted(true);
-      }
-    };
-
-    const contentElement = contentRef.current;
-    if (contentElement) {
-      contentElement.addEventListener("scroll", handleScroll);
-
-      return () => {
-        contentElement.removeEventListener("scroll", handleScroll);
-      };
-    }
-
-    const today = new Date().toISOString().split("T")[0];
-    const lastUpdate = localStorage.getItem("lastProgressUpdate");
-    if (lastUpdate && lastUpdate === today) {
-      setIsLessonCompleted(true);
-    }
-  }, []);
+  const currentLesson = currentPhase?.lessons.find(
+    (lesson) => lesson._id === lessonId
+  );
+  const lessonNumber = currentPhase
+    ? currentPhase.lessons.findIndex((lesson) => lesson._id === lessonId) + 1
+    : 0;
+  const totalLessonsInPhase = currentPhase?.lessons.length || 0;
 
   useEffect(() => {
     const fetchRelatedGoals = async () => {
@@ -146,7 +116,6 @@ export default function LessonContent({
             progress: { completed: any };
           }) => goal.skill === currentSkill && !goal.progress.completed
         );
-        console.log("Checking for matching goals", matchingGoals);
         setRelatedGoals(matchingGoals);
       } catch (error) {
         console.error("Failed to fetch goals:", error);
@@ -248,25 +217,29 @@ export default function LessonContent({
 
   const handlePreviousLesson = () => {
     if (!currentLesson) return;
-    
+
     const allLessons = roadmap.phases.flatMap((phase) => phase.lessons);
-    const currentIndex = allLessons.findIndex((lesson) => lesson._id === currentLesson._id);
-    
+    const currentIndex = allLessons.findIndex(
+      (lesson) => lesson._id === currentLesson._id
+    );
+
     if (currentIndex > 0) {
       const previousLesson = allLessons[currentIndex - 1];
-      onStartLesson(previousLesson._id); 
+      onStartLesson(previousLesson._id);
     }
   };
 
   const handleNextLesson = () => {
     if (!currentLesson) return;
-    
+
     const allLessons = roadmap.phases.flatMap((phase) => phase.lessons);
-    const currentIndex = allLessons.findIndex((lesson) => lesson._id === currentLesson._id);
-    
+    const currentIndex = allLessons.findIndex(
+      (lesson) => lesson._id === currentLesson._id
+    );
+
     if (currentIndex < allLessons.length - 1) {
       const nextLesson = allLessons[currentIndex + 1];
-      onStartLesson(nextLesson._id); 
+      onStartLesson(nextLesson._id);
     }
   };
 
@@ -384,24 +357,21 @@ export default function LessonContent({
       )}
 
       {/* Bottom Progress Bar */}
-      <div className="fixed bottom-0 left-0 right-0 px-4 md:px-8 md:right-[20rem] lg:right-[24rem] bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t z-30 md:z-10">
+      <div className="fixed bottom-0 left-0 right-0 px-4 md:px-8 md:right-[20rem] lg:right-[24rem] bg-background/80 border-t">
         <div className="max-w-5xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between mb-4">
             <div className="text-xs font-medium">
-              Lesson {currentLesson?.lessonNumber} of{" "}
-              {currentLesson?.totalLessons}
+              Lesson {lessonNumber} of {totalLessonsInPhase}
             </div>
             <Button
               variant={isLessonCompleted ? "outline" : "default"}
-              size="sm"
               onClick={handleMarkAsRead}
               disabled={isLessonCompleted}
-              className="h-7 text-xs"
+              className="h-7 text-sm"
             >
               {isLessonCompleted ? "Completed" : "Mark as Read"}
             </Button>
           </div>
-          <Progress value={scrollProgress} className="h-1" />
         </div>
       </div>
     </div>

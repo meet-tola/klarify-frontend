@@ -1,10 +1,18 @@
+"use client";
 import CommunityBanner from "@/components/community-banner";
 import Footer from "@/components/footer";
+import { usePathname } from "next/navigation";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+
+  // Exclude layout for "/my-learning/[slug]/content"
+  if (pathname.match(/^\/my-learning\/[^/]+\/content$/)) {
+    return <>{children}</>;
+  }
   return (
     <div>
-      <main className="flex-1 px-4 md:px-12">{children}</main>
+      {children}
       <CommunityBanner />
       <Footer />
     </div>

@@ -207,10 +207,12 @@ export const evaluateCareerAnswers = async (userId: string, answers: { questionI
 };
 
 // LEARNING & ROADMAP
-export const getRoadmap = async (userId: string) => {
+export const getRoadmap = async (userId: string, pickedSkill: string) => {
   try {
-    const response = await API.get(`/roadmap/${userId}/roadmap`);
-    return response.data.roadmaps[0];
+    const response = await API.post(`/roadmap/${userId}/roadmap-by-skill`, {
+      pickedSkill,
+    });
+    return response.data;
   } catch (error: any) {
     handleError(error);
   }
@@ -225,7 +227,7 @@ export const generateRoadmapContent = async (userId: string) => {
   }
 };
 
-export const generateRoadmapSectionContent = async (userId: string, roadmapId: string, phaseIndex: number = 0) => {
+export const generateRoadmapSectionContent = async (userId: string, roadmapId: string, phaseIndex: number) => {
   try {
     const response = await API.post(`/roadmap/${userId}/sections`, {
       roadmapId,
@@ -241,6 +243,18 @@ export const getRoadmapContent = async (userId: string, pickedSkill: string) => 
   try {
     const response = await API.post(`/roadmap/${userId}/learning-path`, {
       pickedSkill,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error selecting skill:", error);
+    throw error;
+  }
+};
+
+export const checkSectionsStatus = async (userId: string, roadmapId: string) => {
+  try {
+    const response = await API.post(`/roadmap/${userId}/sections-status`, {
+      roadmapId,
     });
     return response.data;
   } catch (error) {

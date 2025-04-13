@@ -51,7 +51,7 @@ export default function PathPage() {
     const completedLessons = JSON.parse(
       localStorage.getItem("completedLessons") || "[]"
     ) as string[];
-    const totalLessons = 50; 
+    const totalLessons = 50;
     setCourseProgress(
       Math.round((completedLessons.length / totalLessons) * 100)
     );
@@ -69,18 +69,18 @@ export default function PathPage() {
     roadmap?.phases?.flatMap((phase: any) => phase.lessons).length || 0;
 
   return (
-    <div className="container py-10 max-w-7xl">
+    <div className="w-full flex-1 px-4 md:px-20 py-10">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Left column (2/3 width) */}
         <div className="md:col-span-2 space-y-8">
-          <ContinueLearningSection 
+          <ContinueLearningSection
             skill={user?.user.pickedSkill ?? ""}
             level={roadmap?.level}
             totalLessons={totalLessons}
             courseProgress={courseProgress}
             slug={slug as string}
           />
-          <MaterialsGuidesSection />
+          <MaterialsGuidesSection skill={user?.user.pickedSkill ?? ""} />
         </div>
 
         {/* Right column (1/3 width) - Learning Tips */}

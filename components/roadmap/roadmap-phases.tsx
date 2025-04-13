@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuthContext } from "@/context/auth-provider";
 import { slugify } from "@/lib/slugify";
@@ -22,13 +22,15 @@ interface Phase {
 
 interface RoadmapPhasesProps {
   phases: Phase[];
-  // onStartLearning: () => void;
+  onStartLearning: () => void;
+  onCloseRoadmap: () => void;
 }
 
 export default function RoadmapPhases({
   phases,
-}: // onStartLearning,
-RoadmapPhasesProps) {
+  onStartLearning,
+  onCloseRoadmap, 
+}: RoadmapPhasesProps) {
   const [expandedPhase, setExpandedPhase] = useState<number>(1);
   const { user } = useAuthContext();
 
@@ -43,9 +45,20 @@ RoadmapPhasesProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <h2 className="text-2xl font-bold mb-4 roca-bold">
-        Your Personalized Roadmap
-      </h2>
+       <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold roca-bold">
+          Your Personalized Roadmap
+        </h2>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onCloseRoadmap}
+          className="rounded-full"
+          aria-label="Close roadmap"
+        >
+          <X className="h-5 w-5" />
+        </Button>
+      </div>
       <motion.div
         className="space-y-4 w-full"
         initial={{ opacity: 0, y: 20 }}
@@ -116,9 +129,7 @@ RoadmapPhasesProps) {
           Go to dashboard
         </Button>
 
-        <Button onClick={() => (window.location.href = `/my-learning/${slugify(user?.user?.pickedSkill)}/content`)}>
-          Start learning
-        </Button>
+        <Button onClick={onStartLearning}>Start learning</Button>
       </div>
     </motion.div>
   );

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, ChevronRight, Info } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -7,8 +7,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { slugify } from "@/lib/slugify";
 
-export default function MaterialsGuidesSection() {
+export default function MaterialsGuidesSection({ skill }: { skill: string }) {
   return (
     <section>
       <h2 className="text-2xl font-bold roca-bold mb-6">Materials & Guides</h2>
@@ -48,7 +49,7 @@ export default function MaterialsGuidesSection() {
           </CardContent>
           <CardFooter className="pt-0">
             <Link
-              href="/my-learning/projects"
+              href={`/my-learning/${slugify(skill)}/projects`}
               className="flex items-center justify-between text-sm font-medium text-primary hover:underline"
             >
               <span>View all projects</span>
@@ -70,7 +71,7 @@ export default function MaterialsGuidesSection() {
           </CardContent>
           <CardFooter className="pt-0">
             <Link
-              href="/my-learning/videos-articles"
+              href={`/my-learning/${slugify(skill)}/videos-articles`}
               className="flex items-center justify-between text-sm font-medium text-primary hover:underline"
             >
               <span>View all projects</span>
