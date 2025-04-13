@@ -186,6 +186,7 @@ export default function OnboardingPage() {
   }
 
   const userId = user.user?._id;
+  const skill = user.user?.pickedSkill;
 
   // Render the current step component
   const renderStep = () => {
@@ -221,6 +222,7 @@ export default function OnboardingPage() {
             onOptionSelect={handleOptionSelect}
             onNextStep={handleNextStep}
             userId={userId}
+            skill={skill ?? ""}
           />
         );
       default:

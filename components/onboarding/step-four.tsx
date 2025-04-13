@@ -23,6 +23,7 @@ interface StepFourProps {
   onOptionSelect: (questionId: string, optionId: string) => void;
   onNextStep: () => void;
   userId: string;
+  skill: string;
 }
 
 export default function StepFour({
@@ -30,6 +31,7 @@ export default function StepFour({
   onOptionSelect,
   onNextStep,
   userId,
+  skill,
 }: StepFourProps) {
   const [isAnalyzing, setIsAnalyzing] = useState(true);
   const [expandedPhase, setExpandedPhase] = useState<number>(1);
@@ -46,7 +48,7 @@ export default function StepFour({
     // Fetch roadmap data
     const fetchRoadmapData = async () => {
       try {
-        const roadmap = await getRoadmap(userId);
+        const roadmap = await getRoadmap(userId, skill);
         setRoadmapSkill(roadmap.skill);
         if (roadmap && roadmap.phases) {
           const transformedPhases = roadmap.phases.map(
@@ -187,9 +189,7 @@ export default function StepFour({
                         <div className="absolute left-0 top-1/2 -translate-y-1/2">
                           <div className="w-2 h-2 rounded-full bg-primary" />
                         </div>
-                        <p className="font-medium">
-                          {lesson.title}
-                        </p>
+                        <p className="font-medium">{lesson.title}</p>
                         <p className="text-sm text-muted-foreground">
                           {lesson.summary}
                         </p>
