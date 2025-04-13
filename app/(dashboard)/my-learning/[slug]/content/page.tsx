@@ -73,7 +73,9 @@ export default function CoursePage() {
 
   useEffect(() => {
     try {
-      const stored = JSON.parse(localStorage.getItem("completedLessons") || "[]");
+      const stored = JSON.parse(
+        localStorage.getItem("completedLessons") || "[]"
+      );
       if (Array.isArray(stored)) {
         setCompletedLessons(stored.filter((id) => typeof id === "string"));
       }
@@ -83,18 +85,17 @@ export default function CoursePage() {
   }, []);
 
   // Calculate progress
-  const totalLessons = roadmap?.phases?.flatMap((phase: any) => phase.lessons).length || 0;
+  const totalLessons =
+    roadmap?.phases?.flatMap((phase: any) => phase.lessons).length || 0;
   const completedCount = completedLessons.length;
-  const completionPercentage = totalLessons > 0 
-    ? Math.round((completedCount / totalLessons) * 100) 
-    : 0;
+  const completionPercentage =
+    totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0;
 
   const courseProgress = {
     completed: completedCount,
     total: totalLessons,
     percentage: completionPercentage,
   };
-
 
   if (!user || slugify(user.user.pickedSkill) !== slug) {
     return null;
@@ -134,7 +135,6 @@ export default function CoursePage() {
   };
 
   const totalPhases = roadmap?.phases?.length || 0;
-
 
   return (
     <div className="flex flex-col h-screen bg-[#FDFDFF]">
@@ -206,6 +206,11 @@ export default function CoursePage() {
                 learningPath={learningPath}
                 roadmap={roadmap}
                 onStartLesson={handleStartLesson}
+                resources={{
+                  exercises: [],
+                  youtubeVideos: [],
+                  articles: [],
+                }}
               />
             )}
           </div>

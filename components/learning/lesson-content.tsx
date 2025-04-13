@@ -3,12 +3,29 @@
 import { useState, useEffect, useRef } from "react";
 import { ArrowLeft, ArrowRight, ExternalLink, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { atomOneDark } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import CourseMaterials from "./course-materials";
 import { useAuthContext } from "@/context/auth-provider";
 import { getUserGoals, updateGoalProgress } from "@/lib/api";
+
+interface Resources {
+  exercises: {
+    title: string;
+    description: string;
+    tasks: string[];
+  }[];
+  youtubeVideos: {
+    title: string;
+    url: string;
+    thumbnail: string;
+  }[];
+  articles: {
+    title: string;
+    url: string;
+    author: string;
+  }[];
+}
 
 interface LessonContentProps {
   lessonId: string;
@@ -68,11 +85,12 @@ interface LessonContentProps {
             items: string[];
           };
         }[];
+        resources: Resources; // Use the Resources interface here
       }[];
     }[];
   };
+  // Remove the separate resources definition here
 }
-
 export default function LessonContent({
   lessonId,
   onBack,
@@ -338,6 +356,17 @@ export default function LessonContent({
             </p>
           </div>
 
+          {/* Resources Section */}
+          <ResourcesSection
+            resources={
+              currentLesson?.resources || {
+                exercises: [],
+                youtubeVideos: [],
+                articles: [],
+              }
+            }
+          />
+
           {/* Navigation Buttons */}
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-between">
             <Button
@@ -373,6 +402,122 @@ export default function LessonContent({
             </Button>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function ResourcesSection({ resources }: { resources: Resources }) {
+  const [activeTab, setActiveTab] = useState<
+    "exercises" | "videos" | "articles"
+  >("exercises");
+
+  return (
+    <div className="mt-8">
+      <div className="flex border-b">
+        <button
+          className={`px-4 py-2 font-medium ${
+            activeTab === "exercises"
+              ? "text-primary border-b-2 border-primary"
+              : "text-muted-foreground"
+          }`}
+          onClick={() => setActiveTab("exercises")}
+        >
+          Exercises
+        </button>
+        <button
+          className={`px-4 py-2 font-medium ${
+            activeTab === "videos"
+              ? "text-primary border-b-2 border-primary"
+              : "text-muted-foreground"
+          }`}
+          onClick={() => setActiveTab("videos")}
+        >
+          Videos
+        </button>
+        <button
+          className={`px-4 py-2 font-medium ${
+            activeTab === "articles"
+              ? "text-primary border-b-2 border-primary"
+              : "text-muted-foreground"
+          }`}
+          onClick={() => setActiveTab("articles")}
+        >
+          Articles
+        </button>
+      </div>
+
+      <div className="mt-4">
+        {activeTab === "exercises" && (
+          <div className="space-y-6">
+            {resources.exercises.map((exercise, index) => (
+              <div key={index} className="p-4 border rounded-lg">
+                <h3 className="text-lg font-bold mb-2">{exercise.title}</h3>
+                <p className="text-muted-foreground mb-4">
+                  {exercise.description}
+                </p>
+                <h4 className="font-medium mb-2">Tasks:</h4>
+                <ul className="list-disc pl-6 space-y-1">
+                  {exercise.tasks.map((task, taskIndex) => (
+                    <li key={taskIndex} className="text-muted-foreground">
+                      {task}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {activeTab === "videos" && (
+          <div className="grid gap-4 md:grid-cols-2">
+            {resources.youtubeVideos.map((video, index) => (
+              <div key={index} className="border rounded-lg overflow-hidden">
+                <a href={video.url} target="_blank" rel="noopener noreferrer">
+                  <div className="relative aspect-video">
+                    <img
+                      src={video.thumbnail}
+                      alt={video.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                      <Play className="h-10 w-10 text-white" />
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-bold line-clamp-2">{video.title}</h3>
+                    <div className="flex items-center mt-2 text-sm text-muted-foreground">
+                      <ExternalLink className="h-4 w-4 mr-1" />
+                      Watch on YouTube
+                    </div>
+                  </div>
+                </a>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {activeTab === "articles" && (
+          <div className="space-y-4">
+            {resources.articles.map((article, index) => (
+              <div
+                key={index}
+                className="border rounded-lg p-4 hover:bg-muted/50"
+              >
+                <a href={article.url} target="_blank" rel="noopener noreferrer">
+                  <h3 className="font-bold mb-1">{article.title}</h3>
+                  <p className="text-sm text-muted-foreground">
+                    By {article.author}
+                  </p>
+                  <div className="flex items-center mt-2 text-sm text-primary">
+                    <ExternalLink className="h-4 w-4 mr-1" />
+                    Read article
+                  </div>
+                </a>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
