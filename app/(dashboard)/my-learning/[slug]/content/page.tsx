@@ -206,11 +206,6 @@ export default function CoursePage() {
                 learningPath={learningPath}
                 roadmap={roadmap}
                 onStartLesson={handleStartLesson}
-                resources={{
-                  exercises: [],
-                  youtubeVideos: [],
-                  articles: [],
-                }}
               />
             )}
           </div>
