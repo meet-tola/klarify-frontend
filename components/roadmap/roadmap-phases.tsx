@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, X } from "lucide-react";
+import { ChevronDown, Loader2, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuthContext } from "@/context/auth-provider";
 import { slugify } from "@/lib/slugify";
@@ -29,9 +29,10 @@ interface RoadmapPhasesProps {
 export default function RoadmapPhases({
   phases,
   onStartLearning,
-  onCloseRoadmap, 
+  onCloseRoadmap,
 }: RoadmapPhasesProps) {
   const [expandedPhase, setExpandedPhase] = useState<number>(1);
+  const [isStarting, setIsStarting] = useState(false);
   const { user } = useAuthContext();
 
   const togglePhase = (phaseId: number) => {
@@ -45,7 +46,7 @@ export default function RoadmapPhases({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-       <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold roca-bold">
           Your Personalized Roadmap
         </h2>
@@ -129,7 +130,24 @@ export default function RoadmapPhases({
           Go to dashboard
         </Button>
 
-        <Button onClick={onStartLearning}>Start learning</Button>
+        <Button
+          onClick={async () => {
+            if (isStarting) return;
+            setIsStarting(true);
+            onStartLearning();
+            setIsStarting(false);
+          }}
+          disabled={isStarting}
+        >
+          {isStarting ? (
+            <div className="flex items-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Loading...
+            </div>
+          ) : (
+            "Start learning"
+          )}
+        </Button>
       </div>
     </motion.div>
   );
