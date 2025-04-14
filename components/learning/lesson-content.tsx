@@ -427,7 +427,7 @@ function ResourcesSection({ resources }: { resources: Resources }) {
 
   return (
     <div className="mt-8">
-      <h2 className="text-xl font-bold mb-4">Additional Resources</h2>
+      <h2 className="text-xl font-bold mb-4 roca-bold">Additional Resources</h2>
       
       {/* Tab Navigation */}
       <div className="flex border-b">
