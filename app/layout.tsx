@@ -57,6 +57,7 @@ export default function RootLayout({
     >
       <head>
         <link rel="icon" href="/favicon.png" sizes="any" />
+        <meta name="google-site-verification" content="uQeyhUfqFfqo3fL-D5371wmclaUFpoecRhHjI4ZXFTc" />
       </head>
       <AuthProvider>
         <body>
