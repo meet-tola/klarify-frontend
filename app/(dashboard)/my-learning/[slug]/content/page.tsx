@@ -99,7 +99,6 @@ export default function CoursePage() {
     }
   }, []);
 
-
   // Calculate progress
   const totalLessons =
     roadmap?.phases?.flatMap((phase: any) => phase.lessons).length || 0;
