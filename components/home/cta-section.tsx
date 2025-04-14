@@ -3,6 +3,7 @@
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
+import Link from "next/link"
 
 export default function CTASection() {
   return (
@@ -27,10 +28,12 @@ export default function CTASection() {
               learning roadmaps tailored to your goals.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
+              <Link href="/signup" className="w-full sm:w-auto">
               <Button >
                 Sign Up Free
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
+              </Link>
             </div>
           </motion.div>
 
