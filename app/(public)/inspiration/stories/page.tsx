@@ -228,7 +228,7 @@ export default function SuccessStories() {
                           </div>
                         )}
 
-                        <Link href={`/stories/${story.id}`}>
+                        <Link href={`/inspiration/stories/${story.id}`}>
                           <Button
                             variant="ghost"
                             size="sm"
