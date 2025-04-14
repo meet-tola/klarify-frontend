@@ -17,6 +17,7 @@ export default function PathPage() {
   const [roadmap, setRoadmap] = useState<any>(null);
   const [learningPath, setLearningPath] = useState<any>(null);
   const [courseProgress, setCourseProgress] = useState(0);
+  const [isLoading, setIsLoading] = useState(true); // Add loading state for content
 
   useEffect(() => {
     if (user && slugify(user.user.pickedSkill) !== slug) {
@@ -26,6 +27,7 @@ export default function PathPage() {
     const fetchRoadmapContent = async () => {
       if (user?.user?.pickedSkill) {
         try {
+          setIsLoading(true); // Set loading to true when starting fetch
           const data = await getRoadmapContent(
             user.user._id,
             user.user.pickedSkill
@@ -40,6 +42,8 @@ export default function PathPage() {
           }
         } catch (error) {
           console.error("Failed to fetch learning path:", error);
+        } finally {
+          setIsLoading(false); // Set loading to false when done
         }
       }
     };
@@ -79,13 +83,17 @@ export default function PathPage() {
             totalLessons={totalLessons}
             courseProgress={courseProgress}
             slug={slug as string}
+            isLoading={isLoading || !roadmap} 
           />
           <MaterialsGuidesSection skill={user?.user.pickedSkill ?? ""} />
         </div>
 
         {/* Right column (1/3 width) - Learning Tips */}
         <div>
-          <LearningTipsDropdown learningPath={learningPath} />
+          <LearningTipsDropdown 
+            learningPath={learningPath} 
+            isLoading={isLoading || !learningPath}
+          />
         </div>
       </div>
     </div>

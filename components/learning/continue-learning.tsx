@@ -4,6 +4,7 @@ import Link from "next/link";
 import { getLevelColor } from "@/lib/get-level-color";
 import { Progress } from "../ui/progress";
 import { Button } from "../ui/button";
+import { Skeleton } from "../ui/skeleton";
 
 interface ContinueLearningProps {
   skill: string;
@@ -11,6 +12,7 @@ interface ContinueLearningProps {
   totalLessons: number;
   courseProgress: number;
   slug: string;
+  isLoading?: boolean; 
 }
 
 export default function ContinueLearningSection({
@@ -19,8 +21,42 @@ export default function ContinueLearningSection({
   totalLessons,
   courseProgress,
   slug,
+  isLoading = false,
 }: ContinueLearningProps) {
   const isEmpty = courseProgress === 0;
+
+  if (isLoading) {
+    return (
+      <section>
+        <Skeleton className="h-8 w-64 mb-2" />
+        <Skeleton className="h-5 w-80 mb-6" />
+        
+        <div className="bg-white rounded-lg border px-6 py-4 md:col-span-2">
+          <div className="h-full flex flex-col">
+            <Skeleton className="h-5 w-24 py-1" />
+            <Skeleton className="h-6 w-48 mb-4 mt-2" />
+            
+            <div className="space-y-4 mt-4">
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <Skeleton className="h-4 w-16" />
+                  <Skeleton className="h-4 w-10" />
+                </div>
+                <Skeleton className="h-2 w-full bg-gray-100" />
+              </div>
+              <div className="flex justify-between items-center">
+                <div className="flex items-center text-gray-500">
+                  <Skeleton className="h-5 w-5 mr-2" />
+                  <Skeleton className="h-4 w-24" />
+                </div>
+                <Skeleton className="h-9 w-24 rounded-md" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section>
