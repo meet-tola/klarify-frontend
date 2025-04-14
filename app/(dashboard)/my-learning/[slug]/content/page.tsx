@@ -12,9 +12,8 @@ import { cn } from "@/lib/utils";
 import { useAuthContext } from "@/context/auth-provider";
 import { useParams, useRouter } from "next/navigation";
 import { slugify } from "@/lib/slugify";
-import { getRoadmapContent } from "@/lib/api";
+import { checkSectionsStatus, getRoadmapContent } from "@/lib/api";
 import LoadingScreen from "@/components/loading-screen";
-import { set } from "date-fns";
 
 export default function CoursePage() {
   const [showSidebar, setShowSidebar] = useState(false);
@@ -47,22 +46,38 @@ export default function CoursePage() {
               user.user.pickedSkill
             );
 
-            // Check if data.learningPath.skill matches user.user.pickedSkill
             if (data.learningPath.skill === user.user.pickedSkill) {
-              const learningPathData = data.learningPath;
-              const roadmapData = data.roadmap;
+              setLearningPath(data.learningPath);
+              setRoadmap(data.roadmap);
 
-              setLearningPath(learningPathData);
-              setRoadmap(roadmapData);
+              // Start polling for section readiness
+              const pollForSections = async () => {
+                try {
+                  const roadmapId = data.roadmap?._id;
+                  const check = await checkSectionsStatus(
+                    user.user._id,
+                    roadmapId
+                  );
+
+                  if (check.sectionsGenerated) {
+                    setLoading(false);
+                  } else {
+                    setTimeout(pollForSections, 5000); // Retry after 5 seconds
+                  }
+                } catch (error) {
+                  console.error("Error polling for section readiness:", error);
+                  setLoading(false); // fallback to not block user forever
+                }
+              };
+
+              pollForSections();
             } else {
-              console.error(
-                "Skill mismatch: Learning path skill does not match user's picked skill"
-              );
+              console.error("Skill mismatch with learning path.");
+              setLoading(false);
             }
           }
         } catch (error) {
           console.error("Failed to fetch learning path:", error);
-        } finally {
           setLoading(false);
         }
       }

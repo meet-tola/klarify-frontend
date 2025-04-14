@@ -12,7 +12,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { generateRoadmapSectionContent } from "@/lib/api"
 
 interface CourseContentProps {
   onStartLesson: (lessonId: string) => void
@@ -39,10 +38,9 @@ interface CourseContentProps {
   setActiveTab: (tab: "content" | "materials") => void
 }
 
-export default function CourseContent({ onStartLesson, roadmap, activeTab, learningPath, userId }: CourseContentProps) {
+export default function CourseContent({ onStartLesson, roadmap, activeTab, learningPath }: CourseContentProps) {
   const [currentPhaseIndex, setCurrentPhaseIndex] = useState(0)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [isGenerating, setIsGenerating] = useState(false)
 
   // Check if all lessons in the current phase have sections
   const checkPhaseSections = () => {
@@ -61,21 +59,6 @@ export default function CourseContent({ onStartLesson, roadmap, activeTab, learn
     } else {
       // If no sections, show dialog
       setIsDialogOpen(true)
-    }
-  }
-
-  // Generate content for the next phase
-  const generateNextPhaseContent = async () => {
-    setIsGenerating(true)
-    try {
-      await generateRoadmapSectionContent(userId, roadmap._id, currentPhaseIndex)
-      // Move to next phase after generation
-      setCurrentPhaseIndex((prev) => Math.min(prev + 1, roadmap.phases.length - 1))
-    } catch (error) {
-      console.error("Failed to generate content:", error)
-    } finally {
-      setIsGenerating(false)
-      setIsDialogOpen(false)
     }
   }
 
@@ -141,21 +124,24 @@ export default function CourseContent({ onStartLesson, roadmap, activeTab, learn
         <CourseMaterials learningPath={learningPath} />
       )}
 
-      {/* Dialog for generating content */}
+      {/* Dialog for confirming phase completion */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Generate Next Phase Content</DialogTitle>
+            <DialogTitle>Continue to Next Phase?</DialogTitle>
             <DialogDescription>
-              You haven't completed this phase yet. Do you want to proceed and generate content for the next phase?
+              You haven't completed all lessons in this phase. Are you sure you want to proceed to the next phase?
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex flex-col sm:flex-row sm:justify-end gap-2 mt-4">
-            <Button variant="outline" onClick={() => setIsDialogOpen(false)} disabled={isGenerating}>
-              Cancel
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+              Stay in Current Phase
             </Button>
-            <Button onClick={generateNextPhaseContent} disabled={isGenerating}>
-              {isGenerating ? "Generating..." : "Continue"}
+            <Button onClick={() => {
+              setCurrentPhaseIndex((prev) => Math.min(prev + 1, roadmap.phases.length - 1))
+              setIsDialogOpen(false)
+            }}>
+              Continue to Next Phase
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -163,4 +149,3 @@ export default function CourseContent({ onStartLesson, roadmap, activeTab, learn
     </div>
   )
 }
-

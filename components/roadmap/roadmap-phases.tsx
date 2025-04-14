@@ -22,17 +22,15 @@ interface Phase {
 
 interface RoadmapPhasesProps {
   phases: Phase[];
-  onStartLearning: () => void;
+  // onStartLearning: () => void;
   onCloseRoadmap: () => void;
 }
 
 export default function RoadmapPhases({
   phases,
-  onStartLearning,
   onCloseRoadmap,
 }: RoadmapPhasesProps) {
   const [expandedPhase, setExpandedPhase] = useState<number>(1);
-  const [isStarting, setIsStarting] = useState(false);
   const { user } = useAuthContext();
 
   const togglePhase = (phaseId: number) => {
@@ -131,22 +129,11 @@ export default function RoadmapPhases({
         </Button>
 
         <Button
-          onClick={async () => {
-            if (isStarting) return;
-            setIsStarting(true);
-            onStartLearning();
-            setIsStarting(false);
+          onClick={() => {
+            window.location.href = "/my-learning";
           }}
-          disabled={isStarting}
         >
-          {isStarting ? (
-            <div className="flex items-center gap-2">
-              <Loader2 className="h-4 w-4 animate-spin" />
-              Loading...
-            </div>
-          ) : (
-            "Start learning"
-          )}
+          Start learning
         </Button>
       </div>
     </motion.div>

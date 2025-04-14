@@ -126,6 +126,8 @@ export default function LessonContent({
         setIsLoadingGoals(true);
         const allGoals = await getUserGoals(user.user._id);
 
+        console.log("roadmap", roadmap.phases);
+
         // Find goals that match the current skill (you'll need to determine the current skill)
         const currentSkill = user?.user?.pickedSkill;
         const matchingGoals = allGoals.filter(
@@ -408,114 +410,193 @@ export default function LessonContent({
 }
 
 function ResourcesSection({ resources }: { resources: Resources }) {
-  const [activeTab, setActiveTab] = useState<
-    "exercises" | "videos" | "articles"
-  >("exercises");
+  const [activeTab, setActiveTab] = useState<"exercises" | "videos" | "articles">("exercises");
+
+  const hasExercises = resources.exercises.length > 0;
+  const hasVideos = resources.youtubeVideos.length > 0;
+  const hasArticles = resources.articles.length > 0;
+
+  // If no resources at all, don't render the section
+  if (!hasExercises && !hasVideos && !hasArticles) {
+    return (
+      <div className="mt-8 text-center py-6 bg-muted/50 rounded-lg">
+        <p className="text-muted-foreground">No additional resources for this lesson</p>
+      </div>
+    );
+  }
 
   return (
     <div className="mt-8">
+      <h2 className="text-xl font-bold mb-4">Additional Resources</h2>
+      
+      {/* Tab Navigation */}
       <div className="flex border-b">
-        <button
-          className={`px-4 py-2 font-medium ${
-            activeTab === "exercises"
-              ? "text-primary border-b-2 border-primary"
-              : "text-muted-foreground"
-          }`}
-          onClick={() => setActiveTab("exercises")}
-        >
-          Exercises
-        </button>
-        <button
-          className={`px-4 py-2 font-medium ${
-            activeTab === "videos"
-              ? "text-primary border-b-2 border-primary"
-              : "text-muted-foreground"
-          }`}
-          onClick={() => setActiveTab("videos")}
-        >
-          Videos
-        </button>
-        <button
-          className={`px-4 py-2 font-medium ${
-            activeTab === "articles"
-              ? "text-primary border-b-2 border-primary"
-              : "text-muted-foreground"
-          }`}
-          onClick={() => setActiveTab("articles")}
-        >
-          Articles
-        </button>
+        {hasExercises && (
+          <button
+            className={`px-4 py-2 font-medium transition-colors ${
+              activeTab === "exercises"
+                ? "text-primary border-b-2 border-primary"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+            onClick={() => setActiveTab("exercises")}
+          >
+            Exercises
+          </button>
+        )}
+        {hasVideos && (
+          <button
+            className={`px-4 py-2 font-medium transition-colors ${
+              activeTab === "videos"
+                ? "text-primary border-b-2 border-primary"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+            onClick={() => setActiveTab("videos")}
+          >
+            Videos
+          </button>
+        )}
+        {hasArticles && (
+          <button
+            className={`px-4 py-2 font-medium transition-colors ${
+              activeTab === "articles"
+                ? "text-primary border-b-2 border-primary"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+            onClick={() => setActiveTab("articles")}
+          >
+            Articles
+          </button>
+        )}
       </div>
 
-      <div className="mt-4">
+      {/* Tab Content */}
+      <div className="mt-6">
         {activeTab === "exercises" && (
           <div className="space-y-6">
-            {resources.exercises.map((exercise, index) => (
-              <div key={index} className="p-4 border rounded-lg">
-                <h3 className="text-lg font-bold mb-2">{exercise.title}</h3>
-                <p className="text-muted-foreground mb-4">
-                  {exercise.description}
-                </p>
-                <h4 className="font-medium mb-2">Tasks:</h4>
-                <ul className="list-disc pl-6 space-y-1">
-                  {exercise.tasks.map((task, taskIndex) => (
-                    <li key={taskIndex} className="text-muted-foreground">
-                      {task}
-                    </li>
-                  ))}
-                </ul>
+            {hasExercises ? (
+              resources.exercises.map((exercise, index) => (
+                <div key={index} className="p-6 border rounded-lg bg-muted/5 hover:bg-muted/10 transition-colors">
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0 bg-primary/10 text-primary p-2 rounded-lg">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold mb-2">{exercise.title}</h3>
+                      <p className="text-muted-foreground mb-4">{exercise.description}</p>
+                      {exercise.tasks && (
+                        <div className="bg-muted/30 p-4 rounded-lg">
+                          <h4 className="font-medium mb-2 text-sm uppercase tracking-wider text-muted-foreground">Your Task</h4>
+                          <p className="text-foreground">{exercise.tasks}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-12">
+                <div className="mx-auto w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                  </svg>
+                </div>
+                <h4 className="font-medium text-lg mb-1">No exercises yet</h4>
+                <p className="text-muted-foreground">Check back later for practice exercises</p>
               </div>
-            ))}
+            )}
           </div>
         )}
 
         {activeTab === "videos" && (
           <div className="grid gap-4 md:grid-cols-2">
-            {resources.youtubeVideos.map((video, index) => (
-              <div key={index} className="border rounded-lg overflow-hidden">
-                <a href={video.url} target="_blank" rel="noopener noreferrer">
-                  <div className="relative aspect-video">
-                    <img
-                      src={video.thumbnail}
-                      alt={video.title}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                      <Play className="h-10 w-10 text-white" />
+            {hasVideos ? (
+              resources.youtubeVideos.map((video, index) => (
+                <div key={index} className="border rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+                  <a href={video.url} target="_blank" rel="noopener noreferrer" className="block">
+                    <div className="relative aspect-video">
+                      <img
+                        src={video.thumbnail}
+                        alt={video.title}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/30 transition-colors">
+                        <div className="bg-red-600 text-white p-3 rounded-full">
+                          <Play className="h-5 w-5 fill-current" />
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div className="p-4">
-                    <h3 className="font-bold line-clamp-2">{video.title}</h3>
-                    <div className="flex items-center mt-2 text-sm text-muted-foreground">
-                      <ExternalLink className="h-4 w-4 mr-1" />
-                      Watch on YouTube
+                    <div className="p-4">
+                      <h3 className="font-bold line-clamp-2 mb-2">{video.title}</h3>
+                      <div className="flex items-center text-sm text-red-600 font-medium">
+                        <ExternalLink className="h-4 w-4 mr-1.5" />
+                        Watch on YouTube
+                      </div>
                     </div>
-                  </div>
-                </a>
+                  </a>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-12 col-span-full">
+                <div className="mx-auto w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="23 7 16 12 23 17 23 7"></polygon>
+                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                  </svg>
+                </div>
+                <h4 className="font-medium text-lg mb-1">No videos yet</h4>
+                <p className="text-muted-foreground">We'll add relevant video tutorials soon</p>
               </div>
-            ))}
+            )}
           </div>
         )}
 
         {activeTab === "articles" && (
-          <div className="space-y-4">
-            {resources.articles.map((article, index) => (
-              <div
-                key={index}
-                className="border rounded-lg p-4 hover:bg-muted/50"
-              >
-                <a href={article.url} target="_blank" rel="noopener noreferrer">
-                  <h3 className="font-bold mb-1">{article.title}</h3>
-                  <p className="text-sm text-muted-foreground">
-                    By {article.author}
-                  </p>
-                  <div className="flex items-center mt-2 text-sm text-primary">
-                    <ExternalLink className="h-4 w-4 mr-1" />
-                    Read article
-                  </div>
-                </a>
+          <div className="grid gap-4">
+            {hasArticles ? (
+              resources.articles.map((article, index) => (
+                <div key={index} className="border rounded-lg p-5 hover:bg-muted/10 transition-colors">
+                  <a href={article.url} target="_blank" rel="noopener noreferrer" className="block">
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0 bg-blue-50 text-blue-600 p-2 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 className="font-bold mb-1">{article.title}</h3>
+                        <p className="text-sm text-muted-foreground mb-3">By {article.author}</p>
+                        <div className="flex items-center text-blue-600 font-medium text-sm">
+                          <ExternalLink className="h-4 w-4 mr-1.5" />
+                          Read article
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-12">
+                <div className="mx-auto w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                  </svg>
+                </div>
+                <h4 className="font-medium text-lg mb-1">No articles yet</h4>
+                <p className="text-muted-foreground">We'll add helpful reading materials soon</p>
               </div>
-            ))}
+            )}
           </div>
         )}
       </div>

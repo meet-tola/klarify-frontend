@@ -108,36 +108,36 @@ export default function RoadmapPage() {
     setIsAnalyzing(true);
   };
 
-  const handleStartLearning = async () => {
-    if (!user?.user.learningPath?.[0]?.roadmap) return;
+  // const handleStartLearning = async () => {
+  //   if (!user?.user.learningPath?.[0]?.roadmap) return;
 
-    setIsFetchingContent(true);
-    if (!user.user.pickedSkill) {
-      throw new Error("Picked skill is not defined");
-    }
+  //   setIsFetchingContent(true);
+  //   if (!user.user.pickedSkill) {
+  //     throw new Error("Picked skill is not defined");
+  //   }
 
-    const pollForSections = async () => {
-      try {
-        const roadmap = await getRoadmap(
-          userId as string,
-          user.user.pickedSkill ?? ""
-        );
-        const roadmapId = roadmap?.roadmap?._id;
-        const check = await checkSectionsStatus(userId as string, roadmapId);
+  //   const pollForSections = async () => {
+  //     try {
+  //       const roadmap = await getRoadmap(
+  //         userId as string,
+  //         user.user.pickedSkill ?? ""
+  //       );
+  //       const roadmapId = roadmap?.roadmap?._id;
+  //       const check = await checkSectionsStatus(userId as string, roadmapId);
 
-        if (check.sectionsGenerated) {
-          router.push(`/my-learning/${slugify(user.user.pickedSkill)}/content`);
-        } else {
-          setTimeout(pollForSections, 5000);
-        }
-      } catch (error: any) {
-        toast.error(error || "Error checking lesson readiness");
-        setIsFetchingContent(false);
-      }
-    };
+  //       if (check.sectionsGenerated) {
+  //         router.push(`/my-learning/${slugify(user.user.pickedSkill)}/content`);
+  //       } else {
+  //         setTimeout(pollForSections, 5000);
+  //       }
+  //     } catch (error: any) {
+  //       toast.error(error || "Error checking lesson readiness");
+  //       setIsFetchingContent(false);
+  //     }
+  //   };
 
-    pollForSections();
-  };
+  //   pollForSections();
+  // };
 
   const handleSelectSkill = async () => {
     try {
@@ -147,10 +147,10 @@ export default function RoadmapPage() {
     }
   };
 
-  if (isLoading || isFetchingContent) {
+  if (isLoading) {
     return (
       <LoadingScreen
-        message={isFetchingContent ? "Fetching Content..." : "Loading..."}
+        message={"Loading..."}
       />
     );
   }
@@ -193,7 +193,7 @@ export default function RoadmapPage() {
             {showRoadmap && (
               <RoadmapPhases
                 phases={phases}
-                onStartLearning={handleStartLearning}
+                // onStartLearning={handleStartLearning}
                 onCloseRoadmap={() => setShowRoadmap(false)}
               />
             )}
