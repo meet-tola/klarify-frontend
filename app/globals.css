@@ -179,3 +179,33 @@ html {
     animation: slideOutRight 0.3s forwards;
   }
 }
+
+.inline-code {
+  background-color: rgba(175, 184, 193, 0.2);
+  border-radius: 0.25rem;
+  padding: 0.2em 0.4em;
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+blockquote {
+  border-left: 3px solid #e5e7eb;
+  padding-left: 1rem;
+  margin: 1rem 0;
+  color: #6b7280;
+  font-style: italic;
+}
+
+mark {
+  background-color: #fef08a;
+  padding: 0.1em 0.2em;
+  border-radius: 0.2em;
+}
+
+.prose {
+  line-height: 1.6;
+}
+
+.prose p {
+  margin-bottom: 1em;
+}

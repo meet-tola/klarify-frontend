@@ -1,11 +1,15 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { ArrowRight } from "lucide-react"
-import Link from "next/link"
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
+import { useAuthContext } from "@/context/auth-provider";
 
 export default function CTASection() {
+  const { user } = useAuthContext();
+  const isLoggedIn = Boolean(user?.user);
+
   return (
     <motion.section
       initial={{ opacity: 0 }}
@@ -22,17 +26,22 @@ export default function CTASection() {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 roca-bold">Ready to Start Your Career Journey?</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 roca-bold">
+              {isLoggedIn
+                ? "Keep Growing Your Tech Career"
+                : "Ready to Start Your Career Journey?"}
+            </h2>
             <p className="text-lg mb-8">
-              Create your free account today and get personalized skill assessments, career recommendations, and
-              learning roadmaps tailored to your goals.
+              {isLoggedIn
+                ? "Jump back in to explore new career paths, level up your skills, and continue progressing with your personalized roadmap."
+                : "Create your free account today and get personalized skill assessments, career recommendations, and learning roadmaps tailored to your goals."}
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="/signup" className="w-full sm:w-auto">
-              <Button >
-                Sign Up Free
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
+              <Link href={isLoggedIn ? "/roadmap" : "/signup"}>
+                <Button>
+                  {isLoggedIn ? "Continue Your Journey" : "Sign Up Free"}
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
               </Link>
             </div>
           </motion.div>
@@ -48,7 +57,13 @@ export default function CTASection() {
               <div className="space-y-6">
                 <div className="flex items-center gap-4">
                   <div className="bg-white/60 p-3 rounded-full">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
                       <path
                         d="M9 11L12 14L15 11"
                         stroke="black"
@@ -56,19 +71,39 @@ export default function CTASection() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                       />
-                      <path d="M12 14V6" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                      <path d="M5 20H19" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      <path
+                        d="M12 14V6"
+                        stroke="black"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M5 20H19"
+                        stroke="black"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                     </svg>
                   </div>
                   <div>
                     <h3 className="font-bold">Skill Assessment</h3>
-                    <p className="text-sm">Identify your strengths and areas for growth</p>
+                    <p className="text-sm">
+                      Identify your strengths and areas for growth
+                    </p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-4">
                   <div className="bg-white/60 p-3 rounded-full">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
                       <path
                         d="M22 12H18L15 21L9 3L6 12H2"
                         stroke="black"
@@ -80,13 +115,21 @@ export default function CTASection() {
                   </div>
                   <div>
                     <h3 className="font-bold">Career Matching</h3>
-                    <p className="text-sm">Discover careers that match your profile</p>
+                    <p className="text-sm">
+                      Discover careers that match your profile
+                    </p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-4">
                   <div className="bg-white/60 p-3 rounded-full">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
                       <path
                         d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z"
                         stroke="black"
@@ -101,14 +144,34 @@ export default function CTASection() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                       />
-                      <path d="M16 13H8" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                      <path d="M16 17H8" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                      <path d="M10 9H9H8" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      <path
+                        d="M16 13H8"
+                        stroke="black"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M16 17H8"
+                        stroke="black"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M10 9H9H8"
+                        stroke="black"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                     </svg>
                   </div>
                   <div>
                     <h3 className="font-bold">Personalized Roadmap</h3>
-                    <p className="text-sm">Get a custom learning plan to reach your goals</p>
+                    <p className="text-sm">
+                      Get a custom learning plan to reach your goals
+                    </p>
                   </div>
                 </div>
               </div>
@@ -117,6 +180,5 @@ export default function CTASection() {
         </div>
       </div>
     </motion.section>
-  )
+  );
 }
-

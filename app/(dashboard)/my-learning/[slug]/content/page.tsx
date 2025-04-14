@@ -99,6 +99,7 @@ export default function CoursePage() {
     }
   }, []);
 
+
   // Calculate progress
   const totalLessons =
     roadmap?.phases?.flatMap((phase: any) => phase.lessons).length || 0;
@@ -194,7 +195,7 @@ export default function CoursePage() {
       {/* Backdrop for mobile sidebar */}
       {showSidebar && (
         <div
-          className="md:hidden fixed inset-0 bg-black/50 z-20"
+          className="md:hidden fixed inset-0 bg-black/50 z-20 backdrop-blur-sm animate-in fade-in"
           onClick={() => setShowSidebar(false)}
         />
       )}
@@ -241,6 +242,7 @@ export default function CoursePage() {
             onSelectLesson={handleStartLesson}
             courseProgress={courseProgress}
             activeView={activeView}
+            setActiveView={setActiveView}
             learningPath={learningPath}
             roadmap={roadmap}
           />

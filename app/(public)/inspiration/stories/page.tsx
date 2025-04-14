@@ -149,7 +149,7 @@ export default function SuccessStories() {
                         </Badge>
                       ))}
                   </div>
-                  <Link href={`/stories/${filteredStories.filter(story => story.featured)[0].id}`}>
+                  <Link href={`/inspiration/stories/${filteredStories.filter(story => story.featured)[0].id}`}>
                     <Button>
                       Read Full Story
                       <ArrowRight className="ml-2 h-4 w-4" />

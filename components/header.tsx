@@ -428,11 +428,7 @@ export default function Header() {
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link
-                        href={
-                          user?.user?.pickedSkill
-                            ? "my-learning/skills"
-                            : "/roadmap"
-                        }
+                        href={"my-learning/skills"}
                         className="cursor-pointer"
                       >
                         <Map className="mr-2 h-4 w-4" />
@@ -590,11 +586,7 @@ export default function Header() {
                       <span className="font-medium">Learning</span>
                     </Link>
                     <Link
-                      href={
-                        user?.user?.pickedSkill
-                          ? "my-learning/skills"
-                          : "/roadmap"
-                      }
+                      href={"my-learning/skills"}
                       className="flex items-center gap-3 py-2 px-3 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors"
                       onClick={toggleMenu}
                     >
@@ -631,7 +623,7 @@ export default function Header() {
                       Home
                     </Button>
                   </Link>
-                  <Link href={"/career"} className="">
+                  <Link href={"/careers"} className="">
                     <Button
                       variant={"ghost"}
                       className={`flex items-center justify-between w-full px-3 py-2 rounded-md text-base font-medium transition-colors ${

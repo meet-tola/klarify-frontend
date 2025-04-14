@@ -19,6 +19,7 @@ interface CourseContentProps {
   userId: string
   roadmap: {
     _id: string
+    title: string
     skill: string
     level: string
     phases: {
@@ -75,7 +76,7 @@ export default function CourseContent({ onStartLesson, roadmap, activeTab, learn
         <>
           {/* Course Title and Level */}
           <div>
-            <h1 className="text-xl md:text-2xl font-bold mb-1">{roadmap.skill}</h1>
+            <h1 className="text-lg md:text-2xl font-bold mb-1">{roadmap.title}</h1>
             <p className="text-sm text-muted-foreground">{roadmap.level}</p>
           </div>
 
@@ -110,7 +111,7 @@ export default function CourseContent({ onStartLesson, roadmap, activeTab, learn
 
                 {/* Next Phase Button */}
                 {hasNextPhase && (
-                  <div className="mt-8 flex justify-center">
+                  <div className="mt-6 mb-16 flex justify-center">
                     <Button onClick={handleNextPhase} className="px-6" variant="outline">
                       Go to {nextPhaseTitle}
                     </Button>

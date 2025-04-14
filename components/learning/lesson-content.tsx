@@ -265,45 +265,206 @@ export default function LessonContent({
 
   // Render lesson sections based on type and metadata
   const renderContentItem = (contentItem: any) => {
+    // Helper function to apply text styles based on metadata
+    const applyTextStyles = (text: string, metadata?: string[]) => {
+      if (!metadata || metadata.length === 0) return text;
+
+      let styledText = text;
+
+      metadata.forEach((style) => {
+        switch (style) {
+          case "bold":
+            styledText = `<strong>${styledText}</strong>`;
+            break;
+          case "italic":
+            styledText = `<em>${styledText}</em>`;
+            break;
+          case "code":
+            styledText = `<code class="inline-code">${styledText}</code>`;
+            break;
+          case "quote":
+            styledText = `<blockquote>${styledText}</blockquote>`;
+            break;
+          case "highlight":
+            styledText = `<mark>${styledText}</mark>`;
+            break;
+          case "link":
+            // Assuming link format is "link:url" in metadata
+            const url = style.split(":")[1];
+            styledText = `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">${styledText}</a>`;
+            break;
+        }
+      });
+
+      return <span dangerouslySetInnerHTML={{ __html: styledText }} />;
+    };
+
     return (
       <div className="mb-6">
-        <h3 className="text-xl font-bold mb-2">{contentItem.heading.text}</h3>
+        <h3 className="text-lg font-bold mb-2">
+          {applyTextStyles(
+            contentItem.heading.text,
+            contentItem.heading.metadata
+          )}
+        </h3>
 
         {contentItem.description.map((desc: any, idx: number) => (
           <p key={idx} className="text-muted-foreground mb-2">
-            {desc.text}
+            {applyTextStyles(desc.text, desc.metadata)}
           </p>
         ))}
 
         {contentItem.examples?.map((example: any, idx: number) => {
-          if (example.type === "code") {
-            return (
-              <div key={idx} className="my-4">
-                <SyntaxHighlighter
-                  language={
-                    example.metadata
-                      ?.find((m: string) => m.startsWith("language:"))
-                      ?.split(":")[1] || "text"
-                  }
-                  style={atomOneDark}
-                  customStyle={{ borderRadius: "8px", padding: "16px" }}
+          switch (example.type) {
+            case "code-sample":
+              return (
+                <div key={idx} className="my-4">
+                  <SyntaxHighlighter
+                    language={
+                      example.metadata
+                        ?.find((m: string) => m.startsWith("language:"))
+                        ?.split(":")[1] || "text"
+                    }
+                    style={atomOneDark}
+                    customStyle={{ borderRadius: "8px", padding: "16px" }}
+                  >
+                    {example.content}
+                  </SyntaxHighlighter>
+                </div>
+              );
+
+            case "case-study":
+              return (
+                <div
+                  key={idx}
+                  className="my-6 p-6 bg-muted/10 rounded-lg border-l-4 border-primary"
                 >
-                  {example.content}
-                </SyntaxHighlighter>
-              </div>
-            );
-          } else if (example.type === "image") {
-            return (
-              <div key={idx} className="my-4 flex justify-center">
-                <img
-                  src={example.content}
-                  alt="Example"
-                  className="rounded-lg max-w-full"
-                />
-              </div>
-            );
+                  <div className="flex items-start gap-3 mb-3">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="flex-shrink-0 mt-1 text-primary"
+                    >
+                      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                      <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                      <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                    </svg>
+                    <h4 className="font-bold text-lg text-primary">
+                      Case Study
+                    </h4>
+                  </div>
+                  <div className="prose prose-sm max-w-none">
+                    {applyTextStyles(example.content, example.metadata)}
+                  </div>
+                </div>
+              );
+
+            case "analogy":
+              return (
+                <div key={idx} className="my-6 p-6 bg-blue-50/50 rounded-lg">
+                  <div className="flex items-start gap-3 mb-3">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="flex-shrink-0 mt-1 text-blue-600"
+                    >
+                      <path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5"></path>
+                      <path d="M8.5 8.5v.01"></path>
+                      <path d="M16 15.5v.01"></path>
+                      <path d="M12 12v.01"></path>
+                      <path d="M11 17v.01"></path>
+                      <path d="M7 14v.01"></path>
+                    </svg>
+                    <h4 className="font-bold text-lg text-blue-600">Analogy</h4>
+                  </div>
+                  <div className="prose prose-sm max-w-none">
+                    {applyTextStyles(example.content, example.metadata)}
+                  </div>
+                </div>
+              );
+
+            case "thought-experiment":
+              return (
+                <div
+                  key={idx}
+                  className="my-6 p-6 bg-purple-50/50 rounded-lg border-l-4 border-purple-500"
+                >
+                  <div className="flex items-start gap-3 mb-3">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="flex-shrink-0 mt-1 text-purple-600"
+                    >
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                      <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    <h4 className="font-bold text-lg text-purple-600">
+                      Thought Experiment
+                    </h4>
+                  </div>
+                  <div className="prose prose-sm max-w-none">
+                    {applyTextStyles(example.content, example.metadata)}
+                  </div>
+                  <div className="mt-4 p-3 bg-white rounded border">
+                    <h5 className="font-medium text-sm mb-2">Consider This:</h5>
+                    <p className="text-sm text-muted-foreground">
+                      {example.metadata?.includes("question")
+                        ? example.content.replace("question:", "")
+                        : "What implications does this have for your understanding?"}
+                    </p>
+                  </div>
+                </div>
+              );
+
+            case "image":
+              return (
+                <div key={idx} className="my-4 flex justify-center">
+                  <img
+                    src={example.content}
+                    alt="Example"
+                    className="rounded-lg max-w-full border"
+                  />
+                  {example.metadata?.includes("caption") && (
+                    <p className="text-center text-sm text-muted-foreground mt-2">
+                      {
+                        example.metadata
+                          .find((m: string) => m.startsWith("caption:"))
+                          ?.split(":")[1]
+                      }
+                    </p>
+                  )}
+                </div>
+              );
+
+            default:
+              return (
+                <div key={idx} className="my-4 p-4 bg-muted/30 rounded-lg">
+                  {applyTextStyles(example.content, example.metadata)}
+                </div>
+              );
           }
-          return null;
         })}
       </div>
     );
@@ -312,7 +473,7 @@ export default function LessonContent({
   const renderSection = (section: any) => {
     return (
       <div key={section.sectionTitle} className="mb-8">
-        <h2 className="text-2xl font-bold mb-4">{section.sectionTitle}</h2>
+        <h2 className="text-xl font-bold mb-4">{section.sectionTitle}</h2>
 
         {section.content.map((contentItem: any, idx: number) => (
           <div key={idx}>{renderContentItem(contentItem)}</div>
@@ -337,9 +498,9 @@ export default function LessonContent({
   return (
     <div ref={contentRef} className="h-full overflow-y-auto pb-20">
       {activeTab === "content" ? (
-        <div className="py-6 max-w-3xl mx-auto">
+        <div className="py-6 max-w-3xl mx-auto px-4">
           {/* Lesson Title */}
-          <h1 className="text-3xl font-bold mb-4">
+          <h1 className="text-xl font-bold mb-4">
             {currentLesson?.lessonTitle}
           </h1>
 
@@ -410,7 +571,9 @@ export default function LessonContent({
 }
 
 function ResourcesSection({ resources }: { resources: Resources }) {
-  const [activeTab, setActiveTab] = useState<"exercises" | "videos" | "articles">("exercises");
+  const [activeTab, setActiveTab] = useState<
+    "exercises" | "videos" | "articles"
+  >("exercises");
 
   const hasExercises = resources.exercises.length > 0;
   const hasVideos = resources.youtubeVideos.length > 0;
@@ -420,7 +583,9 @@ function ResourcesSection({ resources }: { resources: Resources }) {
   if (!hasExercises && !hasVideos && !hasArticles) {
     return (
       <div className="mt-8 text-center py-6 bg-muted/50 rounded-lg">
-        <p className="text-muted-foreground">No additional resources for this lesson</p>
+        <p className="text-muted-foreground">
+          No additional resources for this lesson
+        </p>
       </div>
     );
   }
@@ -428,7 +593,7 @@ function ResourcesSection({ resources }: { resources: Resources }) {
   return (
     <div className="mt-8">
       <h2 className="text-xl font-bold mb-4 roca-bold">Additional Resources</h2>
-      
+
       {/* Tab Navigation */}
       <div className="flex border-b">
         {hasExercises && (
@@ -475,10 +640,23 @@ function ResourcesSection({ resources }: { resources: Resources }) {
           <div className="space-y-6">
             {hasExercises ? (
               resources.exercises.map((exercise, index) => (
-                <div key={index} className="p-6 border rounded-lg bg-muted/5 hover:bg-muted/10 transition-colors">
+                <div
+                  key={index}
+                  className="p-6 border rounded-lg bg-muted/5 hover:bg-muted/10 transition-colors"
+                >
                   <div className="flex items-start gap-4">
                     <div className="flex-shrink-0 bg-primary/10 text-primary p-2 rounded-lg">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                         <polyline points="14 2 14 8 20 8"></polyline>
                         <line x1="16" y1="13" x2="8" y2="13"></line>
@@ -487,11 +665,17 @@ function ResourcesSection({ resources }: { resources: Resources }) {
                       </svg>
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold mb-2">{exercise.title}</h3>
-                      <p className="text-muted-foreground mb-4">{exercise.description}</p>
+                      <h3 className="text-lg font-bold mb-2">
+                        {exercise.title}
+                      </h3>
+                      <p className="text-muted-foreground mb-4">
+                        {exercise.description}
+                      </p>
                       {exercise.tasks && (
                         <div className="bg-muted/30 p-4 rounded-lg">
-                          <h4 className="font-medium mb-2 text-sm uppercase tracking-wider text-muted-foreground">Your Task</h4>
+                          <h4 className="font-medium mb-2 text-sm uppercase tracking-wider text-muted-foreground">
+                            Your Task
+                          </h4>
                           <p className="text-foreground">{exercise.tasks}</p>
                         </div>
                       )}
@@ -502,7 +686,17 @@ function ResourcesSection({ resources }: { resources: Resources }) {
             ) : (
               <div className="text-center py-12">
                 <div className="mx-auto w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                     <polyline points="14 2 14 8 20 8"></polyline>
                     <line x1="16" y1="13" x2="8" y2="13"></line>
@@ -511,7 +705,9 @@ function ResourcesSection({ resources }: { resources: Resources }) {
                   </svg>
                 </div>
                 <h4 className="font-medium text-lg mb-1">No exercises yet</h4>
-                <p className="text-muted-foreground">Check back later for practice exercises</p>
+                <p className="text-muted-foreground">
+                  Check back later for practice exercises
+                </p>
               </div>
             )}
           </div>
@@ -521,8 +717,16 @@ function ResourcesSection({ resources }: { resources: Resources }) {
           <div className="grid gap-4 md:grid-cols-2">
             {hasVideos ? (
               resources.youtubeVideos.map((video, index) => (
-                <div key={index} className="border rounded-lg overflow-hidden hover:shadow-md transition-shadow">
-                  <a href={video.url} target="_blank" rel="noopener noreferrer" className="block">
+                <div
+                  key={index}
+                  className="border rounded-lg overflow-hidden hover:shadow-md transition-shadow"
+                >
+                  <a
+                    href={video.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block"
+                  >
                     <div className="relative aspect-video">
                       <img
                         src={video.thumbnail}
@@ -536,7 +740,9 @@ function ResourcesSection({ resources }: { resources: Resources }) {
                       </div>
                     </div>
                     <div className="p-4">
-                      <h3 className="font-bold line-clamp-2 mb-2">{video.title}</h3>
+                      <h3 className="font-bold line-clamp-2 mb-2">
+                        {video.title}
+                      </h3>
                       <div className="flex items-center text-sm text-red-600 font-medium">
                         <ExternalLink className="h-4 w-4 mr-1.5" />
                         Watch on YouTube
@@ -548,13 +754,32 @@ function ResourcesSection({ resources }: { resources: Resources }) {
             ) : (
               <div className="text-center py-12 col-span-full">
                 <div className="mx-auto w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
                     <polygon points="23 7 16 12 23 17 23 7"></polygon>
-                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                    <rect
+                      x="1"
+                      y="5"
+                      width="15"
+                      height="14"
+                      rx="2"
+                      ry="2"
+                    ></rect>
                   </svg>
                 </div>
                 <h4 className="font-medium text-lg mb-1">No videos yet</h4>
-                <p className="text-muted-foreground">We'll add relevant video tutorials soon</p>
+                <p className="text-muted-foreground">
+                  We'll add relevant video tutorials soon
+                </p>
               </div>
             )}
           </div>
@@ -564,18 +789,38 @@ function ResourcesSection({ resources }: { resources: Resources }) {
           <div className="grid gap-4">
             {hasArticles ? (
               resources.articles.map((article, index) => (
-                <div key={index} className="border rounded-lg p-5 hover:bg-muted/10 transition-colors">
-                  <a href={article.url} target="_blank" rel="noopener noreferrer" className="block">
+                <div
+                  key={index}
+                  className="border rounded-lg p-5 hover:bg-muted/10 transition-colors"
+                >
+                  <a
+                    href={article.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block"
+                  >
                     <div className="flex items-start gap-4">
                       <div className="flex-shrink-0 bg-blue-50 text-blue-600 p-2 rounded-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
                           <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
                           <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
                         </svg>
                       </div>
                       <div>
                         <h3 className="font-bold mb-1">{article.title}</h3>
-                        <p className="text-sm text-muted-foreground mb-3">By {article.author}</p>
+                        <p className="text-sm text-muted-foreground mb-3">
+                          By {article.author}
+                        </p>
                         <div className="flex items-center text-blue-600 font-medium text-sm">
                           <ExternalLink className="h-4 w-4 mr-1.5" />
                           Read article
@@ -588,13 +833,25 @@ function ResourcesSection({ resources }: { resources: Resources }) {
             ) : (
               <div className="text-center py-12">
                 <div className="mx-auto w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
                     <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
                     <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
                   </svg>
                 </div>
                 <h4 className="font-medium text-lg mb-1">No articles yet</h4>
-                <p className="text-muted-foreground">We'll add helpful reading materials soon</p>
+                <p className="text-muted-foreground">
+                  We'll add helpful reading materials soon
+                </p>
               </div>
             )}
           </div>

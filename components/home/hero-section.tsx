@@ -5,8 +5,11 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Star, TrendingUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import { useAuthContext } from "@/context/auth-provider";
 
 export default function Hero() {
+  const { user } = useAuthContext();
+
   return (
     <section className="relative bg-gradient-to-b from-blue-50/50 to-white py-20 overflow-hidden">
       <div className="container mx-auto px-4 sm:px-6 lg:px-20">
@@ -24,7 +27,7 @@ export default function Hero() {
               roadmaps to achieve your tech career goals.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="/signup">
+              <Link href={user?.user ? "/roadmap" : "/signup"}>
                 <Button className="bg-primary hover:bg-primary/90">
                   Start Skill Assessment
                   <ArrowRight className="ml-2 h-5 w-5" />
